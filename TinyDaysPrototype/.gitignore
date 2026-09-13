@@ -1,0 +1,14 @@
+/Library/
+/Temp/
+/Obj/
+/Builds/
+/Logs/
+/UserSettings/
+/.vs/
+*.csproj
+*.sln
+*.suo
+*.blend1
+*.blend2
+*.pidb
+*.user

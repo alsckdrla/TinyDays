@@ -1,0 +1,12 @@
+PASS: Unity Play Mode; 60 editor updates before tests.
+PASS: repeat generation stable, ManualEdits preserved.
+PASS: 6 residents; supported materials and correct world scale.
+PASS: camera pan/bounds/zoom/reset via public control methods.
+PASS: plants, smoke, continuous lighting, and muted audio structure.
+PASS: crop growth, harvest carry, food storage and dawn consumption.
+PASS: production/balanced/leisure weights, shortage recovery, HUD and pause/1x/2x/4x controls.
+PASS: 900 simulated seconds: each resident completes work, rest, and appreciation; the village completes harvest carries; swept obstacle and pair separation; fatigue recovery and blocked-destination fallback.
+PASS: F-key diagnostics can show/hide; the runtime Game view displays the overlay.
+PASS: no runtime Error/Exception/Assert received.
+Keyboard/mouse physical input and fifteen-minute visual observation remain manual checks.
+2026-09-13T17:39:30.0547986+09:00

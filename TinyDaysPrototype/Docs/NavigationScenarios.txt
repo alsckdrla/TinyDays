@@ -1,0 +1,13 @@
+PASS head_on: minimum spacing 1.674232, max turn per 0.05s 7.499968, max acceleration 2.500002
+PASS crossing: minimum spacing 1.584621, max turn per 0.05s 6.906414, max acceleration 2.500002
+PASS overtake: minimum spacing 0.9895893, max turn per 0.05s 7.500072, max acceleration 2.500002
+PASS stationary: minimum spacing 1.584599, max turn per 0.05s 7.499968, max acceleration 2.500002
+PASS narrow: minimum spacing 1.200799, max turn per 0.05s 7.500072, max acceleration 2.500002
+PASS close_start: minimum spacing 0.92, max turn per 0.05s 7.500072, max acceleration 2.500002
+PASS cautious: minimum spacing 1.204171, max turn per 0.05s 7.500699, max acceleration 2.500002
+PASS eager: minimum spacing 1.215088, max turn per 0.05s 7.500072, max acceleration 2.500002
+PASS personality waiting: cautious 4.199998s, eager 2.999998s
+PASS rectangular building/sign detour
+PASS circular trunk/barrel detour
+PASS road preference: road fractions 0.1249998 / 0.9821431
+PASS obstacle registration, movement, rotation and disable refresh
