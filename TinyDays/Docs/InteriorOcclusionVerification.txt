@@ -1,0 +1,1 @@
+PASS: three underground/above/outside cycles; all ground layers; empty house/roof/wall; other houses; crate cavity; trunk/crown group and empty crown/fence gaps; resident bone-deformed surface across 3 animation samples; inside OR resident occlusion; independent groups; original arrays recovery; disable/re-enable and preset cleanup. Editor direct calls, not live Game input.

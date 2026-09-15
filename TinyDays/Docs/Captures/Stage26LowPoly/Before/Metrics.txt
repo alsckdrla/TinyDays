@@ -1,0 +1,6 @@
+HomeA: triangles=1650, renderers=75, materials=9
+Crate: triangles=108, renderers=9, materials=3
+Barrel: triangles=320, renderers=4, materials=3
+Bench: triangles=72, renderers=6, materials=3
+FenceTotal: triangles=1368, renderers=114, materials=1
+Environment: triangles=255822, renderers=750, materials=25

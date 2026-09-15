@@ -1,0 +1,1 @@
+PASS: center selection; entry/retention/exit; behind-camera and inactive exclusion; occluded resident selection; house 25%; no-target gradual 0.2s restoration; underground exception; actual review target/no-target dispatch. Direct editor calls, not live Game input.

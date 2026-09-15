@@ -1,0 +1,8 @@
+Low-poly first set: automated geometry and direct occlusion calls. Not live Game-window input or minimum-PC performance testing.
+Home A: triangles=1204, renderers=9, materials=9; instances=1; budget and fade/restore PASS
+Wooden produce crate: triangles=228, renderers=3, materials=3; instances=5; budget and fade/restore PASS
+Rain barrel: triangles=236, renderers=3, materials=3; instances=3; budget and fade/restore PASS
+Bench: triangles=168, renderers=3, materials=3; instances=1; budget and fade/restore PASS
+Fence span: triangles=48, renderers=1, materials=1; instances=35; budget and fade/restore PASS
+All used generated meshes readable, nondegenerate and closed (even edge incidence); door/window wall voids and solid-wall control PASS.
+Repeated crate/barrel instances share mesh assets. Home A original position and resident route kept; regeneration preservation and camera regression tests in Stage26Verification.txt.

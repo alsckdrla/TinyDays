@@ -31,7 +31,7 @@ public static class FarmStudyBuilder
     [MenuItem("Tiny Days/Stage 2-6/Rebuild and verify farm")]
     public static void Execute()
     {
-        try{Build();Verify();Debug.Log("TINYDAYS_STAGE26_OK");}
+        try{Build();Verify();FarmArtReview.Capture("After");Debug.Log("TINYDAYS_STAGE26_OK");}
         catch(Exception e){Debug.LogException(e);if(Application.isBatchMode)EditorApplication.Exit(1);else throw;}
     }
     static Material Mat(string name,string hex)
@@ -87,6 +87,7 @@ public static class FarmStudyBuilder
     static void Building(string name,Vector3 pos,float width,float depth,string wall,string roof)
     {
         var g=Group(name,pos).transform;float h=2.55f;
+        var interior=g.gameObject.AddComponent<FarmInteriorVolume>();interior.center=new Vector3(0,1.475f,0);interior.size=new Vector3(width,2.55f,depth);interior.roofRise=1.35f;
         buildings.Add(new Bounds(pos+Vector3.up*1.5f,new Vector3(width,3,depth)));
         Box("Stone footing",new Vector3(0,.17f,0),new Vector3(width+.18f,.34f,depth+.18f),"Stone",g);
         Box("Limewash walls",new Vector3(0,h/2+.2f,0),new Vector3(width,h,depth),wall,g);
@@ -129,10 +130,7 @@ public static class FarmStudyBuilder
     }
     static void Fence(Vector3 a,Vector3 b)
     {
-        int n=Mathf.CeilToInt(Vector3.Distance(a,b)/1.3f);
-        for(int i=0;i<=n;i++)Box("Fence post",Vector3.Lerp(a,b,i/(float)n)+Vector3.up*.5f,new Vector3(.13f,1,.13f),"Fence");
-        for(int i=0;i<n;i++)for(int row=0;row<2;row++)
-        {Vector3 p=Vector3.Lerp(a,b,(i+.5f)/n)+Vector3.up*(.35f+row*.35f);var g=Box("Fence rail",p,new Vector3(.075f,.10f,Vector3.Distance(a,b)/n+.08f),"Fence");g.transform.rotation=Quaternion.LookRotation(b-a);}
+        FarmLowPolyAssets.Fence(root,a,b,mats);
     }
     static void Tree(Vector3 pos,float scale,int seed)
     {
@@ -144,17 +142,11 @@ public static class FarmStudyBuilder
     }
     static void Crate(Vector3 p,float angle=0)
     {
-        var g=Group("Wooden produce crate",p).transform;g.localRotation=Quaternion.Euler(0,angle,0);
-        Box("Interior",new Vector3(0,.22f,0),new Vector3(.57f,.4f,.45f),"Timber",g);
-        for(int i=0;i<3;i++)foreach(int side in new[]{-1,1})Box("Crate slat",new Vector3(0,.09f+i*.145f,side*.25f),new Vector3(.67f,.1f,.065f),"Fence",g);
-        foreach(int side in new[]{-1,1})Box("End board",new Vector3(side*.32f,.24f,0),new Vector3(.08f,.45f,.55f),"Door",g);
+        FarmLowPolyAssets.Crate(root,p,angle,mats);
     }
     static void Barrel(Vector3 p)
     {
-        var g=Group("Rain barrel",p).transform;
-        Shape("Staves",PrimitiveType.Cylinder,new Vector3(0,.44f,0),new Vector3(.64f,.44f,.64f),"Door",g);
-        foreach(float y in new[]{.15f,.7f})Shape("Band",PrimitiveType.Cylinder,new Vector3(0,y,0),new Vector3(.665f,.04f,.665f),"Timber",g);
-        Shape("Lid",PrimitiveType.Cylinder,new Vector3(0,.89f,0),new Vector3(.61f,.025f,.61f),"Fence",g);
+        FarmLowPolyAssets.Barrel(root,p,mats);
     }
     static void Field(float x,float z,int variant)
     {
@@ -179,15 +171,15 @@ public static class FarmStudyBuilder
         Shape("Spring meadow",PrimitiveType.Cylinder,new Vector3(0,-.04f,0),new Vector3(28.7f,.045f,25.7f),"Grass");
         Box("Backdrop",new Vector3(0,-.68f,0),new Vector3(300,.1f,300),"Backdrop");
         Path();
-        Building("Home A",new Vector3(-5,0,6.5f),4.3f,4.0f,"WallHoney","RoofTerracotta");
+        FarmLowPolyAssets.House(root,new Vector3(-5,0,6.5f),mats);
+        buildings.Add(new Bounds(new Vector3(-5,1.5f,6.5f),new Vector3(4.3f,3,4)));
         Building("Home B",new Vector3(2,0,6.7f),4.1f,4.1f,"WallCream","RoofOchre");
         Building("Storehouse",new Vector3(8.5f,0,4.2f),3.3f,3.7f,"WallSage","RoofDark");
         Field(-3.4f,-7,0);Field(4,-7,1);
         var rest=Group("Shaded resting place",new Vector3(-9,0,0)).transform;
         Shape("Resting clearing",PrimitiveType.Cylinder,new Vector3(0,.01f,0),new Vector3(3.3f,.02f,3.3f),"Path",rest);
-        Box("Bench seat",new Vector3(-.3f,.53f,0),new Vector3(1.9f,.13f,.58f),"Door",rest);
-        Box("Bench back",new Vector3(-.3f,.96f,.30f),new Vector3(1.9f,.5f,.10f),"Fence",rest);
-        foreach(float x in new[]{-1,.4f})foreach(float z in new[]{-.20f,.20f})Box("Bench leg",new Vector3(x,.25f,z),new Vector3(.1f,.5f,.1f),"Timber",rest);
+        // Direct root ownership prevents the clearing fading together with the bench.
+        FarmLowPolyAssets.Bench(root,new Vector3(-9.3f,0,0),mats);
         Tree(new Vector3(-10.4f,0,1.6f),1.35f,7);
         Tree(new Vector3(-10,0,7),1.15f,8);Tree(new Vector3(11,0,-3),1.25f,9);
         Tree(new Vector3(-1,0,10),1.1f,10);Tree(new Vector3(7,0,10),1.2f,11);
@@ -226,7 +218,8 @@ public static class FarmStudyBuilder
         root=new GameObject("GeneratedFarmStudy").transform;buildings=new List<Bounds>();mats=new Dictionary<string,Material>();
         string[] colors={"Grass:A4B776","Earth:AD9470","Backdrop:E4DECA","Path:CFB087","Soil:705642","Furrow:8C6B4C","Timber:665641","Door:AB8057","Fence:C5A274","Stone:AAA58D","Cream:EEDBB0","WallHoney:E2BD7C","WallCream:EAD9B7","WallSage:B4B7A0","RoofTerracotta:AF7250","RoofOchre:B89956","RoofDark:677576","Sage:779488","Glass:435E60","Brass:CFAC63","Leaves:819C59","LeavesLight:A0AD64","Crop:6C904C","CropLight:91A855","Flower:E6BB70"};
         foreach(string c in colors){var split=c.Split(':');Mat(split[0],split[1]);}
-        Scenery();
+        Mat("HousePlaster","E7DFC8");Mat("HouseTrim","F2E7CE");Mat("HouseRoof","605B52");Mat("HouseRoofAlternate","676156");Mat("HouseGlass","6C9294");
+        FarmLowPolyAssets.BeginBuild();Scenery();
         var light=Group("Spring afternoon sun",Vector3.zero).AddComponent<Light>();light.type=LightType.Directional;light.intensity=1.35f;light.color=new Color(1,.93f,.79f);light.transform.rotation=Quaternion.Euler(48,-32,0);light.shadows=LightShadows.Soft;light.shadowBias=.015f;light.shadowNormalBias=.12f;
         RenderSettings.ambientMode=AmbientMode.Trilight;RenderSettings.ambientSkyColor=new Color(.68f,.75f,.79f);RenderSettings.ambientEquatorColor=new Color(.52f,.55f,.45f);RenderSettings.ambientGroundColor=new Color(.36f,.32f,.25f);RenderSettings.fog=false;
         var camera=Group("Farm review camera",Vector3.zero).AddComponent<Camera>();camera.tag="MainCamera";camera.orthographic=true;camera.nearClipPlane=.1f;camera.farClipPlane=180;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=mats["Backdrop"].color;camera.GetUniversalAdditionalCameraData().renderPostProcessing=false;camera.allowMSAA=true;
@@ -245,7 +238,7 @@ public static class FarmStudyBuilder
             director.residents[i]=new FarmLifeDirector.Resident{root=actor.transform,visual=visual,offset=director.Period*i/6};
         }
         var review=root.gameObject.AddComponent<FarmStudyReview>();review.director=director;review.reviewCamera=camera;
-        director.Sample(0);review.SetView();
+        director.Sample(0);review.ResetCameraToPreset();
         EditorSceneManager.SaveScene(scene,ScenePath);AssetDatabase.SaveAssets();
     }
     public static void Verify()
@@ -282,15 +275,109 @@ public static class FarmStudyBuilder
         lines.Add($"Six distinct Generic visual instances; all six stations visited; mixed movement/rest samples {mixed}: PASS");
         lines.Add($"Full-cycle building clearance; minimum resident separation {minimum:F3}m; max 10ms step {maxStep:F5}m: PASS");
         lines.Add($"Deterministic same-time sample and restart; cycle {d.Period:F2}s: PASS");
+        var obstruction=review.GetComponent<FarmCameraOcclusion>();
+        Ensure(obstruction&&!review.reviewCamera.orthographic,"Perspective camera missing");
+        Ensure(FarmStudyReview.PanButton==0&&FarmStudyReview.RotateButton==2,"Camera drag binding changed");
+        foreach(float angle in new[]{-90f,-45f,0f,75f})
+        {
+            var rotation=Quaternion.Euler(angle,40,0);
+            var delta=FarmStudyReview.ScreenPan(rotation,new Vector2(100,50),38,40,900);
+            var local=Quaternion.Inverse(rotation)*delta;
+            float units=76*Mathf.Tan(20*Mathf.Deg2Rad)/900;
+            Ensure(Mathf.Abs(local.x+100*units)<.001f&&Mathf.Abs(local.y+50*units)<.001f&&Mathf.Abs(local.z)<.001f,"Screen pan direction or depth changed");
+        }
+        lines.Add("Left-drag screen pan / middle-drag rotation binding; pixel-matched pan direction, unchanged depth, -90..75 degrees: PASS (not live input)");
+        var home=GameObject.Find("Home A").GetComponentsInChildren<MeshRenderer>();
+        var originals=home.Select(r=>r.sharedMaterial).ToArray();
+        obstruction.Fade(new Vector3(-5,1.5f,6.5f),new Vector3(-5,1.5f,2),.2f);
+        Ensure(home.All(r=>Mathf.Abs(r.sharedMaterial.color.a-.25f)<.001f),"Whole building interior fade failed");
+        obstruction.Fade(new Vector3(0,-3,0),new Vector3(0,1,0),.2f);
+        Ensure(Mathf.Abs(GameObject.Find("Spring meadow").GetComponent<Renderer>().sharedMaterial.color.a-.25f)<.001f,"Ground fade failed");
+        obstruction.Fade(new Vector3(0,40,0),new Vector3(0,50,0),.2f);
+        Ensure(home.Select((r,i)=>r.sharedMaterial==originals[i]).All(v=>v),"Building restore failed");
+        lines.Add("Building group inside fade, ground fade, original material restoration: PASS (direct evaluation)");
+        var crop=UnityEngine.Object.FindObjectsOfType<MeshRenderer>().First(r=>r.name=="Spring crop leaf");
+        var original=crop.sharedMaterial;Color originalColor=original.color;
+        obstruction.Fade(crop.bounds.center-Vector3.forward*2,crop.bounds.center+Vector3.forward*2,.2f);
+        Ensure(crop.sharedMaterial!=original&&Mathf.Abs(crop.sharedMaterial.color.a-.25f)<.001f,"Per-object transparency failed");
+        Ensure(original.color==originalColor,"Shared material modified");
+        obstruction.Fade(new Vector3(0,40,0),new Vector3(0,50,0),.2f);
+        Ensure(crop.sharedMaterial==original,"Original material not restored");
+        lines.Add("Small-object fade to 25%, shared material isolation, restore to original: PASS (direct evaluation)");
+        VerifyOcclusionRecovery();
+        lines.Add("Mesh gap/rounded edge, independent groups, 0.2s recovery, disable/re-enable and repeated reset: PASS (direct evaluation)");
+        var meadow=GameObject.Find("Spring meadow").GetComponent<Renderer>();
+        var meadowOriginal=meadow.sharedMaterial;
+        var above=new Vector3(0,8,-5);var underground=new Vector3(0,-2,-2);
+        // Legacy raw pivot reproduces the reported logical condition without changing the camera.
+        obstruction.Fade(above,underground,.2f,false);
+        Ensure(Mathf.Abs(meadow.sharedMaterial.color.a-.25f)<.001f,"Legacy underground-pivot reproduction failed");
+        for(int i=0;i<3;i++)
+        {
+            obstruction.Fade(above,underground,.2f,true);
+            Ensure(meadow.sharedMaterial==meadowOriginal,"Above-ground camera failed to restore meadow");
+            var target=obstruction.SurfaceTarget(above,underground,out bool clipped);
+            Ensure(clipped&&target.y>-.01f&&target.y<.02f,"Incorrect surface target");
+            obstruction.Fade(new Vector3(0,-2,-2),new Vector3(0,2,-2),.2f,true);
+            Ensure(Mathf.Abs(meadow.sharedMaterial.color.a-.25f)<.001f,"Below-ground fading lost");
+        }
+        obstruction.Fade(above,underground,.2f,true);
+        Ensure(meadow.sharedMaterial==meadowOriginal,"Return above ground failed");
+        var outside=new Vector3(50,-2,50);var outsideTop=new Vector3(50,8,50);
+        Ensure(obstruction.SurfaceTarget(outsideTop,outside,out bool edgeClip)==outside&&!edgeClip,"Outside meadow target changed");
+        obstruction.Fade(new Vector3(.2f,8,-.15f),new Vector3(.2f,-2,-.15f),.2f,true);
+        var centerTree=UnityEngine.Object.FindObjectsOfType<MeshRenderer>().First(r=>r.name=="Trunk"&&Vector3.Distance(r.transform.parent.position,new Vector3(.2f,0,-.15f))<.01f);
+        Ensure(Mathf.Abs(centerTree.sharedMaterial.color.a-.25f)<.001f&&meadow.sharedMaterial==meadowOriginal,"Foreground tree lost or terrain faded");
+        obstruction.Fade(above,underground,.2f,false);
+        Ensure(Mathf.Abs(meadow.sharedMaterial.color.a-.25f)<.001f,"Explicit target path changed");
+        review.ResetCameraToPreset();
+        Ensure(meadow.sharedMaterial==meadowOriginal,"Home/preset material recovery failed");
+        lines.Add("Legacy above-camera/underground-pivot fade REPRODUCED; same-position surface target restores original; 3 below/above cycles and outside edge: PASS (direct evaluation, not live input)");
+        lines.Add("Foreground tree remains translucent over opaque ground; explicit follow-target path retained; preset reset restores original: PASS (direct evaluation)");
+        FarmArtReview.VerifyAssets();
+        lines.Add("Low-poly budgets, shared prototype meshes, closed geometry, actual wall openings and each prop fade/restore: PASS (direct evaluation; see Stage26LowPolyVerification.txt)");
         // Editor renders are layout evidence only; the actual skinned Game view is checked separately.
+        Directory.CreateDirectory("Docs/Captures/Stage27Camera");
         foreach(var size in new[]{new Vector2Int(1440,900),new Vector2Int(800,600),new Vector2Int(600,900)})
         for(int view=0;view<(size.x==1440?4:1);view++)
         {
-            review.view=view;var rt=new RenderTexture(size.x,size.y,24);review.reviewCamera.targetTexture=rt;review.reviewCamera.aspect=size.x/(float)size.y;review.SetView();review.reviewCamera.Render();
-            var previous=RenderTexture.active;RenderTexture.active=rt;var image=new Texture2D(size.x,size.y,TextureFormat.RGB24,false);image.ReadPixels(new Rect(0,0,size.x,size.y),0,0);image.Apply();File.WriteAllBytes($"Docs/Captures/Stage26/Layout-{size.x}x{size.y}-view{view}.png",image.EncodeToPNG());RenderTexture.active=previous;review.reviewCamera.targetTexture=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(image);
+            review.view=view;var rt=new RenderTexture(size.x,size.y,24);review.reviewCamera.targetTexture=rt;review.reviewCamera.aspect=size.x/(float)size.y;review.ResetCameraToPreset();review.reviewCamera.Render();
+            var previous=RenderTexture.active;RenderTexture.active=rt;var image=new Texture2D(size.x,size.y,TextureFormat.RGB24,false);image.ReadPixels(new Rect(0,0,size.x,size.y),0,0);image.Apply();File.WriteAllBytes($"Docs/Captures/Stage27Camera/Layout-{size.x}x{size.y}-view{view}.png",image.EncodeToPNG());RenderTexture.active=previous;review.reviewCamera.targetTexture=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(image);
         }
-        review.view=0;review.reviewCamera.ResetAspect();review.SetView();d.Restart();EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),ScenePath);AssetDatabase.SaveAssets();
+        review.view=0;review.reviewCamera.ResetAspect();review.ResetCameraToPreset();d.Restart();EditorSceneManager.SaveScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene(),ScenePath);AssetDatabase.SaveAssets();
         File.WriteAllLines("Docs/Stage26Verification.txt",lines);
     }
     static double rOffset(FarmLifeDirector d,int i)=>d.residents[i].offset;
+    static void VerifyOcclusionRecovery()
+    {
+        var fixture=new GameObject("__CameraRecoveryTest");
+        try
+        {
+            var tree=new GameObject("Tree group");tree.transform.SetParent(fixture.transform);
+            var a=GameObject.CreatePrimitive(PrimitiveType.Sphere);a.transform.SetParent(tree.transform);a.transform.position=new Vector3(-2,0,0);
+            var b=GameObject.CreatePrimitive(PrimitiveType.Sphere);b.transform.SetParent(tree.transform);b.transform.position=new Vector3(2,0,0);
+            var ground=GameObject.CreatePrimitive(PrimitiveType.Cylinder);ground.transform.SetParent(fixture.transform);ground.transform.position=new Vector3(0,-3,0);ground.transform.localScale=new Vector3(10,.1f,10);
+            foreach(var r in fixture.GetComponentsInChildren<Renderer>())r.sharedMaterial=mats["Grass"];
+            var original=mats["Grass"];var ar=a.GetComponent<Renderer>();var br=b.GetComponent<Renderer>();var gr=ground.GetComponent<Renderer>();
+            var o=fixture.AddComponent<FarmCameraOcclusion>();o.Initialize(fixture.transform);
+            for(int cycle=0;cycle<3;cycle++)
+            {
+                o.Fade(new Vector3(-2,0,-2),new Vector3(-2,0,2),.2f);
+                Ensure(ar.sharedMaterial!=original&&br.sharedMaterial!=original,"Tree group not faded");
+                o.Fade(new Vector3(0,0,-2),new Vector3(0,0,2),.1f);
+                Ensure(ar.sharedMaterial.color.a>.25f&&ar.sharedMaterial.color.a<1,"Recovery not gradual");
+                o.Fade(new Vector3(0,0,-2),new Vector3(0,0,2),.1f);
+                Ensure(ar.sharedMaterial==original&&br.sharedMaterial==original,"Gap incorrectly blocks recovery");
+                o.Fade(new Vector3(4,-4,4),new Vector3(4,-2,4),.2f);
+                Ensure(gr.sharedMaterial==original,"Cylinder bounding corner falsely occluded");
+                o.Fade(new Vector3(0,-4,0),new Vector3(0,-2,0),.2f);
+                Ensure(gr.sharedMaterial!=original&&ar.sharedMaterial==original,"Independent ground fade failed");
+                o.enabled=false;Ensure(gr.sharedMaterial==original,"Disable did not restore");
+                o.enabled=true;o.Fade(new Vector3(-2,0,-2),new Vector3(-2,0,2),.2f);
+                Ensure(ar.sharedMaterial!=original,"Re-enable did not resume");
+                o.Initialize(fixture.transform);Ensure(ar.sharedMaterial==original,"Reset did not restore original");
+            }
+        }
+        finally{UnityEngine.Object.DestroyImmediate(fixture);}
+    }
 }

@@ -3,4 +3,10 @@ Repeated generation preserves ManualEdits: PASS
 Six distinct Generic visual instances; all six stations visited; mixed movement/rest samples 1905: PASS
 Full-cycle building clearance; minimum resident separation 3.606m; max 10ms step 0.00195m: PASS
 Deterministic same-time sample and restart; cycle 233.76s: PASS
-Protected original files (104) and prototype existing diff unchanged: PASS
+Left-drag screen pan / middle-drag rotation binding; pixel-matched pan direction, unchanged depth, -90..75 degrees: PASS (not live input)
+Building group inside fade, ground fade, original material restoration: PASS (direct evaluation)
+Small-object fade to 25%, shared material isolation, restore to original: PASS (direct evaluation)
+Mesh gap/rounded edge, independent groups, 0.2s recovery, disable/re-enable and repeated reset: PASS (direct evaluation)
+Legacy above-camera/underground-pivot fade REPRODUCED; same-position surface target restores original; 3 below/above cycles and outside edge: PASS (direct evaluation, not live input)
+Foreground tree remains translucent over opaque ground; explicit follow-target path retained; preset reset restores original: PASS (direct evaluation)
+Low-poly budgets, shared prototype meshes, closed geometry, actual wall openings and each prop fade/restore: PASS (direct evaluation; see Stage26LowPolyVerification.txt)
