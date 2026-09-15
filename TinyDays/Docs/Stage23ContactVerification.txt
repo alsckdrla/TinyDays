@@ -1,0 +1,18 @@
+Stage 2-3 source contact verification
+Checks support joint trajectories with Unity forward displacement; visual paw deformation is a separate observation.
+Idle_Biped: 180 support comparisons, max world drift 0.0000001m: PASS
+Idle_Quadruped: 360 support comparisons, max world drift 0.0000001m: PASS
+Walk_Biped: 28 support comparisons, max world drift 0.0000000m: PASS
+Hop_Quadruped: 38 support comparisons, max world drift 0.0000001m: PASS
+To_Quadruped: 94 support comparisons, max world drift 0.0000001m: PASS
+To_Biped: 93 support comparisons, max world drift 0.0000000m: PASS
+Walk_Start: 19 support comparisons, max world drift 0.0000000m: PASS
+Walk_Stop: 19 support comparisons, max world drift 0.0000000m: PASS
+Hop_Start: 40 support comparisons, max world drift 0.0000001m: PASS
+Hop_Stop: 38 support comparisons, max world drift 0.0000001m: PASS
+Approved RabbitStudy.blend hash unchanged: PASS
+All ten review durations/distances preserved; pose changes are intentional: PASS
+Prancing walk: 6 airborne samples and alternating support: PASS
+Walk_Biped: torso vertical range 0.1101m, increased from 0.0120m: PASS
+Hop_Quadruped: torso vertical range 0.1304m, increased from 0.0469m: PASS
+Independent transitions: forepaw-supported rump recoil and hindpaw-supported compression: PASS

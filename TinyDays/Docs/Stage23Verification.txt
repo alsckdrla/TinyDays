@@ -1,0 +1,25 @@
+Stage 2-3 elastic motion automatic verification
+Imported pose snapshots use explicitly evaluated skin matrices for deterministic batch rendering. They are not actual Game-window input checks.
+Repeated generation preserves ManualEdits: PASS
+RabbitRig|Idle_Biped: loop 3.000s; joint delta 0.000002m; skin bounds delta 0.000001m; loop max 0.000000m: PASS
+RabbitRig|Idle_Quadruped: loop 3.000s; joint delta 0.000004m; skin bounds delta 0.000002m; loop max 0.000000m: PASS
+RabbitRig|Walk_Biped: loop 1.200s; joint delta 0.000003m; skin bounds delta 0.000002m; loop max 0.000000m: PASS
+RabbitRig|Hop_Quadruped: loop 1.000s; joint delta 0.000005m; skin bounds delta 0.000002m; loop max 0.000000m: PASS
+RabbitRig|To_Quadruped: one-shot 1.200s; joint delta 0.000004m; skin bounds delta 0.000028m: PASS
+RabbitRig|To_Biped: one-shot 1.400s; joint delta 0.000004m; skin bounds delta 0.000035m: PASS
+RabbitRig|Walk_Start: one-shot 0.600s; joint delta 0.000003m; skin bounds delta 0.000001m: PASS
+RabbitRig|Walk_Stop: one-shot 0.600s; joint delta 0.000004m; skin bounds delta 0.000002m: PASS
+RabbitRig|Hop_Start: one-shot 0.600s; joint delta 0.000002m; skin bounds delta 0.000003m: PASS
+RabbitRig|Hop_Stop: one-shot 0.600s; joint delta 0.000003m; skin bounds delta 0.000002m: PASS
+Idle_Biped -> Walk_Start: surface endpoint delta 0.000000m: PASS
+Walk_Start -> Walk_Biped: surface endpoint delta 0.000000m: PASS
+Walk_Biped -> Walk_Stop: surface endpoint delta 0.000000m: PASS
+Walk_Stop -> To_Quadruped: surface endpoint delta 0.000000m: PASS
+To_Quadruped -> Idle_Quadruped: surface endpoint delta 0.000000m: PASS
+Idle_Quadruped -> Hop_Start: surface endpoint delta 0.000000m: PASS
+Hop_Start -> Hop_Quadruped: surface endpoint delta 0.000000m: PASS
+Hop_Quadruped -> Hop_Stop: surface endpoint delta 0.000000m: PASS
+Hop_Stop -> To_Biped: surface endpoint delta 0.000000m: PASS
+To_Biped -> Idle_Biped: surface endpoint delta 0.000000m: PASS
+Runtime sequence boundaries, cumulative travel, final idle, replay reset and one-shot following: PASS
+Elastic basic motion and transition user approval: PENDING. Previous approval does not cover revised motion. Special actions: NOT CREATED.

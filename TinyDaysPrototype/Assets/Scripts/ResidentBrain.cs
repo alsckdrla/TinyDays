@@ -25,6 +25,7 @@ namespace TinyDays
         public bool RestedThenWorked { get; private set; }
         public int WorkCount { get; private set; }
         public int CarryCount { get; private set; }
+        public int BuildCount { get; private set; }
         public int RestCount { get; private set; }
         public int AppreciateCount { get; private set; }
 
@@ -32,6 +33,7 @@ namespace TinyDays
         ActivityCoordinator coordinator;
         VillageResources resources;
         VillagePriority priority;
+        VillageExpansion expansion;
         DayNightCycle clock;
         ResidentWanderer walker;
         System.Random random;
@@ -47,6 +49,7 @@ namespace TinyDays
             if(initialized) return;
             settings=GetComponentInParent<VillageAutonomySettings>(); coordinator=GetComponentInParent<ActivityCoordinator>();
             resources=GetComponentInParent<VillageResources>(); priority=GetComponentInParent<VillagePriority>(); clock=GetComponentInParent<DayNightCycle>();
+            expansion=GetComponentInParent<VillageExpansion>();
             random=new System.Random(1103+residentId*97); Fatigue=.14f+residentId*.055f;
             if (!settings || !coordinator) { walker.enabled=true; enabled=false; return; }
             walker.enabled=false; Motor=GetComponent<ResidentMotor>(); Motor.Initialize();
@@ -82,6 +85,7 @@ namespace TinyDays
                 return;
             }
             if(CurrentAction==ResidentAction.Work&&CurrentSlot.cropPlot) CurrentSlot.cropPlot.Tend(delta*(resources?resources.ProductivityMultiplier:1f));
+            if(CurrentAction==ResidentAction.Build&&expansion) expansion.Contribute(delta);
             float efficiency=((CurrentAction==ResidentAction.Work||CurrentAction==ResidentAction.Carry)&&resources)?resources.ProductivityMultiplier:1f;
             stateSeconds-=delta*efficiency;
             walker.Idle(delta);
@@ -115,9 +119,10 @@ namespace TinyDays
             float work=settings.workWeight*(priority?priority.WorkMultiplier:1f), carry=settings.carryWeight*(priority?priority.CarryMultiplier:1f), rest=settings.restWeight*(priority?priority.RestMultiplier:1f), appreciate=settings.appreciateWeight*(priority?priority.AppreciateMultiplier:1f);
             bool urgent=resources&&(resources.IsShortage||coordinator.Slots.Any(s=>s.action==ResidentAction.Carry&&s.cropPlot&&s.cropPlot.HasHarvest));
             if(urgent) { work*=2.2f; carry*=3f; rest*=.55f; appreciate*=.25f; }
+            float build=expansion&&expansion.NeedsBuilders?1.15f:0f;
             if(night) return new List<(ResidentAction,float,string)> { (ResidentAction.Rest,8f,"밤에는 휴식을 우선함"),(ResidentAction.Appreciate,1f,"밤 풍경을 잠시 감상함") };
             if(sunset) return new List<(ResidentAction,float,string)> { (ResidentAction.Appreciate,appreciate*2.2f,"일몰이라 풍경 감상 비중이 높음"),(ResidentAction.Rest,rest,"해 질 무렵 잠시 쉼"),(ResidentAction.Work,work*.45f,"남은 밭일을 정리함"),(ResidentAction.Carry,carry*.45f,"남은 수확물을 옮김") };
-            return new List<(ResidentAction,float,string)> { (ResidentAction.Work,work*(.75f+diligence),urgent?"식량 회복을 위해 밭일을 우선함":"낮에는 밭일을 우선함"),(ResidentAction.Carry,carry*(.75f+diligence*.5f),urgent?"수확 상자를 창고로 운반함":"창고 주변 운반이 필요함"),(ResidentAction.Rest,rest*(.8f+calmness),"짧은 휴식으로 피로를 관리함"),(ResidentAction.Appreciate,appreciate*(.75f+calmness),"마을을 둘러보며 쉼") };
+            return new List<(ResidentAction,float,string)> { (ResidentAction.Work,work*(.75f+diligence),urgent?"식량 회복을 위해 밭일을 우선함":"낮에는 밭일을 우선함"),(ResidentAction.Carry,carry*(.75f+diligence*.5f),urgent?"수확 상자를 창고로 운반함":"창고 주변 운반이 필요함"),(ResidentAction.Build,build,"저장공간 부족으로 확장 헛간을 짓는 중"),(ResidentAction.Rest,rest*(.8f+calmness),"짧은 휴식으로 피로를 관리함"),(ResidentAction.Appreciate,appreciate*(.75f+calmness),"마을을 둘러보며 쉼") };
         }
         void Complete()
         {
@@ -125,6 +130,7 @@ namespace TinyDays
             if(CurrentAction==ResidentAction.Work&&restedSinceLastWork) { RestedThenWorked=true; restedSinceLastWork=false; }
             if(CurrentAction==ResidentAction.Work) { WorkCount++; if(CurrentSlot.cropPlot) CurrentSlot.cropPlot.Harvest(); }
             else if(CurrentAction==ResidentAction.Carry) { CarryCount++; if(CurrentSlot.cropPlot&&resources&&resources.AddHarvest()) CurrentSlot.cropPlot.CompleteCarry(residentId); else ReleaseResourceClaim(); }
+            else if(CurrentAction==ResidentAction.Build) BuildCount++;
             else if(CurrentAction==ResidentAction.Rest) RestCount++;
             else if(CurrentAction==ResidentAction.Appreciate) AppreciateCount++;
             CompletedActions++; Motor.Stop(); coordinator.Release(CurrentSlot,residentId); CurrentSlot=null; if(carryVisual) carryVisual.SetActive(false); CurrentAction=ResidentAction.None; cooldown=.25f+residentId*.08f;
@@ -147,7 +153,28 @@ namespace TinyDays
             var direction=CurrentSlot.lookTarget.position-transform.position; direction.y=0;
             if(direction.sqrMagnitude>.01f) transform.rotation=Quaternion.RotateTowards(transform.rotation,Quaternion.LookRotation(direction),settings.turnDegrees*delta);
         }
+        public ResidentSaveData CaptureSaveState()
+        {
+            return new ResidentSaveData {
+                id=residentId, action=(int)CurrentAction, slotId=CurrentSlot?CurrentSlot.slotId:null,
+                x=transform.position.x, y=transform.position.y, z=transform.position.z, yaw=transform.eulerAngles.y,
+                fatigue=Fatigue, stateSeconds=stateSeconds, travelSeconds=travelSeconds, cooldown=cooldown, elapsed=elapsed,
+                traveling=traveling, carrying=carrying, restedSinceLastWork=restedSinceLastWork
+            };
+        }
+        public void RestoreSaveState(ResidentSaveData saved, ActivitySlot slot)
+        {
+            Initialize(); Motor.Stop();
+            transform.position=new Vector3(saved.x,saved.y,saved.z); transform.rotation=Quaternion.Euler(0,saved.yaw,0);
+            Fatigue=Mathf.Clamp01(saved.fatigue); stateSeconds=Mathf.Max(0,saved.stateSeconds); travelSeconds=Mathf.Max(0,saved.travelSeconds);
+            cooldown=Mathf.Max(0,saved.cooldown); elapsed=Mathf.Max(0,saved.elapsed); restedSinceLastWork=saved.restedSinceLastWork;
+            CurrentAction=slot?(ResidentAction)saved.action:ResidentAction.None; CurrentSlot=slot; traveling=slot&&saved.traveling; carrying=slot&&saved.carrying;
+            if(carryVisual) carryVisual.SetActive(carrying);
+            if(CurrentAction==ResidentAction.None) { traveling=false; carrying=false; return; }
+            DecisionReason="저장한 행동을 이어가는 중";
+            if(traveling) BeginTravel(carrying);
+        }
         public void ForceCurrentSlotUnavailableForVerification() { if(CurrentSlot) CurrentSlot.blocked=true; }
-        static string ActionLabel(ResidentAction action) => action==ResidentAction.Work?"밭일":action==ResidentAction.Carry?"운반":action==ResidentAction.Rest?"휴식":"감상";
+        static string ActionLabel(ResidentAction action) => action==ResidentAction.Work?"밭일":action==ResidentAction.Carry?"운반":action==ResidentAction.Build?"건설":action==ResidentAction.Rest?"휴식":"감상";
     }
 }

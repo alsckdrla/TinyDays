@@ -21,6 +21,7 @@ namespace TinyDays
         int routeIndex;
         float waitRemaining, phase;
         bool walking;
+        int lastAnimationFrame=-1;
 
         void Awake()
         {
@@ -99,6 +100,10 @@ namespace TinyDays
 
         void Animate(bool isWalking)
         {
+            // Simulation may run several safe substeps in one rendered frame at high speed.
+            // Advance phase every substep, but touch mesh transforms once per displayed frame.
+            if(lastAnimationFrame==Time.frameCount) return;
+            lastAnimationFrame=Time.frameCount;
             float stride = isWalking ? Mathf.Sin(phase) : 0f;
             float breathe = Mathf.Sin(phase * .62f) * (isWalking ? .025f : .012f);
             visual.localPosition = visualRest + Vector3.up * (breathe + (isWalking ? Mathf.Abs(stride) * .045f : 0f));

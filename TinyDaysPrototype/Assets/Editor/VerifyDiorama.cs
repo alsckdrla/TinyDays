@@ -69,15 +69,18 @@ public static class VerifyDiorama
             var smoke=root.GetComponentsInChildren<ChimneySmoke>(); Require(smoke.Length==3&&smoke.All(s=>s.GetComponent<ParticleSystem>().isPlaying),"Three chimney smoke systems play");
             var ambient=root.GetComponentInChildren<AmbientAudioSettings>(); Require(ambient&&Mathf.Approximately(ambient.volume,0f)&&Mathf.Approximately(ambient.GetComponent<AudioSource>().volume,0f),"Muted ambient audio structure");
             var coordinator=root.GetComponent<ActivityCoordinator>(); var brains=root.GetComponentsInChildren<ResidentBrain>(); var diagnostics=root.GetComponent<AutonomyDiagnostics>();
-            var resources=root.GetComponent<VillageResources>(); var priority=root.GetComponent<VillagePriority>(); var timeControls=root.GetComponent<VillageTimeControls>(); var hud=root.GetComponent<VillageHud>(); var plots=root.GetComponentsInChildren<CropPlot>();
+            var resources=root.GetComponent<VillageResources>(); var priority=root.GetComponent<VillagePriority>(); var timeControls=root.GetComponent<VillageTimeControls>(); var hud=root.GetComponent<VillageHud>(); var plots=root.GetComponentsInChildren<CropPlot>(); var expansion=root.GetComponent<VillageExpansion>();
             Require(coordinator&&brains.Length==6&&diagnostics,"Autonomy coordinator, six brains, and diagnostics exist");
-            Require(resources&&priority&&timeControls&&hud&&plots.Length==2,"Resources, priority, time controls, HUD, and two crop plots exist");
+            Require(resources&&priority&&timeControls&&hud&&plots.Length==2&&expansion,"Resources, priority, time controls, expansion, HUD, and two crop plots exist");
             Require(resources.food==12&&resources.foodCapacity==24,"Food starts at 12 / 24");
             priority.Set(VillagePriorityMode.Production); Require(Mathf.Approximately(priority.WorkMultiplier,1.6f)&&Mathf.Approximately(priority.RestMultiplier,.45f),"Production priority weights");
             priority.Set(VillagePriorityMode.Leisure); Require(Mathf.Approximately(priority.WorkMultiplier,.6f)&&Mathf.Approximately(priority.RestMultiplier,1.4f),"Leisure priority weights"); priority.Set(VillagePriorityMode.Balanced);
             resources.food=0; Require(Mathf.Approximately(resources.ProductivityMultiplier,.75f)&&Mathf.Approximately(resources.RestRecoveryMultiplier,.60f),"Food shortage modifiers"); resources.food=12;
-            timeControls.SetSpeed(2); Require(Mathf.Approximately(Time.timeScale,4f),"4x time control"); timeControls.SetPaused(true); Require(Mathf.Approximately(Time.timeScale,0f),"Pause time control"); timeControls.SetPaused(false); timeControls.SetSpeed(0); Require(Mathf.Approximately(Time.timeScale,1f),"Resume 1x time control");
+            timeControls.SetSpeed(2); Require(Mathf.Approximately(Time.timeScale,4f)&&timeControls.SpeedText=="4×","4x time control and display"); timeControls.SetPaused(true); Require(Mathf.Approximately(Time.timeScale,0f)&&timeControls.SpeedText=="4×","Pause retains selected speed display"); timeControls.SetPaused(false); Require(Mathf.Approximately(Time.timeScale,4f),"Resume selected speed"); timeControls.SetSpeed(0); timeControls.DecreaseSpeed(); Require(Mathf.Approximately(Time.timeScale,1f),"Minimum 1x time control"); timeControls.SetSpeed(4); timeControls.IncreaseSpeed(); Require(Mathf.Approximately(Time.timeScale,16f)&&timeControls.SpeedText=="16×","Maximum 16x time control and display"); timeControls.SetSpeed(0);
             hud.visible=false; Require(!hud.visible,"HUD can hide"); hud.visible=true;
+            expansion.Simulate(31f); Require(!expansion.Decided,"Storage does not expand without a blocked harvest");
+            resources.food=resources.foodCapacity; plots[0].growth=1f; Require(plots[0].Harvest(),"Ready crop creates a blocked harvest for expansion");
+            expansion.Simulate(29.9f); Require(!expansion.Decided,"Brief storage pressure does not expand"); expansion.Simulate(.2f); Require(expansion.Decided&&expansion.NeedsBuilders&&coordinator.Slots.Count==13,"Sustained storage pressure decides one expansion and activates construction");
             VerifyNavigation.Run(root);
             // Run five full visual days (15 simulated minutes) while sampling all time-of-day decision weights.
             var traffic=root.GetComponent<ResidentTraffic>(); traffic.automatic=false;
@@ -107,11 +110,13 @@ public static class VerifyDiorama
             }
             Debug.Log("NAVIGATION_MINIMUM_DISTANCE "+minimumDistance);
             Debug.Log("AUTONOMY_COUNTS "+string.Join("; ",brains.Select(b=>b.name+" W"+b.WorkCount+" C"+b.CarryCount+" R"+b.RestCount+" A"+b.AppreciateCount+" fatigue="+b.Fatigue+" failures="+b.FallbackCount+" replans="+b.Motor.Replans+" slot="+(b.CurrentSlot?b.CurrentSlot.slotId:"none")))+" | SLOTS "+string.Join(",",coordinator.Slots.Select(s=>s.slotId+"="+s.reservedBy)));
+            Debug.Log("EXPANSION " + expansion.StatusText + " seconds=" + expansion.buildSeconds + " decided=" + expansion.Decided + " complete=" + expansion.IsComplete);
             Require(brains.Sum(b=>b.WorkCount)>3,"Autonomy performs field work; "+string.Join("; ",brains.Select(b=>b.name+" W"+b.WorkCount+" C"+b.CarryCount+" R"+b.RestCount+" A"+b.AppreciateCount+" current="+b.CurrentAction+" reason="+b.DecisionReason)));
             Require(brains.Sum(b=>b.CarryCount)>2,"Autonomy performs crate carrying");
             Require(resources.TotalHarvested>0,"Crop harvests are carried into storage");
             Require(resources.TotalConsumed>0,"Residents consume food at dawn");
             Require(resources.food>=0&&resources.food<=resources.foodCapacity,"Food stays within storage bounds");
+            Require(expansion.IsComplete&&resources.foodCapacity==36,"Residents complete one storage expansion and raise capacity once");
             Require(brains.Sum(b=>b.RestCount)>3,"Autonomy performs rest");
             Require(brains.Sum(b=>b.AppreciateCount)>3,"Autonomy performs appreciation");
             Require(brains.Any(b=>b.RestedThenWorked),"Residents return to work after rest");
@@ -119,7 +124,15 @@ public static class VerifyDiorama
             Require(minimumDistance>=.899f,"Independent swept resident separation");
             Require(brains.All(b=>b.WorkCount>0&&b.RestCount>0&&b.AppreciateCount>0),"Each resident completes work, rest, and appreciation");
             Require(coordinator.Slots.Count(s=>s.reservedBy>=0)==coordinator.ReservedCount,"Every slot has one reservation owner");
-            Require(coordinator.Slots.Select(s=>s.slotId).Distinct().Count()==12,"Twelve unique activity IDs survive scene reload");
+            Require(coordinator.Slots.Select(s=>s.slotId).Distinct().Count()==12,"Completed construction releases its unique activity ID");
+            var saver=root.GetComponent<VillageSaveSystem>(); Require(saver,"Versioned local save system exists");
+            saver.verificationDirectory=Path.GetFullPath("Logs/SaveRoundTrip-"+Guid.NewGuid().ToString("N"));
+            var savedFood=resources.food; var savedCapacity=resources.foodCapacity; var savedResident=brains.First(b=>b.CurrentSlot); var savedResidentId=savedResident.residentId; var savedPosition=savedResident.transform.position; var savedAction=savedResident.CurrentAction; var savedSlot=savedResident.CurrentSlot.slotId;
+            saver.SaveNow(); resources.food=0; savedResident.transform.position+=Vector3.right*3f; savedResident.Simulate(.1f);
+            Require(saver.LoadNow(),"Saved village can load");
+            Require(resources.food==savedFood&&resources.foodCapacity==savedCapacity,"Save restores food and capacity");
+            savedResident=brains.First(b=>b.residentId==savedResidentId);
+            Require(Vector3.Distance(savedResident.transform.position,savedPosition)<.001f&&savedResident.CurrentAction==savedAction&&savedResident.CurrentSlot&&savedResident.CurrentSlot.slotId==savedSlot,"Save restores resident action, reservation, and position");
             var disablingBrain=brains.First(b=>b.CurrentSlot); var releasedSlot=disablingBrain.CurrentSlot;
             disablingBrain.enabled=false; Require(releasedSlot.reservedBy==-1&&!disablingBrain.CurrentSlot,"Disable releases reservation immediately"); disablingBrain.enabled=true;
             for(int tick=0;tick<100&&!brains.Any(b=>b.CurrentSlot&&b.Motor.HasGoal);tick++) traffic.Simulate(.05f);
@@ -145,7 +158,7 @@ public static class VerifyDiorama
 
             cycle.SetProgress(.34f);
             Require(errors.Count==0,"No runtime errors: "+string.Join("; ",errors));
-            File.WriteAllText("Docs/Verification.txt","PASS: Unity Play Mode; 60 editor updates before tests.\nPASS: repeat generation stable, ManualEdits preserved.\nPASS: 6 residents; supported materials and correct world scale.\nPASS: camera pan/bounds/zoom/reset via public control methods.\nPASS: plants, smoke, continuous lighting, and muted audio structure.\nPASS: crop growth, harvest carry, food storage and dawn consumption.\nPASS: production/balanced/leisure weights, shortage recovery, HUD and pause/1x/2x/4x controls.\nPASS: 900 simulated seconds: each resident completes four actions; swept obstacle and pair separation; fatigue recovery and blocked-destination fallback.\nPASS: F-key diagnostics can show/hide; the runtime Game view displays the overlay.\nPASS: no runtime Error/Exception/Assert received.\nKeyboard/mouse physical input and fifteen-minute visual observation remain manual checks.\n"+DateTime.Now.ToString("O"));
+            File.WriteAllText("Docs/Verification.txt","PASS: Unity Play Mode; 60 editor updates before tests.\nPASS: repeat generation stable, ManualEdits preserved.\nPASS: 6 residents; supported materials and correct world scale.\nPASS: camera pan/bounds/zoom/reset via public control methods.\nPASS: plants, smoke, continuous lighting, and muted audio structure.\nPASS: crop growth, harvest carry, food storage and dawn consumption.\nPASS: production/balanced/leisure weights, shortage recovery, HUD and pause/1x-to-16x controls.\nPASS: 900 simulated seconds: each resident completes four actions; swept obstacle and pair separation; fatigue recovery and blocked-destination fallback.\nPASS: versioned local save/load restores food, capacity, resident position, action, and reservation.\nPASS: F-key diagnostics can show/hide; the runtime Game view displays the overlay.\nPASS: no runtime Error/Exception/Assert received.\nKeyboard/mouse physical input and fifteen-minute visual observation remain manual checks.\n"+DateTime.Now.ToString("O"));
             Debug.Log("TINYDAYS_VERIFICATION_OK"); SessionState.SetBool(Active,false); EditorApplication.Exit(0);
         } catch(Exception e) { Fail(e); }
     }

@@ -1,0 +1,14 @@
+Stage 2-3 source contact verification
+Checks support joint trajectories with Unity forward displacement; visual paw deformation is a separate observation.
+Idle_Biped: 60 support comparisons, max world drift 0.0000000m: PASS
+Idle_Quadruped: 120 support comparisons, max world drift 0.0000001m: PASS
+Walk_Biped: 14 support comparisons, max world drift 0.0000000m: PASS
+Hop_Quadruped: 10 support comparisons, max world drift 0.0000001m: PASS
+To_Quadruped: 86 support comparisons, max world drift 0.0000000m: PASS
+To_Biped: 102 support comparisons, max world drift 0.0000000m: PASS
+Walk_Start: 20 support comparisons, max world drift 0.0000000m: PASS
+Walk_Stop: 20 support comparisons, max world drift 0.0000000m: PASS
+Hop_Start: 40 support comparisons, max world drift 0.0000001m: PASS
+Hop_Stop: 38 support comparisons, max world drift 0.0000001m: PASS
+Approved RabbitStudy.blend hash unchanged: PASS
+Approved four basic clips match pre-transition pose/bounds/timing samples: PASS

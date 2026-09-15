@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TinyDays
 {
-    public enum ResidentAction { None, Work, Carry, Rest, Appreciate }
+    public enum ResidentAction { None, Work, Carry, Build, Rest, Appreciate }
 
     public sealed class ActivityCoordinator : MonoBehaviour
     {
@@ -30,6 +30,11 @@ namespace TinyDays
             if (slot && slot.reservedBy==residentId) slot.reservedBy=-1;
         }
         public bool IsStillReserved(ActivitySlot slot, int residentId) => slot && !slot.blocked && slot.reservedBy==residentId && slot.gameObject.activeInHierarchy;
+        public void ClearReservations() { Refresh(); foreach(var slot in slots) slot.reservedBy=-1; }
+        public bool RestoreReservation(string slotId,int residentId)
+        {
+            Refresh(); var slot=slots.FirstOrDefault(s=>s.slotId==slotId&&s.IsAvailable); if(!slot) return false; slot.reservedBy=residentId; return true;
+        }
         public int ReservedCount { get { Refresh(); return slots.Count(s=>s.reservedBy>=0); } }
     }
 }

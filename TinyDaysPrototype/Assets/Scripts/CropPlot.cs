@@ -33,6 +33,10 @@ namespace TinyDays
             if(!HasHarvest||CarrierId!=residentId) return false;
             harvestCrate.SetActive(false); CarrierId=-1; return true;
         }
+        public void RestoreState(float savedGrowth,bool hasHarvest,int carrierId)
+        {
+            growth=Mathf.Clamp01(savedGrowth); CarrierId=hasHarvest?carrierId:-1; if(harvestCrate) harvestCrate.SetActive(hasHarvest); RefreshVisuals();
+        }
         void Start() { RefreshVisuals(); }
         void RefreshVisuals()
         {

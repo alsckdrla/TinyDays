@@ -1,0 +1,6 @@
+Stage 2-6 authored farm automatic checks; not actual Game-window or user approval.
+Repeated generation preserves ManualEdits: PASS
+Six distinct Generic visual instances; all six stations visited; mixed movement/rest samples 1905: PASS
+Full-cycle building clearance; minimum resident separation 3.606m; max 10ms step 0.00195m: PASS
+Deterministic same-time sample and restart; cycle 233.76s: PASS
+Protected original files (104) and prototype existing diff unchanged: PASS

@@ -22,6 +22,7 @@ namespace TinyDays
         public void ResetDiagnostics() { FirstAvoidanceDistance=float.MaxValue; WaitSeconds=0; AvoidanceCount=0; Replans=0; }
         VillageNavigation nav;
         VillageAutonomySettings settings;
+        VillageResources resources;
         ResidentWanderer visual;
         readonly List<Vector3> path=new List<Vector3>();
         int index, version;
@@ -34,7 +35,7 @@ namespace TinyDays
         public void Initialize()
         {
             if(nav) return;
-            nav=GetComponentInParent<VillageNavigation>(); settings=GetComponentInParent<VillageAutonomySettings>();
+            nav=GetComponentInParent<VillageNavigation>(); settings=GetComponentInParent<VillageAutonomySettings>(); resources=GetComponentInParent<VillageResources>();
             Brain=GetComponent<ResidentBrain>(); visual=GetComponent<ResidentWanderer>();
         }
         public bool SetDestination(Vector3 point)
@@ -53,17 +54,17 @@ namespace TinyDays
             float d=Vector3.Distance(transform.position,path[index]);
             for(int i=index+1;i<path.Count;i++) d+=Vector3.Distance(path[i-1],path[i]); return d;
         }
-        public Vector3 Plan(float dt,ResidentMotor[] motors,Vector3[] positions,Vector3[] velocities,int self)
+        public Vector3 Plan(float dt,ResidentMotor[] motors,int motorCount,Vector3[] positions,Vector3[] velocities,int self)
         {
             Initialize(); var position=positions[self]; sideLock=Mathf.Max(0,sideLock-dt);
             elapsed+=dt; escapeTime=Mathf.Max(0,escapeTime-dt);
             waitRemaining=Mathf.Max(0,waitRemaining-dt);
             if(!HasGoal||Failed) return Vector3.zero;
             if(Vector3.Distance(position,Goal)<.08f && Velocity.magnitude<=settings.acceleration*dt) { Arrived=true; HasGoal=false; Reason="도착"; return Vector3.zero; }
-            if(version!=nav.Version) Replan(motors);
+            if(version!=nav.Version) Replan(motors,motorCount);
             if(path.Count==0) return Vector3.zero;
             while(index<path.Count-1&&Vector3.Distance(position,path[index])<.3f&&nav.ClearSegment(position,path[index+1])) index++;
-            if(!nav.ClearSegment(position,path[index])) Replan(motors);
+            if(!nav.ClearSegment(position,path[index])) Replan(motors,motorCount);
             if(path.Count==0) return Vector3.zero;
             Vector3 target=path[index];
             if(index<path.Count-1 && Vector3.Distance(position,target)<settings.lookAhead)
@@ -73,12 +74,11 @@ namespace TinyDays
             }
             var direction=(target-position).normalized;
             desiredHeading=direction;
-            var resources=GetComponentInParent<VillageResources>();
             float speed=visual.walkSpeed*settings.moveSpeedMultiplier*(resources?resources.ProductivityMultiplier:1f);
             if(index<path.Count-1) speed=Mathf.Min(speed,Mathf.Sqrt(2*settings.acceleration*Mathf.Max(.01f,Vector3.Distance(position,target)-.07f)));
             speed=Mathf.Min(speed,Mathf.Sqrt(2*settings.acceleration*Mathf.Max(0,Vector3.Distance(position,Goal)-.04f)));
             int threat=-1; float nearest=settings.detectionDistance;
-            for(int j=0;j<motors.Length;j++) if(j!=self)
+            for(int j=0;j<motorCount;j++) if(j!=self)
             {
                 var relative=positions[j]-position; float distance=relative.magnitude;
                 if(distance>settings.detectionDistance) continue;
@@ -118,7 +118,7 @@ namespace TinyDays
                     var heading=Quaternion.Euler(0,angle,0)*forward; var end=position+heading*.7f;
                     if(!nav.ClearSegment(position,end)) continue;
                     bool safe=true;
-                    for(int j=0;j<motors.Length;j++) if(j!=self&&VillageNavigation.SegmentDistance(positions[j],position,end)<settings.residentRadius*2+.005f) { safe=false; break; }
+                    for(int j=0;j<motorCount;j++) if(j!=self&&VillageNavigation.SegmentDistance(positions[j],position,end)<settings.residentRadius*2+.005f) { safe=false; break; }
                     if(!safe) continue;
                     float score=Vector3.Dot(heading,forward)-Mathf.Abs(angle)*.001f;
                     if(score>escapeScore) { escapeScore=score; escapeHeading=heading; }
@@ -143,7 +143,7 @@ namespace TinyDays
                 if(!nav.ClearSegment(position,brakingEnd)) continue;
                 float collision=0;
                 bool canBrake=true;
-                for(int j=0;j<motors.Length;j++) if(j!=self && Vector3.Distance(position,positions[j])<settings.detectionDistance)
+                for(int j=0;j<motorCount;j++) if(j!=self && Vector3.Distance(position,positions[j])<settings.detectionDistance)
                 {
                     var rel=positions[j]-position; var rv=velocities[j]-candidate;
                     float toward=Mathf.Max(0,Vector3.Dot(candidate,rel.normalized));
@@ -170,17 +170,18 @@ namespace TinyDays
             if(progressClock>=settings.stuckSeconds)
             {
                 float remaining=Remaining();
-                if(lastRemaining-remaining<.2f) { stagnant+=progressClock; Replan(motors); }
+                if(lastRemaining-remaining<.2f) { stagnant+=progressClock; Replan(motors,motorCount); }
                 else stagnant=0;
                 lastRemaining=Remaining(); progressClock=0;
                 if(stagnant>=settings.failureSeconds) { Failed=true; HasGoal=false; Reason="정체 복구 실패"; return Vector3.zero; }
             }
             return chosen;
         }
-        void Replan(ResidentMotor[] motors)
+        void Replan(ResidentMotor[] motors,int motorCount)
         {
             Replans++; index=0;
-            var occupied=motors.Where(m=>m!=this&&Vector3.Distance(m.transform.position,transform.position)<settings.detectionDistance).Select(m=>m.transform.position).ToList();
+            var occupied=new List<Vector3>(motorCount);
+            for(int i=0;i<motorCount;i++) if(motors[i]!=this&&Vector3.Distance(motors[i].transform.position,transform.position)<settings.detectionDistance) occupied.Add(motors[i].transform.position);
             if(!nav.FindPath(transform.position,Goal,Brain.pathPreference,path,occupied)) nav.FindPath(transform.position,Goal,Brain.pathPreference,path);
             version=nav.Version; Reason="혼잡 재탐색";
         }

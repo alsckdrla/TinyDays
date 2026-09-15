@@ -1,0 +1,80 @@
+{
+  "blender": "5.2.1 LTS",
+  "source": "RabbitStudy.blend",
+  "fbx": "RabbitStudy.fbx",
+  "revision": "User sketch face: centered 75-percent pupils, ivory sclera, small nose and descending whisker pads",
+  "bones": [
+    "Root",
+    "Spine",
+    "Head",
+    "Tail",
+    "Ear_L",
+    "UpperArm_L",
+    "Forearm_L",
+    "Hand_L",
+    "Thigh_L",
+    "Shin_L",
+    "Foot_L",
+    "Ear_R",
+    "UpperArm_R",
+    "Forearm_R",
+    "Hand_R",
+    "Thigh_R",
+    "Shin_R",
+    "Foot_R"
+  ],
+  "vertices": 4777,
+  "polygons": 4876,
+  "actions": [
+    "Pose_Biped",
+    "Pose_Quadruped"
+  ],
+  "poses": {
+    "Pose_Biped": {
+      "min": [
+        -0.4372395873069763,
+        -0.3070000112056732,
+        0.0
+      ],
+      "max": [
+        0.4372395873069763,
+        0.3830000162124634,
+        2.1263999938964844
+      ],
+      "size": [
+        0.8744791746139526,
+        0.6900000274181366,
+        2.1263999938964844
+      ],
+      "contact_min_z": {
+        "arm_L": 0.5750612616539001,
+        "leg_L": 0.0,
+        "arm_R": 0.5750612616539001,
+        "leg_R": 0.0
+      }
+    },
+    "Pose_Quadruped": {
+      "min": [
+        -0.3105911314487457,
+        -0.7992178797721863,
+        -0.009365975856781006
+      ],
+      "max": [
+        0.3105911314487457,
+        0.5935481190681458,
+        1.2668349742889404
+      ],
+      "size": [
+        0.6211822628974915,
+        1.392765998840332,
+        1.2762009501457214
+      ],
+      "contact_min_z": {
+        "arm_L": -0.009365975856781006,
+        "leg_L": -1.1920928955078125e-07,
+        "arm_R": -0.009365975856781006,
+        "leg_R": -1.1920928955078125e-07
+      }
+    }
+  }
+}

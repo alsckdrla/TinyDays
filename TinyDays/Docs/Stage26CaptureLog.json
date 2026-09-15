@@ -1,0 +1,69 @@
+{
+  "continuousObservation": {
+    "startUtc": "2026-09-15T03:17:03.902Z",
+    "endUtc": "2026-09-15T03:22:25.636Z",
+    "elapsedSeconds": 321.734
+  },
+  "captures": [
+    {
+      "label": "Game-Start",
+      "utc": "2026-09-15T03:08:33.654Z",
+      "secondsSinceStart": 0.002
+    },
+    {
+      "label": "Game-Reverse",
+      "utc": "2026-09-15T03:08:44.618Z",
+      "secondsSinceStart": 10.966
+    },
+    {
+      "label": "Game-Left",
+      "utc": "2026-09-15T03:08:57.245Z",
+      "secondsSinceStart": 23.593
+    },
+    {
+      "label": "Game-Right",
+      "utc": "2026-09-15T03:09:08.146Z",
+      "secondsSinceStart": 34.494
+    },
+    {
+      "label": "Game-Observation-124s",
+      "utc": "2026-09-15T03:10:57.429Z",
+      "secondsSinceStart": 143.777
+    },
+    {
+      "label": "Game-Pause",
+      "utc": "2026-09-15T03:15:53.591Z",
+      "secondsSinceStart": 439.939
+    },
+    {
+      "label": "Game-Restart-Paused",
+      "utc": "2026-09-15T03:16:02.460Z",
+      "secondsSinceStart": 448.808
+    },
+    {
+      "label": "Game-Focus-Resident2",
+      "utc": "2026-09-15T03:16:15.207Z",
+      "secondsSinceStart": 461.555
+    },
+    {
+      "label": "Game-HideMenu",
+      "utc": "2026-09-15T03:16:24.288Z",
+      "secondsSinceStart": 470.636
+    },
+    {
+      "label": "Game-Continuous-Start",
+      "utc": "2026-09-15T03:17:03.903Z",
+      "secondsSinceStart": 0.001
+    },
+    {
+      "label": "Game-Continuous-Progress",
+      "utc": "2026-09-15T03:21:01.653Z",
+      "secondsSinceStart": 237.751
+    },
+    {
+      "label": "Game-Continuous-Final",
+      "utc": "2026-09-15T03:22:25.637Z",
+      "secondsSinceStart": 321.735
+    }
+  ]
+}

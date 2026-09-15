@@ -59,6 +59,12 @@ public static class BuildDiorama
         Place("House",-6,4.5f,180,1,"House_A"); var secondHouse=Place("House",-6.6f,-6.0f,0,.92f,"House_B");
         foreach(var r in secondHouse.GetComponentsInChildren<Renderer>()) r.sharedMaterials=r.sharedMaterials.Select(m=>m==Mat("yellow")?Mat("cream"):m).ToArray();
         Place("Storehouse",6.2f,5.0f,180,1,"Community_Storehouse");
+        // The candidate is hidden until storage pressure lasts long enough to justify it.
+        var buildFoundation=Cube("Expansion foundation",new Vector3(10.4f,.10f,3.0f),new Vector3(3.6f,.18f,2.8f),"cream");
+        // Cube scale already describes the footprint; obstacle size stays in local units.
+        buildFoundation.AddComponent<NavigationObstacle>().size=Vector2.one; buildFoundation.SetActive(false);
+        var buildFrame=Cube("Expansion frame",new Vector3(10.4f,1.15f,4.12f),new Vector3(3.25f,2.0f,.16f),"wood"); buildFrame.SetActive(false);
+        var completedShed=Place("ExpansionShed",10.4f,3.0f,180,1,"Expanded_Storage_Shed"); completedShed.SetActive(false);
         var plot0=Field(4.8f,-6.1f,0); var plot1=Field(9.5f,-5.7f,1);
         for(int i=0;i<6;i++) Place("Fence",-12+i*2,8.8f,0);
         for(int i=0;i<5;i++) Place("Fence",3+i*2,8.8f,0);
@@ -71,7 +77,7 @@ public static class BuildDiorama
         Place("Crate",4.2f,3.65f,-8); Place("Barrel",8.8f,3.1f); Place("Barrel",-8.5f,4.1f); Place("Barrel",-4.3f,-5.1f);
         var settings=root.gameObject.AddComponent<VillageAutonomySettings>();
         root.gameObject.AddComponent<VillageResources>(); root.gameObject.AddComponent<VillagePriority>(); root.gameObject.AddComponent<VillageTimeControls>(); root.gameObject.AddComponent<VillageHud>();
-        root.gameObject.AddComponent<VillageNavigation>(); root.gameObject.AddComponent<ResidentTraffic>();
+        root.gameObject.AddComponent<VillageNavigation>(); root.gameObject.AddComponent<ResidentTraffic>(); root.gameObject.AddComponent<PerformanceMonitor>(); root.gameObject.AddComponent<VillageSaveSystem>();
         var coordinator=root.gameObject.AddComponent<ActivityCoordinator>();
         AddSlot("Field_0_A",ResidentAction.Work,new Vector3(3.7f,.065f,-3.65f),new Vector3(4.8f,.065f,-6.1f)).cropPlot=plot0;
         AddSlot("Field_0_B",ResidentAction.Work,new Vector3(5.8f,.065f,-3.65f),new Vector3(4.8f,.065f,-6.1f)).cropPlot=plot0;
@@ -85,6 +91,10 @@ public static class BuildDiorama
         AddSlot("View_Fields",ResidentAction.Appreciate,new Vector3(.2f,.065f,-3.6f),new Vector3(7f,.065f,-5.8f));
         AddSlot("View_Village",ResidentAction.Appreciate,new Vector3(1.5f,.065f,5.5f),new Vector3(-4f,.065f,1.5f));
         AddSlot("View_Garden",ResidentAction.Appreciate,new Vector3(-7.9f,.065f,-2.7f),new Vector3(-6.6f,.065f,-6f));
+        var expansion=root.gameObject.AddComponent<VillageExpansion>();
+        expansion.buildSlot=AddSlot("StorageShed_Build",ResidentAction.Build,new Vector3(7.55f,.065f,2.0f),new Vector3(10.4f,.065f,3.0f));
+        expansion.foundationVisual=buildFoundation; expansion.frameVisual=buildFrame; expansion.finishedVisual=completedShed;
+        expansion.buildSlot.gameObject.SetActive(false);
         coordinator.Refresh();
         float[,] villagers={{-4,-2},{.2f,-.5f},{4,-2.4f},{7,-1f},{-1.8f,4},{-8,-2}};
         var cratePrefab=AssetDatabase.LoadAssetAtPath<GameObject>(Generated+"/Prefabs/Crate.prefab");

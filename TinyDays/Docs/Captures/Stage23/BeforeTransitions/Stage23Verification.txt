@@ -1,0 +1,8 @@
+Stage 2-3 basic motion automatic verification
+Imported pose snapshots use explicitly evaluated skin matrices for deterministic batch rendering. They are not actual Game-window input checks.
+Repeated generation preserves ManualEdits: PASS
+RabbitRig|Idle_Biped: duration 3.000s; joint delta 0.000003m; skin bounds delta 0.000001m; loop max 0.000000m: PASS
+RabbitRig|Idle_Quadruped: duration 3.000s; joint delta 0.000005m; skin bounds delta 0.000002m; loop max 0.000000m: PASS
+RabbitRig|Walk_Biped: duration 1.200s; joint delta 0.000004m; skin bounds delta 0.000002m; loop max 0.000000m: PASS
+RabbitRig|Hop_Quadruped: duration 1.000s; joint delta 0.000006m; skin bounds delta 0.000004m; loop max 0.000000m: PASS
+Basic motion user approval: PENDING. Transitions and special actions: NOT CREATED.

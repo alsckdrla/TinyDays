@@ -106,7 +106,14 @@ def barrel():
         bpy.ops.mesh.primitive_torus_add(major_radius=.285 if z<.5 else .255,minor_radius=.025,major_segments=12,minor_segments=4,location=(0,0,z)); finish(bpy.context.object,'Barrel hoop','roof')
 def shrub():
     for x,y,z,s in [(-.3,0,.3,.35),(.25,.1,.33,.4),(0,-.1,.48,.4)]: ico('Bush',(x,y,z),(s,s,s),'leaf',1)
-assets={'House':lambda:house(False),'Storehouse':lambda:house(True),'Rabbit':rabbit,'Tree':tree,'Fence':fence,'Crate':crate,'Bench':bench,'Crop':crop,'Flower':flower,'Rock':lambda:ico('Rock',(0,0,.25),(.55,.4,.35),'roof',1),'Grass':grass,'Barrel':barrel,'Shrub':shrub}
+def expansion_shed():
+    box('Foundation',(0,0,.12),(3.35,2.55,.24),'cream')
+    for x in [-1.45,1.45]:
+        for y in [-1.05,1.05]: box('Post',(x,y,1.35),(.16,.16,2.5),'darkwood')
+    roof(3.65,2.75,2.5)
+    for x in [-1.15,0,1.15]: box('Rear slat',(x,1.12,1.35),(.82,.08,1.85),'wood')
+    box('Storage crates',(0,.20,.44),(1.65,1.05,.70),'wood')
+assets={'House':lambda:house(False),'Storehouse':lambda:house(True),'ExpansionShed':expansion_shed,'Rabbit':rabbit,'Tree':tree,'Fence':fence,'Crate':crate,'Bench':bench,'Crop':crop,'Flower':flower,'Rock':lambda:ico('Rock',(0,0,.25),(.55,.4,.35),'roof',1),'Grass':grass,'Barrel':barrel,'Shrub':shrub}
 for name,fn in assets.items():
     bpy.ops.object.select_all(action='DESELECT')
     before=set(bpy.data.objects); fn(); objects=sorted(set(bpy.data.objects)-before,key=lambda o:o.name)

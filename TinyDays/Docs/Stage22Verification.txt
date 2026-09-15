@@ -1,0 +1,8 @@
+Stage 2-2 automatic verification
+Unity 2022.3.20f1
+URP 14.0.10 / Generic static poses
+ManualEdits sentinel and repeated generation: PASS
+Rabbit_Biped bounds: Center: (-1.05, 1.06, -0.04), Extents: (0.44, 1.06, 0.34) / generic avatar, bones, materials, Blender dimension comparison (<0.015m): PASS
+Rabbit_Quadruped bounds: Center: (1.05, 0.63, 0.10), Extents: (0.31, 0.64, 0.70) / generic avatar, bones, materials, Blender dimension comparison (<0.015m): PASS
+Two poses x front/side/back/three-quarter + small views: rendered for visual review.
+These are Unity camera renders, not physical Game-window input validation. User visual approval: PENDING. No locomotion clips created.

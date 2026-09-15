@@ -1,0 +1,4 @@
+PASS: runtime pointer state machine; save/load feedback, camera/food restoration, menu pause, 4x resume, prior pause, slider clamps, release outside, release without press, focus loss.
+Isolated saves under Logs; player save untouched.
+Native Game view verified separately: Unity 2022.3.20f1, maximized QHD at 0.87 scale; physical save click created JSON and feedback; volume drag 0 to 77%; load click restored camera zoom and volume 0% with feedback; Continue closed menu and resumed residents. Saves isolated under Logs/NativeMenu-d46a8a8faf9046e7b5589e2e388dc16c. Play stopped afterward. Updated Windows build and non-maximized Game view not tested this run.
+2026-09-14T02:47:37.6745541+09:00

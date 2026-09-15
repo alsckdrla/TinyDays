@@ -14,6 +14,7 @@ namespace TinyDays
         DayNightCycle cycle;
         VillageAutonomySettings settings;
         public bool IsShortage => food<=0;
+        public bool IsStorageBlocked => food+harvestFood>foodCapacity&&GetComponentsInChildren<CropPlot>().Any(plot=>plot.HasHarvest);
         public float ProductivityMultiplier => IsShortage?.75f:1f;
         public float RestRecoveryMultiplier => IsShortage?.60f:1f;
         public bool CanStore(int amount) => food+amount<=foodCapacity;
@@ -37,5 +38,10 @@ namespace TinyDays
             int residents=settings?settings.residentCount:6;
             int consumed=Mathf.Min(food,residents); food-=consumed; TotalConsumed+=consumed;
         }
+        public void RestoreState(int savedFood,int savedCapacity,int harvested,int consumed)
+        {
+            foodCapacity=Mathf.Max(1,savedCapacity); food=Mathf.Clamp(savedFood,0,foodCapacity); TotalHarvested=Mathf.Max(0,harvested); TotalConsumed=Mathf.Max(0,consumed);
+        }
+        public void SyncDayProgress(float progress) { previousProgress=Mathf.Repeat(progress,1f); }
     }
 }
