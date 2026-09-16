@@ -63,6 +63,21 @@ namespace TinyDays.Review
         bool Inside(Item item,Vector3 camera)
         {
             if(!item.renderer.bounds.Contains(camera))return false;
+            UpdateSkin(item);
+            Vector3 p=item.renderer.transform.InverseTransformPoint(camera);var g=item.geometry;
+            double angle=0;
+            for(int k=0;k<g.triangles.Length;k+=3)
+            {
+                Vector3 a=g.vertices[g.triangles[k]]-p,b=g.vertices[g.triangles[k+1]]-p,c=g.vertices[g.triangles[k+2]]-p;
+                double la=a.magnitude,lb=b.magnitude,lc=c.magnitude;
+                if(la<1e-7||lb<1e-7||lc<1e-7)return true;
+                double denominator=la*lb*lc+Vector3.Dot(a,b)*lc+Vector3.Dot(b,c)*la+Vector3.Dot(c,a)*lb;
+                angle+=2*System.Math.Atan2(Vector3.Dot(a,Vector3.Cross(b,c)),denominator);
+            }
+            return System.Math.Abs(angle)>System.Math.PI*2;
+        }
+        void UpdateSkin(Item item)
+        {
             if(item.skin)
             {
                 // Current Generic assets use four bone weights and no blend shapes. Evaluate
@@ -83,17 +98,26 @@ namespace TinyDays.Review
                         m[w.boneIndex2].MultiplyPoint3x4(v)*w.weight2+m[w.boneIndex3].MultiplyPoint3x4(v)*w.weight3);
                 }
             }
-            Vector3 p=item.renderer.transform.InverseTransformPoint(camera);var g=item.geometry;
-            double angle=0;
-            for(int k=0;k<g.triangles.Length;k+=3)
+        }
+        // Pick the current animated surface, respecting opaque scenery and nearer residents.
+        // No physics colliders or changes to the imported character are required.
+        public Transform PickResident(Ray ray,float maxDistance)
+        {
+            if(!initialized)Initialize(source?source:transform);
+            float nearest=maxDistance;Transform result=null;
+            foreach(var item in items)
             {
-                Vector3 a=g.vertices[g.triangles[k]]-p,b=g.vertices[g.triangles[k+1]]-p,c=g.vertices[g.triangles[k+2]]-p;
-                double la=a.magnitude,lb=b.magnitude,lc=c.magnitude;
-                if(la<1e-7||lb<1e-7||lc<1e-7)return true;
-                double denominator=la*lb*lc+Vector3.Dot(a,b)*lc+Vector3.Dot(b,c)*la+Vector3.Dot(c,a)*lb;
-                angle+=2*System.Math.Atan2(Vector3.Dot(a,Vector3.Cross(b,c)),denominator);
+                if(!item.renderer||!item.renderer.enabled||!item.renderer.gameObject.activeInHierarchy)continue;
+                if(!item.resident&&item.alpha<.99f)continue;
+                if(!item.renderer.bounds.IntersectRay(ray,out float entry)||entry>nearest)continue;
+                UpdateSkin(item);
+                var matrix=item.renderer.transform.localToWorldMatrix;
+                var g=item.geometry;
+                for(int k=0;k<g.triangles.Length;k+=3)
+                    if(Triangle(ray.origin,ray.direction,matrix.MultiplyPoint3x4(g.vertices[g.triangles[k]]),matrix.MultiplyPoint3x4(g.vertices[g.triangles[k+1]]),matrix.MultiplyPoint3x4(g.vertices[g.triangles[k+2]]),out float t)&&t<nearest)
+                    {nearest=t;result=item.resident?item.renderer.transform:null;}
             }
-            return System.Math.Abs(angle)>System.Math.PI*2;
+            return result;
         }
         bool BelowMeadow(Vector3 camera)
         {
@@ -200,6 +224,20 @@ namespace TinyDays.Review
                 }
                 for(int k=0;k<i.fades.Length;k++){Color c=i.originals[k].color;c.a*=i.alpha;i.fades[k].color=c;}
                 i.renderer.sharedMaterials=i.fades;
+            }
+        }
+        public void RefreshLightingColors()
+        {
+            foreach(var i in items)
+            {
+                if(i.originals==null||i.fades==null)continue;
+                for(int k=0;k<i.originals.Length;k++)
+                {
+                    var source=i.originals[k];var fade=i.fades[k];
+                    if(!source||!fade)continue;
+                    if(source.HasProperty("_BaseColor")){var c=source.GetColor("_BaseColor");c.a=i.alpha;fade.SetColor("_BaseColor",c);}
+                    if(source.HasProperty("_EmissionColor"))fade.SetColor("_EmissionColor",source.GetColor("_EmissionColor"));
+                }
             }
         }
         void OnDisable(){Restore();}

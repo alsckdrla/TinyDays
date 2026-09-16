@@ -19,6 +19,7 @@ namespace TinyDays.Review
         public float speed=.195f;
         public double elapsed;
         public bool paused;
+        public FarmPlaybackSettings Playback {get;}=new FarmPlaybackSettings();
         public double Period
         {
             get { double total=distances[distances.Length-1]/speed+stations.Length*.5; foreach(float wait in waits)total+=wait;return total; }
@@ -73,6 +74,7 @@ namespace TinyDays.Review
             }
         }
         public void Restart(){elapsed=0;Sample(0);}
-        void Update(){if(!paused)elapsed+=Time.unscaledDeltaTime;Sample(elapsed);}
+        public void Advance(float realSeconds){elapsed+=Playback.ScaledSeconds(realSeconds,paused);Sample(elapsed);}
+        void Update(){Advance(Time.unscaledDeltaTime);}
     }
 }

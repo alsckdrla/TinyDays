@@ -109,8 +109,15 @@ public static class HouseVillageAssets
             m.Box(roof,new Vector3(doorX,2.42f,-d/2-.30f),new Vector3(1.4f,.12f,.8f),Quaternion.Euler(-16,0,0));
             foreach(float x in new[]{doorX-.58f,doorX+.58f})m.Box(trim,new Vector3(x,2.12f,-d/2-.2f),new Vector3(.075f,.5f,.075f));
             float cx=-w*.25f,cy=peak-.05f;
-            m.Box("Stone",new Vector3(cx,cy,.5f),new Vector3(.46f,1.15f,.48f));
-            m.Box("Cream",new Vector3(cx,cy+.6f,.5f),new Vector3(.60f,.14f,.62f));
+            // Four walls and an open rim leave a real recessed flue.
+            foreach(int s in new[]{-1,1})
+            {
+                m.Box("Stone",new Vector3(cx+s*.19f,cy,.5f),new Vector3(.08f,1.15f,.48f));
+                m.Box("Stone",new Vector3(cx,cy,.5f+s*.20f),new Vector3(.30f,1.15f,.08f));
+                m.Box("Cream",new Vector3(cx+s*.225f,cy+.6f,.5f),new Vector3(.15f,.14f,.62f));
+                m.Box("Cream",new Vector3(cx,cy+.6f,.5f+s*.235f),new Vector3(.30f,.14f,.15f));
+            }
+            m.Box("DarkWood",new Vector3(cx,cy-.45f,.5f),new Vector3(.30f,.04f,.32f));
         }
         if(variant==1)
         {
@@ -143,11 +150,12 @@ public static class HouseVillageAssets
         {
             m.Blob("Leaf",new Vector3(-.18f,.34f,0),new Vector3(.38f,.34f,.32f));m.Blob("LeafLight",new Vector3(.2f,.30f,.02f),new Vector3(.31f,.28f,.30f));
         }
-        else if(kind=="Pot")
+        else if(kind=="Pot"||kind=="SmallPot")
         {
-            m.Lathe("Terracotta",new[]{0f,.30f,.34f},new[]{.16f,.23f,.25f},true);
-            m.Lathe("Soil",new[]{.342f,.355f},new[]{.205f,.205f},false);
-            Flower(m,new Vector3(0,.35f,0),"Pink",.33f);
+            float scale=kind=="SmallPot"?.72f:1f;
+            m.Lathe("Terracotta",new[]{0f,.30f*scale,.34f*scale},new[]{.16f*scale,.23f*scale,.25f*scale},true);
+            m.Lathe("Soil",new[]{.342f*scale,.355f*scale},new[]{.205f*scale,.205f*scale},false);
+            Flower(m,new Vector3(0,.35f*scale,0),"Pink",.33f*scale);
         }
         else if(kind=="PinkBed"||kind=="GoldBed")
         {
@@ -163,6 +171,46 @@ public static class HouseVillageAssets
         {
             foreach(float x in new[]{-.65f,.65f}){m.Box("WoodTrim",new Vector3(x,.42f,0),new Vector3(.13f,.84f,.13f));m.Box("WoodTrim",new Vector3(x,.87f,0),new Vector3(.18f,.08f,.18f));}
             foreach(float y in new[]{.32f,.64f})m.Box("WoodTrim",new Vector3(0,y,0),new Vector3(1.17f,.11f,.07f));
+        }
+        else if(kind=="Woodpile")
+        {
+            for(int row=0;row<3;row++)for(int log=0;log<3-row%2;log++)
+            {
+                float x=(log-(2-row%2)*.5f)*.29f;
+                // Broad rounded-looking low-poly billets keep the pile readable at farm-camera scale.
+                m.Box("Timber",new Vector3(x,.12f+row*.19f,0),new Vector3(.27f,.14f,.72f));
+            }
+            m.Box("WoodTrim",new Vector3(0,.03f,0),new Vector3(1.12f,.06f,.86f));
+        }
+        else if(kind=="LaundryLine")
+        {
+            foreach(float x in new[]{-.82f,.82f}){m.Box("Timber",new Vector3(x,.72f,0),new Vector3(.10f,1.44f,.10f));m.Box("WoodTrim",new Vector3(x,1.46f,0),new Vector3(.20f,.08f,.20f));}
+            m.Box("DarkWood",new Vector3(0,1.28f,0),new Vector3(1.64f,.025f,.025f));
+            m.Box("Cream",new Vector3(-.30f,1.06f,-.025f),new Vector3(.38f,.40f,.035f));
+            m.Box("ClothBlue",new Vector3(.28f,1.10f,-.03f),new Vector3(.34f,.32f,.04f));
+        }
+        else if(kind=="Workbench")
+        {
+            m.Box("Timber",new Vector3(0,.70f,0),new Vector3(1.25f,.13f,.52f));
+            foreach(float x in new[]{-.48f,.48f})foreach(float z in new[]{-.17f,.17f})m.Box("DarkWood",new Vector3(x,.35f,z),new Vector3(.10f,.70f,.10f));
+            m.Box("Door",new Vector3(-.22f,.84f,0),new Vector3(.30f,.10f,.24f));
+            m.Box("Brass",new Vector3(.25f,.86f,0),new Vector3(.12f,.06f,.12f));
+        }
+        else if(kind=="WaterTub")
+        {
+            m.Lathe("Door",new[]{0f,.12f,.48f,.54f},new[]{.30f,.35f,.35f,.30f},true);
+            m.Lathe("Timber",new[]{.17f,.24f},new[]{.36f,.37f},false);
+            m.Lathe("Timber",new[]{.39f,.46f},new[]{.36f,.35f},false);
+            m.Lathe("Water",new[]{.525f,.54f},new[]{.275f,.275f},false);
+        }
+        else if(kind=="WildflowerCluster")
+        {
+            Flower(m,new Vector3(-.27f,0,.04f),"Pink",.30f);Flower(m,new Vector3(0,0,-.10f),"FlowerGold",.24f);Flower(m,new Vector3(.26f,0,.08f),"FlowerLavender",.34f);
+            m.Blob("Leaf",new Vector3(0,.07f,0),new Vector3(.62f,.09f,.42f));
+        }
+        else if(kind=="GrassCluster")
+        {
+            foreach(float x in new[]{-.21f,0f,.23f})m.Octa(x==0?"LeafLight":"Leaf",new Vector3(x,.18f,(x+.12f)*.15f),new Vector3(.13f,.34f,.10f));
         }
         return m.Finish(kind,kind,root,p,mats,kind=="Fence"?100:300,Folder);
     }

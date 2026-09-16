@@ -1,0 +1,1 @@
+v0.47: Day 1/noon start, midnight day increase, multi-day advance, fixed-time day preservation, restart Day 1, 300-second cycle, fixed/resume, pause, restart preserving pause, four boundaries including midnight, lighting/occlusion update PASS. Representative lighting regression PASS. Direct checks, not live input or five-minute observation. User confirmation pending.

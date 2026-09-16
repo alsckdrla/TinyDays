@@ -1,9 +1,9 @@
 House village automatic checks / NOT live Game input, NOT minimum-PC performance measurement.
 Timber Cottage house: triangles=1684, renderers=9, materials=9
 Garden: triangles=1044, renderers=23, materials=10; groups=7
-Ochre Farmhouse house: triangles=1204, renderers=9, materials=9
+Ochre Farmhouse house: triangles=1288, renderers=9, materials=9
 Garden: triangles=900, renderers=23, materials=10; groups=6
-Straw Cottage house: triangles=1132, renderers=10, materials=10
+Straw Cottage house: triangles=1216, renderers=10, materials=10
 Garden: triangles=972, renderers=24, materials=8; groups=8
 Shared left-drag pan / middle-drag rotation binding, budgets, nondegenerate/readable geometry, each house empty/roof interior, each garden object inside, original material recovery, disable/re-enable and Home: PASS (direct calls; UI mouse event dispatch is live-input verification)
 Entrance clearance, wall door/window voids including attic, closed-part edge incidence and repeated decoration mesh sharing: PASS

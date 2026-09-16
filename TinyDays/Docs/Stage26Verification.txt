@@ -1,9 +1,13 @@
 Stage 2-6 authored farm automatic checks; not actual Game-window or user approval.
 Repeated generation preserves ManualEdits: PASS
-Six distinct Generic visual instances; all six stations visited; mixed movement/rest samples 1905: PASS
-Full-cycle building clearance; minimum resident separation 3.606m; max 10ms step 0.00195m: PASS
-Deterministic same-time sample and restart; cycle 233.76s: PASS
+Lifestyle decoration set (43 groups), resident-route clearance, and house/storehouse/field/shelter coverage: PASS
+Storehouse opening, three-piece frame with timber reveal liner, shallow recessed door/handle, and clear reduced front windows: PASS
+Six distinct Generic visual instances; all six stations visited; mixed movement/rest samples 2531: PASS
+Full-cycle building clearance; minimum resident separation 0.591m; max 10ms step 0.00195m: PASS
+Deterministic same-time sample and restart; cycle 336.03s: PASS
 Left-drag screen pan / middle-drag rotation binding; pixel-matched pan direction, unchanged depth, -90..75 degrees: PASS (not live input)
+1m minimum zoom; lower clamp, 1.5x maximum zoom, overview/focus camera path retained: PASS (direct evaluation)
+Close pan uses an 8m reference from 1m through 8m and keeps actual-distance speed above 8m: PASS (direct evaluation)
 Building group inside fade, ground fade, original material restoration: PASS (direct evaluation)
 Small-object fade to 25%, shared material isolation, restore to original: PASS (direct evaluation)
 Mesh gap/rounded edge, independent groups, 0.2s recovery, disable/re-enable and repeated reset: PASS (direct evaluation)

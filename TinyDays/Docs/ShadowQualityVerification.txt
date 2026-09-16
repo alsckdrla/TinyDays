@@ -1,0 +1,1 @@
+PASS v0.30: low 1024/1 cascade/hard/60m, balanced 2048/2 cascades/low soft/60m, high 4096/4 cascades/high soft/60m; missing preference selects balanced; immediate selection and saved preference restoration. Direct editor checks, not live Game input.

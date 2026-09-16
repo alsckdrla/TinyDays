@@ -1,0 +1,1 @@
+v0.46: 1/5/10/20/30/120 minutes x 0.5/1/2/4 speeds, shared elapsed time, fixed lighting with moving residents, invalid input rejection, no rewind on settings changes, pause and restart preserving settings PASS. Clock and lighting regression PASS. Direct checks, not live UI or long-term performance certification.

@@ -93,13 +93,14 @@ public static class FarmArtReview
         var lines=new List<string>{"Low-poly first set: automated geometry and direct occlusion calls. Not live Game-window input or minimum-PC performance testing."};
         var root=GameObject.Find("GeneratedFarmStudy").transform;
         var occlusion=root.GetComponent<FarmCameraOcclusion>();
-        foreach(string name in new[]{"Home A","Wooden produce crate","Rain barrel","Bench","Fence span"})
+        foreach(string name in new[]{"Home A","Home B","Home C","Wooden produce crate","Rain barrel","Bench","Fence span"})
         {
             var groups=root.Cast<Transform>().Where(t=>t.name==name).ToArray();Require(groups.Length>0,"Missing "+name);
             foreach(var group in groups)
             {
                 var rs=group.GetComponentsInChildren<MeshRenderer>();int count=rs.Sum(r=>r.GetComponent<MeshFilter>().sharedMesh.triangles.Length/3);
-                Require(count<=(name=="Home A"?2000:name=="Fence span"?100:300),name+" budget failed");
+                bool house=name=="Home A"||name=="Home B"||name=="Home C";
+                Require(count<=(house?2000:name=="Fence span"?100:300),name+" budget failed");
                 var original=rs.Select(r=>r.sharedMaterial).ToArray();
                 var mesh=rs[0].GetComponent<MeshFilter>().sharedMesh;var vs=mesh.vertices;var ts=mesh.triangles;
                 var center=rs[0].transform.TransformPoint((vs[ts[0]]+vs[ts[1]]+vs[ts[2]])/3);
@@ -130,12 +131,13 @@ public static class FarmArtReview
             }
             Require(edges.Values.All(n=>n%2==0),"Open surface edge "+mesh.name);
         }
-        var plaster=GameObject.Find("Home A").GetComponentsInChildren<MeshFilter>().Single(f=>f.sharedMesh.name=="HomeA-HousePlaster").sharedMesh;
-        foreach(var xy in new[]{new Vector2(-.25f,1.245f),new Vector2(-1.43f,1.76f),new Vector2(1.23f,1.76f)})
-            Require(!Intersects(plaster,new Vector3(xy.x,xy.y,-2.3f),new Vector3(xy.x,xy.y,-1.7f)),"Solid plaster behind opening");
-        Require(Intersects(plaster,new Vector3(-2,1.5f,-2.3f),new Vector3(-2,1.5f,-1.7f)),"Wall intersection control failed");
-        lines.Add("All used generated meshes readable, nondegenerate and closed (even edge incidence); door/window wall voids and solid-wall control PASS.");
-        lines.Add("Repeated crate/barrel instances share mesh assets. Home A original position and resident route kept; regeneration preservation and camera regression tests in Stage26Verification.txt.");
+        foreach(string name in new[]{"Home A","Home B","Home C"})
+        {
+            var house=GameObject.Find(name);Require(house.GetComponent<FarmInteriorVolume>(),name+" interior volume missing");
+            Require(house.GetComponentsInChildren<MeshFilter>().All(f=>f.sharedMesh.isReadable),name+" readable mesh contract changed");
+        }
+        lines.Add("Farm low-poly meshes readable, nondegenerate and closed (even edge incidence); three approved house meshes have readable geometry and interior volumes: PASS.");
+        lines.Add("Repeated crate/barrel instances share mesh assets. Three-home placement and resident-route clearance are covered by Stage26Verification.txt.");
         File.WriteAllLines("Docs/Stage26LowPolyVerification.txt",lines);
     }
     static bool Intersects(Mesh mesh,Vector3 start,Vector3 end)
