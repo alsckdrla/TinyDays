@@ -1,0 +1,1 @@
+v0.63 PASS: generated mesh center target excludes backdrop/residents; Spring meadow mesh defines planar pan boundary; overview and focused targets clamp at the terrain edge; mouse pan remains level; elevator height motion is world-vertical without tilt, refreshes overview target, and preserves resident focus. Direct editor checks, not live Game input.

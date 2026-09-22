@@ -1,11 +1,19 @@
 Shader "TinyDays/LightingBackdrop"
 {
-    Properties { _BaseColor("Color", Color)=(1,1,1,1) }
+    Properties
+    {
+        [MainColor] _BaseColor("Color", Color)=(1,1,1,1)
+        [HideInInspector] _SrcBlend("Source blend", Float)=1
+        [HideInInspector] _DstBlend("Destination blend", Float)=0
+        [HideInInspector] _ZWrite("Depth write", Float)=1
+    }
     SubShader
     {
         Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" }
         Pass
         {
+            Blend [_SrcBlend] [_DstBlend]
+            ZWrite [_ZWrite]
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag

@@ -42,11 +42,12 @@ namespace TinyDays.Review
             if(Event.current.type==EventType.KeyDown&&Event.current.keyCode==KeyCode.Escape){Cancel();EscapeConsumed=true;Event.current.Use();return;}
             GUI.depth=-100;
             GUI.skin.textField.fontSize=14;
-            float w=Mathf.Min(410,width-24),h=Mathf.Min(430,height-24);
+            const float controlHeight=42;
+            float w=Mathf.Min(410,width-24),h=Mathf.Min(550,height-24);
             var p=new Rect((width-w)/2,(height-h)/2,w,h);Swatch(p,new Color(.12f,.13f,.12f));GUI.Box(p,"");
             GUI.skin.label.normal.textColor=Color.white;
             GUI.Label(new Rect(p.x+16,p.y+10,w-32,26),FarmLightingStudy.Names[time]+" · "+LightingColors.Labels[kind]);
-            float sq=Mathf.Min(205,h-218);
+            float sq=Mathf.Min(230,h-306);
             var square=new Rect(p.x+16,p.y+44,w-80,sq);var strip=new Rect(square.xMax+12,square.y,24,sq);
             GUI.DrawTexture(square,sv);GUI.DrawTexture(strip,hues);
             var e=Event.current;
@@ -62,9 +63,9 @@ namespace TinyDays.Review
             GUI.Box(new Rect(square.x+saturation*square.width-4,square.y+(1-value)*square.height-4,8,8),"");
             GUI.Box(new Rect(strip.x-2,strip.y+hue*strip.height-2,strip.width+4,4),"");
             float y=square.yMax+10;
-            GUI.Label(new Rect(p.x+16,y,45,24),"이전");Swatch(new Rect(p.x+62,y,65,24),before);
-            GUI.Label(new Rect(p.x+143,y,45,24),"현재");Swatch(new Rect(p.x+190,y,65,24),lighting.Colors.Get(time,kind));
-            y+=32;
+            GUI.Label(new Rect(p.x+16,y,45,controlHeight),"이전");Swatch(new Rect(p.x+62,y,65,controlHeight),before);
+            GUI.Label(new Rect(p.x+143,y,45,controlHeight),"현재");Swatch(new Rect(p.x+190,y,65,controlHeight),lighting.Colors.Get(time,kind));
+            y+=48;
             bool edited=false;
             for(int k=0;k<3;k++)
             {
@@ -73,14 +74,14 @@ namespace TinyDays.Review
             }
             if(edited&&int.TryParse(rgb[0],out int r)&&int.TryParse(rgb[1],out int g)&&int.TryParse(rgb[2],out int b)&&r>=0&&r<=255&&g>=0&&g<=255&&b>=0&&b<=255)
             {var c=new Color(r/255f,g/255f,b/255f);Color.RGBToHSV(c,out hue,out saturation,out value);hex="#"+ColorUtility.ToHtmlStringRGB(c);RefreshTexture();Preview(c);}
-            y+=32;GUI.Label(new Rect(p.x+16,y,50,24),"Hex");
-            var input=GUI.TextField(new Rect(p.x+68,y,w-84,24),hex,7);
+            y+=32;GUI.Label(new Rect(p.x+16,y,50,30),"Hex");
+            var input=GUI.TextField(new Rect(p.x+68,y,w-84,30),hex,7);
             if(input!=hex){hex=input;if(LightingColors.TryHex(hex,out var c)){Sync(c);Preview(c);}}
-            y+=34;
-            if(GUI.Button(new Rect(p.x+16,y,w-32,26),"기본색 복원")){var c=LightingColors.Default(time,kind);Sync(c);Preview(c);GUI.FocusControl(null);}
-            y+=34;
-            if(GUI.Button(new Rect(p.x+16,y,(w-40)/2,28),"취소"))Cancel();
-            if(GUI.Button(new Rect(p.x+24+(w-40)/2,y,(w-40)/2,28),"확인")&&Open){lighting.Colors.Save(time,kind);lighting=null;drag=0;}
+            y+=42;
+            if(GUI.Button(new Rect(p.x+16,y,w-32,controlHeight),"기본색 복원")){var c=LightingColors.Default(time,kind);Sync(c);Preview(c);GUI.FocusControl(null);}
+            y+=50;
+            if(GUI.Button(new Rect(p.x+16,y,(w-40)/2,controlHeight),"취소"))Cancel();
+            if(GUI.Button(new Rect(p.x+24+(w-40)/2,y,(w-40)/2,controlHeight),"확인")&&Open){lighting.Colors.Save(time,kind);lighting=null;drag=0;}
             GUI.depth=0;
         }
         public static void Swatch(Rect rect,Color c){var old=GUI.color;GUI.color=c;GUI.DrawTexture(rect,Texture2D.whiteTexture);GUI.color=old;}

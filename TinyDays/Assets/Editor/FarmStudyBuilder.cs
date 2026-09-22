@@ -380,7 +380,7 @@ public static class FarmStudyBuilder
         lines.Add($"Deterministic same-time sample and restart; cycle {d.Period:F2}s: PASS");
         var obstruction=review.GetComponent<FarmCameraOcclusion>();
         Ensure(obstruction&&!review.reviewCamera.orthographic,"Perspective camera missing");
-        Ensure(FarmStudyReview.PanButton==0&&FarmStudyReview.RotateButton==2,"Camera drag binding changed");
+        Ensure(FarmStudyReview.PanButton==0&&FarmStudyReview.RotateButton==1&&FarmStudyReview.HeightDragButton==2,"Camera drag binding changed");
         Ensure(Mathf.Abs(FarmStudyReview.MinZoomDistance-1f)<.0001f,"Minimum zoom distance changed");
         Ensure(Mathf.Abs(FarmStudyReview.ClampZoomDistance(.1f,34f)-1f)<.0001f&&Mathf.Abs(FarmStudyReview.ClampZoomDistance(80f,34f)-51f)<.0001f,"Zoom distance clamp changed");
         Ensure(Mathf.Abs(FarmStudyReview.PanDistance(1f)-8f)<.0001f&&Mathf.Abs(FarmStudyReview.PanDistance(8f)-8f)<.0001f&&Mathf.Abs(FarmStudyReview.PanDistance(34f)-34f)<.0001f,"Close pan distance changed");
@@ -392,7 +392,7 @@ public static class FarmStudyBuilder
             float units=76*Mathf.Tan(20*Mathf.Deg2Rad)/900;
             Ensure(Mathf.Abs(local.x+100*units)<.001f&&Mathf.Abs(local.y+50*units)<.001f&&Mathf.Abs(local.z)<.001f,"Screen pan direction or depth changed");
         }
-        lines.Add("Left-drag screen pan / middle-drag rotation binding; pixel-matched pan direction, unchanged depth, -90..75 degrees: PASS (not live input)");
+        lines.Add("Left-drag screen pan / right-drag rotation / middle-drag height binding; pixel-matched planar pan direction, -90..75 degrees: PASS (not live input)");
         lines.Add("1m minimum zoom; lower clamp, 1.5x maximum zoom, overview/focus camera path retained: PASS (direct evaluation)");
         lines.Add("Close pan uses an 8m reference from 1m through 8m and keeps actual-distance speed above 8m: PASS (direct evaluation)");
         var homeRoot=GameObject.Find("Home A");var home=homeRoot.GetComponentsInChildren<MeshRenderer>();

@@ -1,0 +1,1 @@
+v0.62 PASS: 42 logical-pixel control height; 740px bottom-menu three-column/two-row wrap boundary; time-panel scroll top, bottom and no-overflow clamping; screen-space keyboard W/A/S/D and arrows, normalized diagonal, and zoom-scaled speed; right-drag rotation plus middle-drag height scaling; wheel-up zoom-out and wheel-down zoom-in. Direct layout checks, not live input.

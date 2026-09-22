@@ -119,19 +119,73 @@ namespace TinyDays.Review
             }
             return result;
         }
+        // Uses the generated mesh data rather than physics colliders, which the review scenery intentionally does not keep.
+        public bool TryPickStaticSurface(Ray ray,float maxDistance,out Vector3 point)
+        {
+            if(!initialized)Initialize(source?source:transform);
+            float nearest=maxDistance;bool found=false;
+            foreach(var item in items)
+            {
+                if(item.resident||!item.renderer||item.renderer.name=="Backdrop"||item.alpha<.99f||!item.renderer.enabled||!item.renderer.gameObject.activeInHierarchy)continue;
+                if(!item.renderer.bounds.IntersectRay(ray,out float entry)||entry>nearest)continue;
+                UpdateSkin(item);var matrix=item.renderer.transform.localToWorldMatrix;var g=item.geometry;
+                for(int k=0;k<g.triangles.Length;k+=3)
+                    if(Triangle(ray.origin,ray.direction,matrix.MultiplyPoint3x4(g.vertices[g.triangles[k]]),matrix.MultiplyPoint3x4(g.vertices[g.triangles[k+1]]),matrix.MultiplyPoint3x4(g.vertices[g.triangles[k+2]]),out float t)&&t<nearest)
+                    {nearest=t;found=true;}
+            }
+            point=found?ray.GetPoint(nearest):default;return found;
+        }
+        // Tests the real meadow mesh from above so circular/edited terrain boundaries remain authoritative.
+        public bool TryGetMeadowSurface(Vector3 position,out float height)
+        {
+            if(!initialized)Initialize(source?source:transform);
+            float nearest=float.PositiveInfinity;bool found=false;var ray=new Ray(position+Vector3.up*100f,Vector3.down);
+            foreach(var item in items)
+            {
+                if(!item.ground||!item.renderer||item.renderer.name!="Spring meadow"||!item.renderer.enabled||!item.renderer.gameObject.activeInHierarchy)continue;
+                var bounds=item.renderer.bounds;if(position.x<bounds.min.x||position.x>bounds.max.x||position.z<bounds.min.z||position.z>bounds.max.z)continue;
+                var matrix=item.renderer.transform.localToWorldMatrix;var g=item.geometry;
+                for(int k=0;k<g.triangles.Length;k+=3)
+                    if(Triangle(ray.origin,ray.direction,matrix.MultiplyPoint3x4(g.vertices[g.triangles[k]]),matrix.MultiplyPoint3x4(g.vertices[g.triangles[k+1]]),matrix.MultiplyPoint3x4(g.vertices[g.triangles[k+2]]),out float t)&&t<nearest)
+                    {nearest=t;found=true;}
+            }
+            height=found?ray.GetPoint(nearest).y:0;return found;
+        }
+        // Preserve the requested target height while clamping only its planar location to the meadow edge.
+        public Vector3 ClampToMeadow(Vector3 current,Vector3 proposed)
+        {
+            if(TryGetMeadowSurface(proposed,out _))return proposed;
+            if(!TryGetMeadowSurface(current,out _))return current;
+            float low=0,high=1;
+            for(int i=0;i<16;i++)
+            {
+                float middle=(low+high)*.5f;
+                if(TryGetMeadowSurface(Vector3.Lerp(current,proposed,middle),out _))low=middle;else high=middle;
+            }
+            Vector3 edge=Vector3.Lerp(current,proposed,low);
+            return new Vector3(edge.x,proposed.y,edge.z);
+        }
+        bool BelowSurface(Item item,Vector3 camera)
+        {
+            if(!item.renderer||!item.renderer.enabled||!item.renderer.gameObject.activeInHierarchy)return false;
+            var matrix=item.renderer.transform.worldToLocalMatrix;
+            var origin=matrix.MultiplyPoint3x4(camera);var direction=matrix.MultiplyVector(Vector3.up);var g=item.geometry;
+            for(int k=0;k<g.triangles.Length;k+=3)
+            {
+                var a=g.vertices[g.triangles[k]];var b=g.vertices[g.triangles[k+1]];var c=g.vertices[g.triangles[k+2]];
+                if(matrix.transpose.MultiplyVector(Vector3.Cross(b-a,c-a)).normalized.y<.5f)continue;
+                if(Triangle(origin,direction,a,b,c,out float distance)&&distance>1e-5f)return true;
+            }
+            return false;
+        }
         bool BelowMeadow(Vector3 camera)
         {
             foreach(var item in items)
             {
                 if(!item.ground||!item.renderer||item.renderer.name!="Spring meadow"||!item.renderer.enabled||!item.renderer.gameObject.activeInHierarchy)continue;
-                var matrix=item.renderer.transform.worldToLocalMatrix;
-                var origin=matrix.MultiplyPoint3x4(camera);var direction=matrix.MultiplyVector(Vector3.up);var g=item.geometry;
-                for(int k=0;k<g.triangles.Length;k+=3)
-                {
-                    var a=g.vertices[g.triangles[k]];var b=g.vertices[g.triangles[k+1]];var c=g.vertices[g.triangles[k+2]];
-                    if(matrix.transpose.MultiplyVector(Vector3.Cross(b-a,c-a)).normalized.y<.5f)continue;
-                    if(Triangle(origin,direction,a,b,c,out float distance)&&distance>1e-5f)return true;
-                }
+                // The farm is a level platform. Keep all ground layers faded below its
+                // surface even when orbiting beyond the meadow's horizontal footprint.
+                if(camera.y<item.renderer.bounds.max.y-1e-5f)return true;
             }
             return false;
         }
@@ -204,7 +258,7 @@ namespace TinyDays.Review
             bool below=BelowMeadow(camera);
             foreach(var i in items)
                 if(i.renderer&&i.renderer.enabled&&i.renderer.gameObject.activeInHierarchy&&!blockedGroups.Contains(i.group)&&
-                    ((below&&i.ground)||Inside(i,camera)))blockedGroups.Add(i.group);
+                    ((below&&i.ground)||(i.renderer.name=="Backdrop"&&BelowSurface(i,camera))||Inside(i,camera)))blockedGroups.Add(i.group);
             foreach(var i in items)
             {
                 if(!i.renderer)continue;

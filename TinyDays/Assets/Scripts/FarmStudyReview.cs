@@ -6,9 +6,13 @@ namespace TinyDays.Review
     public sealed class FarmStudyReview : MonoBehaviour
     {
         public const int PanButton=0;
-        public const int RotateButton=2;
+        public const int RotateButton=1;
+        public const int HeightDragButton=2;
         public const float MinZoomDistance=1f;
         public const float ClosePanReferenceDistance=8f;
+        public const float ControlHeight=42f;
+        public const float MenuWrapScreenWidth=740f;
+        public const float KeyboardPanMultiplier=.5f;
         public FarmLifeDirector director;
         public Camera reviewCamera;
         public UniversalRenderPipelineAsset shadowLow,shadowBalanced,shadowHigh;
@@ -24,51 +28,65 @@ namespace TinyDays.Review
         Vector3 pivot;
         // Player-controlled framing relative to a followed resident.
         Vector3 followOffset;
-        float yaw, pitch, orthographicSize;
-        bool cameraReady, rotatingCamera, panningCamera;
+        float yaw, pitch, orthographicSize, heightOffset;
+        bool cameraReady, rotatingCamera, panningCamera, rightRotateHeld, heightDragHeld;
         float desiredDistance, baseDistance;
-        Vector3 previousPointer;
+        Vector3 previousPointer, previousHeightPointer;
         FarmCameraOcclusion occlusion;
         ShadowQualitySettings shadowQuality;
         bool following;
         bool settingsOpen;
         bool lightingOpen;
+        float lightingScroll;
         readonly LightingColorPicker colorPicker=new LightingColorPicker();
-        Rect LightingToggle()=>new Rect(14,94,160,28);
-        Rect LightingPanel()=>new Rect(14,126,366,360);
+        const float ControlGap=6,LightingContentHeight=590;
+        Rect LightingToggle()=>new Rect(14,102,200,ControlHeight);
+        Rect LightingPanel()
+        {
+            float width=Mathf.Min(400,Screen.width/Scale-28),top=154;
+            float available=ButtonRect(0).y-top-10;
+            return new Rect(14,top,width,Mathf.Clamp(available,120,620));
+        }
         string dayMinutesInput="5";
         bool invalidDayMinutes;
-        Rect DayApply()=>new Rect(300,326,72,26);
-        Rect DayPreset(int i)=>new Rect(22+i*88,358,82,26);
-        Rect RateButton(int i)=>new Rect(22+i*88,410,82,26);
-        Rect AutomaticRow()=>new Rect(22,292,350,28);
-        Rect LightingRow(int i)=>new Rect(22,158+i*32,174,28);
-        Rect LightingSwatch(int i,int k)=>new Rect(205+k*56,160+i*32,42,24);
+        Rect DayApply()=>new Rect(286,336,LightingPanel().width-294,ControlHeight);
+        Rect DayInput()=>new Rect(178,336,100,ControlHeight);
+        Rect DayPreset(int i){float w=(LightingPanel().width-34)/4;return new Rect(8+i*(w+6),388,w,ControlHeight);}
+        Rect RateButton(int i){float w=(LightingPanel().width-34)/4;return new Rect(8+i*(w+6),472,w,ControlHeight);}
+        Rect AutomaticRow()=>new Rect(8,254,LightingPanel().width-16,ControlHeight);
+        Rect LightingRow(int i)=>new Rect(8,48+i*50,LightingPanel().width-174,ControlHeight);
+        Rect LightingSwatch(int i,int k)=>new Rect(LightingPanel().width-158+k*50,48+i*50,42,ControlHeight);
         Font font;
         readonly string[] views={"기본 구도","반대 구도","왼쪽 구도","오른쪽 구도"};
         static readonly Vector3[] PresetOffsets={new Vector3(19,24,-29),new Vector3(-19,24,29),new Vector3(-29,24,-19),new Vector3(29,24,19)};
         void OnEnable(){font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",18);}
-        void OnDisable(){colorPicker.Dispose();if(font)Destroy(font);if(occlusion)occlusion.Restore();CancelPointer();rotatingCamera=false;}
+        void OnDisable(){colorPicker.Dispose();if(font)Destroy(font);if(occlusion)occlusion.Restore();CancelPointer();StopCameraDrags();}
         void Start()
         {
             shadowQuality=GetComponent<ShadowQualitySettings>();if(!shadowQuality)shadowQuality=gameObject.AddComponent<ShadowQualitySettings>();
             shadowQuality.Configure(shadowLow,shadowBalanced,shadowHigh);ResetCameraToPreset();
         }
-        void OnApplicationFocus(bool focused){if(!focused){rotatingCamera=false;CancelPointer();}}
+        void OnApplicationFocus(bool focused){if(!focused){StopCameraDrags();CancelPointer();}}
         float Scale=>Mathf.Clamp(Screen.width/1100f,.65f,1.5f);
         Rect ButtonRect(int i)
         {
-            float w=Screen.width/Scale;int columns=w<760?3:6;
+            float w=Screen.width/Scale;int columns=MenuColumns(Screen.width);
             int rows=(6+columns-1)/columns;
-            return new Rect(14+(i%columns)*(w-28)/columns,Screen.height/Scale-12-rows*32+(i/columns)*32,(w-28)/columns-5,28);
+            float width=(w-28-(columns-1)*ControlGap)/columns;
+            float top=Screen.height/Scale-12-(rows*ControlHeight+(rows-1)*ControlGap);
+            return new Rect(14+(i%columns)*(width+ControlGap),top+(i/columns)*(ControlHeight+ControlGap),width,ControlHeight);
         }
+        public static int MenuColumns(float screenWidth)=>screenWidth<MenuWrapScreenWidth?3:6;
+        public static float ClampLightingScroll(float requested,float viewportHeight)=>Mathf.Clamp(requested,0,Mathf.Max(0,LightingContentHeight-viewportHeight));
+        Vector2 LightingPointer(Vector2 p)=>p-LightingPanel().position+Vector2.up*lightingScroll;
+        void ClampLightingScroll(){lightingScroll=ClampLightingScroll(lightingScroll,LightingPanel().height);}
         void Update()
         {
             if(colorPicker.EscapeConsumed){colorPicker.EscapeConsumed=false;return;}
-            if(colorPicker.Open){CancelPointer();rotatingCamera=false;if(Input.GetKeyDown(KeyCode.Escape))colorPicker.Cancel();return;}
+            if(colorPicker.Open){CancelPointer();StopCameraDrags();if(Input.GetKeyDown(KeyCode.Escape))colorPicker.Cancel();return;}
             if(Input.GetKeyDown(KeyCode.Escape))
             {
-                settingsOpen=!settingsOpen;CancelPointer();rotatingCamera=false;return;
+                settingsOpen=!settingsOpen;CancelPointer();StopCameraDrags();return;
             }
             if(settingsOpen)
             {
@@ -79,25 +97,44 @@ namespace TinyDays.Review
                 }
                 return;
             }
+            if(lightingOpen)
+            {
+                ClampLightingScroll();
+                Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
+                if(LightingPanel().Contains(p)&&Mathf.Abs(Input.mouseScrollDelta.y)>.001f)
+                    lightingScroll=ClampLightingScroll(lightingScroll-Input.mouseScrollDelta.y*36,LightingPanel().height);
+            }
             bool overMenu=PointerOverMenu();
-            if(Input.GetMouseButtonDown(RotateButton))rotatingCamera=!overMenu;
+            if(Input.GetMouseButtonDown(RotateButton)&&!overMenu&&!following)BeginOverviewOrbitAtScreenCenter();
+            if(Input.GetMouseButtonDown(RotateButton))rightRotateHeld=!overMenu;
+            if(Input.GetMouseButtonUp(RotateButton))rightRotateHeld=false;
+            if(Input.GetMouseButtonDown(HeightDragButton)){heightDragHeld=!overMenu;previousHeightPointer=Input.mousePosition;}
+            if(Input.GetMouseButtonUp(HeightDragButton))heightDragHeld=false;
+            rotatingCamera=rightRotateHeld;
+            if(heightDragHeld&&Input.GetMouseButton(HeightDragButton))
+            {
+                float delta=((Vector2)Input.mousePosition-(Vector2)previousHeightPointer).y;
+                ElevateCamera(MouseHeightDelta(delta,PanDistance(desiredDistance),reviewCamera.fieldOfView,reviewCamera.pixelHeight));
+                previousHeightPointer=Input.mousePosition;
+            }
             if(Input.GetMouseButtonDown(PanButton))
             {
                 Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
                 bool handled=overMenu;
                 if(!hidden)
                 {
-                    if(LightingToggle().Contains(p))lightingOpen=!lightingOpen;
-                    else if(lightingOpen&&AutomaticRow().Contains(p))GetComponent<FarmLightingStudy>()?.ResumeClock();
-                    else if(lightingOpen&&DayApply().Contains(p))
+                    if(LightingToggle().Contains(p)){lightingOpen=!lightingOpen;if(!lightingOpen)lightingScroll=0;else ClampLightingScroll();}
+                    else if(lightingOpen&&LightingPanel().Contains(p)&&AutomaticRow().Contains(LightingPointer(p)))GetComponent<FarmLightingStudy>()?.ResumeClock();
+                    else if(lightingOpen&&LightingPanel().Contains(p)&&DayApply().Contains(LightingPointer(p)))
                     {invalidDayMinutes=!director.Playback.SetDayMinutes(dayMinutesInput);if(!invalidDayMinutes)GUI.FocusControl(null);}
                     else if(lightingOpen)for(int i=0;i<4;i++)
                     {
-                        if(DayPreset(i).Contains(p)){dayMinutesInput=FarmPlaybackSettings.SuggestedMinutes[i].ToString();director.Playback.SetDayMinutes(dayMinutesInput);invalidDayMinutes=false;GUI.FocusControl(null);break;}
-                        if(RateButton(i).Contains(p)){director.Playback.SetRate(i);GUI.FocusControl(null);break;}
+                        Vector2 local=LightingPointer(p);
+                        if(LightingPanel().Contains(p)&&DayPreset(i).Contains(local)){dayMinutesInput=FarmPlaybackSettings.SuggestedMinutes[i].ToString();director.Playback.SetDayMinutes(dayMinutesInput);invalidDayMinutes=false;GUI.FocusControl(null);break;}
+                        if(LightingPanel().Contains(p)&&RateButton(i).Contains(local)){director.Playback.SetRate(i);GUI.FocusControl(null);break;}
                         var light=GetComponent<FarmLightingStudy>();
-                        if(LightingRow(i).Contains(p)){light?.Apply(i);break;}
-                        for(int k=0;k<3;k++)if(LightingSwatch(i,k).Contains(p)&&light){colorPicker.Begin(light,i,k);CancelPointer();rotatingCamera=false;return;}
+                        if(LightingPanel().Contains(p)&&LightingRow(i).Contains(local)){light?.Apply(i);break;}
+                        for(int k=0;k<3;k++)if(LightingPanel().Contains(p)&&LightingSwatch(i,k).Contains(local)&&light){colorPicker.Begin(light,i,k);CancelPointer();StopCameraDrags();return;}
                     }
                 }
                     if(hidden){if(ButtonRect(5).Contains(p))hidden=false;}
@@ -113,6 +150,7 @@ namespace TinyDays.Review
                 }
                 if(!hidden&&residentListOpen)
                     for(int i=0;i<director.residents.Length;i++)if(ListRow(i).Contains(p)){FocusResident(i);handled=true;break;}
+                if(overMenu)StopCameraDrags();
                 if(!handled)BeginPointer(Input.mousePosition);
                 else lastClickedResident=-1;
             }
@@ -147,9 +185,8 @@ namespace TinyDays.Review
             if(!pointerHeld)return;
             if(!panningCamera&&(position-pressPosition).sqrMagnitude>=36){panningCamera=true;lastClickedResident=-1;}
             if(!panningCamera)return;
-            Vector3 movement=ScreenPan(Quaternion.Euler(pitch,yaw,0),position-(Vector2)previousPointer,PanDistance(desiredDistance),reviewCamera.fieldOfView,reviewCamera.pixelHeight);
-            if(following)followOffset+=movement;else pivot+=movement;
-            previousPointer=position;
+            Vector3 movement=GroundScreenPan(reviewCamera.transform.rotation,position-(Vector2)previousPointer,PanDistance(desiredDistance),reviewCamera.fieldOfView,reviewCamera.pixelHeight);
+            ApplyPlanarPan(movement);previousPointer=position;
         }
         public void EndPointer(Vector2 position,double time)
         {
@@ -160,6 +197,8 @@ namespace TinyDays.Review
             pointerHeld=panningCamera=false;pressedResident=-1;
         }
         void CancelPointer(){pointerHeld=panningCamera=false;pressedResident=lastClickedResident=-1;}
+        void StopCameraDrags(){rightRotateHeld=heightDragHeld=rotatingCamera=false;}
+        public static bool RotationActive(bool rightHeld)=>rightHeld;
         public int PickResident(Vector2 screenPosition)
         {
             if(!cameraReady||!reviewCamera.pixelRect.Contains(screenPosition))return -1;
@@ -178,10 +217,10 @@ namespace TinyDays.Review
         Rect ListRow(int i){var r=ListPanel();return new Rect(r.x+6,r.y+26+i*28,r.width-12,26);}
         Rect SettingsPanel()
         {
-            float width=Mathf.Min(330,Screen.width/Scale-28),height=216;
+            float width=Mathf.Min(390,Screen.width/Scale-28),height=268;
             return new Rect((Screen.width/Scale-width)*.5f,(Screen.height/Scale-height)*.5f,width,height);
         }
-        Rect ShadowRow(int i){var r=SettingsPanel();return new Rect(r.x+16,r.y+58+i*32,r.width-32,28);}
+        Rect ShadowRow(int i){var r=SettingsPanel();return new Rect(r.x+16,r.y+58+i*(ControlHeight+ControlGap),r.width-32,ControlHeight);}
         bool NameRect(int i,out Rect rect)
         {
             rect=default;if(!ValidResident(i))return false;
@@ -212,7 +251,6 @@ namespace TinyDays.Review
         {
             if(!cameraReady)return;
             if(!hidden&&lightingOpen&&GUI.GetNameOfFocusedControl()=="DayMinutesInput")return;
-            if(Input.GetMouseButtonUp(RotateButton))rotatingCamera=false;
             if(Input.GetKeyDown(KeyCode.Home)){CancelPointer();ShowOverview();return;}
             if(rotatingCamera)
             {
@@ -220,12 +258,18 @@ namespace TinyDays.Review
                 pitch=Mathf.Clamp(pitch-Input.GetAxisRaw("Mouse Y")*10f,-90f,75f);
             }
             float wheel=Input.mouseScrollDelta.y;
-            if(!PointerOverMenu()&&Mathf.Abs(wheel)>.001f)desiredDistance=ClampZoomDistance(desiredDistance*Mathf.Exp(-wheel*.12f),baseDistance);
+            if(!PointerOverMenu()&&Mathf.Abs(wheel)>.001f)desiredDistance=ZoomFromWheel(desiredDistance,wheel,baseDistance);
             float height=(Input.GetKey(KeyCode.E)?1f:0f)-(Input.GetKey(KeyCode.Q)?1f:0f);
             if(height!=0)
             {
-                float movement=height*5f*Time.unscaledDeltaTime;
-                if(following)followOffset.y+=movement;else pivot.y+=movement;
+                ElevateCamera(height*5f*Time.unscaledDeltaTime);
+            }
+            float horizontal=(Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow)?1f:0f)-(Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow)?1f:0f);
+            float vertical=(Input.GetKey(KeyCode.W)||Input.GetKey(KeyCode.UpArrow)?1f:0f)-(Input.GetKey(KeyCode.S)||Input.GetKey(KeyCode.DownArrow)?1f:0f);
+            if(horizontal!=0||vertical!=0)
+            {
+                Vector3 movement=KeyboardPan(reviewCamera.transform.rotation,new Vector2(horizontal,vertical),desiredDistance)*Time.unscaledDeltaTime;
+                ApplyPlanarPan(movement);
             }
         }
         public static Vector3 ScreenPan(Quaternion rotation,Vector2 pixels,float distance,float fov,int pixelHeight)
@@ -233,6 +277,68 @@ namespace TinyDays.Review
             float units=2*distance*Mathf.Tan(fov*.5f*Mathf.Deg2Rad)/Mathf.Max(1,pixelHeight);
             return -(rotation*Vector3.right*pixels.x+rotation*Vector3.up*pixels.y)*units;
         }
+        public static Vector3 GroundScreenPan(Quaternion rotation,Vector2 pixels,float distance,float fov,int pixelHeight)
+        {
+            return Vector3.ProjectOnPlane(ScreenPan(rotation,pixels,distance,fov,pixelHeight),Vector3.up);
+        }
+        public static float MouseHeightDelta(float verticalPixels,float distance,float fov,int pixelHeight)
+        {
+            return verticalPixels*2*distance*Mathf.Tan(fov*.5f*Mathf.Deg2Rad)/Mathf.Max(1,pixelHeight);
+        }
+        // Move the camera like an elevator: preserve its world-up motion and current view angle.
+        // Overview rebinds the orbit target to the new center-ray surface when it is within zoom limits.
+        void ElevateCamera(float amount)
+        {
+            if(Mathf.Abs(amount)<1e-6f)return;
+            if(!following&&occlusion&&reviewCamera)
+            {
+                Vector3 position=reviewCamera.transform.position+Vector3.up*amount;
+                var ray=new Ray(position,reviewCamera.transform.forward);
+                if(occlusion.TryPickStaticSurface(ray,reviewCamera.farClipPlane,out Vector3 target))
+                {
+                    float distance=Vector3.Distance(position,target);
+                    if(distance>=MinZoomDistance&&distance<=baseDistance*1.5f)
+                    {
+                        pivot=target;desiredDistance=distance;heightOffset=0;return;
+                    }
+                }
+            }
+            heightOffset+=amount;
+        }
+        Vector3 ResidentAnchor()=>director.residents[focus].root.position+Vector3.up*.8f;
+        void ApplyPlanarPan(Vector3 movement)
+        {
+            movement=Vector3.ProjectOnPlane(movement,Vector3.up);
+            if(movement.sqrMagnitude<1e-10f)return;
+            if(following&&ValidResident(focus))
+            {
+                Vector3 anchor=ResidentAnchor(),current=anchor+followOffset;
+                Vector3 target=occlusion?occlusion.ClampToMeadow(current,current+movement):current+movement;
+                followOffset=target-anchor;
+            }
+            else pivot=occlusion?occlusion.ClampToMeadow(pivot,pivot+movement):pivot+movement;
+        }
+        void BeginOverviewOrbitAtScreenCenter()
+        {
+            if(!cameraReady||following||!occlusion||!reviewCamera)return;
+            if(!occlusion.TryPickStaticSurface(reviewCamera.ViewportPointToRay(new Vector3(.5f,.5f,0)),reviewCamera.farClipPlane,out Vector3 target))return;
+            Vector3 orbit=reviewCamera.transform.position-target-Vector3.up*heightOffset;
+            float distance=orbit.magnitude;
+            if(distance<MinZoomDistance||distance>baseDistance*1.5f)return;
+            Vector3 look=-orbit/distance;
+            yaw=Mathf.Atan2(look.x,look.z)*Mathf.Rad2Deg;
+            pitch=-Mathf.Asin(look.y)*Mathf.Rad2Deg;
+            pivot=target;desiredDistance=distance;
+        }
+        // Keyboard movement follows the screen's horizontal axes while remaining level with the farm.
+        public static Vector3 KeyboardPan(Quaternion rotation,Vector2 input,float zoomDistance)
+        {
+            input=Vector2.ClampMagnitude(input,1);
+            Vector3 right=Vector3.ProjectOnPlane(rotation*Vector3.right,Vector3.up).normalized;
+            Vector3 up=Vector3.ProjectOnPlane(rotation*Vector3.forward,Vector3.up).normalized;
+            return (right*input.x+up*input.y)*PanDistance(zoomDistance)*KeyboardPanMultiplier;
+        }
+        public static float ZoomFromWheel(float distance,float wheel,float baseDistance)=>ClampZoomDistance(distance*Mathf.Exp(wheel*.12f),baseDistance);
         public static float ClampZoomDistance(float distance,float baseDistance)=>Mathf.Clamp(distance,MinZoomDistance,baseDistance*1.5f);
         public static float PanDistance(float zoomDistance)=>Mathf.Max(zoomDistance,ClosePanReferenceDistance);
         void LateUpdate(){ApplyCamera();}
@@ -240,10 +346,16 @@ namespace TinyDays.Review
         {
             if(!cameraReady)return;
             if(following&&!ValidResident(focus)){ReleaseFocus();followOffset=Vector3.zero;selected=-1;}
-            if(following&&Application.isPlaying)pivot=director.residents[focus].root.position+Vector3.up*.8f+followOffset;
-            Quaternion rotation=Quaternion.Euler(pitch,yaw,0);
-            Vector3 outward=-(rotation*Vector3.forward);
-            reviewCamera.transform.SetPositionAndRotation(pivot+outward*desiredDistance,rotation);
+            if(following&&Application.isPlaying)
+            {
+                Vector3 anchor=ResidentAnchor();
+                pivot=occlusion?occlusion.ClampToMeadow(anchor,anchor+followOffset):anchor+followOffset;
+                followOffset=pivot-anchor;
+            }
+            Quaternion orbitRotation=Quaternion.Euler(pitch,yaw,0);
+            Vector3 outward=-(orbitRotation*Vector3.forward);
+            Vector3 position=pivot+outward*desiredDistance+Vector3.up*heightOffset;
+            reviewCamera.transform.SetPositionAndRotation(position,orbitRotation);
             if(Application.isPlaying)UpdateResidentOcclusion(Time.unscaledDeltaTime);
         }
         // Historical v0.22 helper, retained for compatibility with archived editor checks only.
@@ -277,6 +389,7 @@ namespace TinyDays.Review
             occlusion=GetComponent<FarmCameraOcclusion>();if(!occlusion)occlusion=gameObject.AddComponent<FarmCameraOcclusion>();
             following=close&&ValidResident(focus);close=following;
             reviewCamera.orthographic=false;reviewCamera.fieldOfView=40;reviewCamera.nearClipPlane=.03f;
+            heightOffset=0;
             pivot=close?director.residents[Mathf.Clamp(focus,0,director.residents.Length-1)].root.position+Vector3.up*.8f:new Vector3(0,.8f,-2);
             Vector3 offset=PresetOffsets[Mathf.Clamp(view,0,PresetOffsets.Length-1)];
             Vector3 look=(-offset).normalized;
@@ -290,7 +403,7 @@ namespace TinyDays.Review
         void OnGUI()
         {
             GUI.matrix=Matrix4x4.Scale(Vector3.one*Scale);if(font)GUI.skin.font=font;
-            GUI.skin.label.fontSize=16;GUI.skin.button.fontSize=14;
+            GUI.skin.label.fontSize=16;GUI.skin.button.fontSize=16;
             GUI.skin.label.normal.textColor=new Color(.27f,.29f,.22f);
             Vector2 pointer=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
             if(colorPicker.Open){colorPicker.Draw(Screen.width/Scale,Screen.height/Scale);GUI.matrix=Matrix4x4.identity;return;}
@@ -302,7 +415,7 @@ namespace TinyDays.Review
                 string[] choices={"낮음 · 선명한 경계 · 낮은 성능 부담","기본 · 부드러운 경계 · 균형","높음 · 더 부드러운 경계 · 높은 성능 부담"};
                 int current=shadowQuality?shadowQuality.Selected:1;
                 for(int i=0;i<3;i++)Draw(ShadowRow(i),(current==i?"● ":"")+choices[i],pointer);
-                GUI.Label(new Rect(panel.x+16,panel.y+184,panel.width-32,24),"Esc를 누르면 설정을 닫습니다.");
+                GUI.Label(new Rect(panel.x+16,panel.y+230,panel.width-32,24),"Esc를 누르면 설정을 닫습니다.");
                 GUI.matrix=Matrix4x4.identity;return;
             }
             if(hidden){Draw(ButtonRect(5),"메뉴 보기",pointer);GUI.matrix=Matrix4x4.identity;return;}
@@ -310,34 +423,14 @@ namespace TinyDays.Review
             var lighting=GetComponent<FarmLightingStudy>();
             if(lighting&&lighting.selected==3)GUI.skin.label.normal.textColor=new Color(.91f,.92f,.96f);
             Draw(LightingToggle(),lightingOpen?"시간대 비교 닫기":"시간대 비교",pointer);
-            if(lightingOpen)
-            {
-                GUI.Box(LightingPanel(),"");
-                GUI.skin.label.normal.textColor=Color.white;GUI.skin.label.fontSize=12;
-                for(int k=0;k<3;k++)GUI.Label(new Rect(203+k*56,130,56,24),LightingColors.Labels[k]);
-                for(int i=0;i<4;i++)
-                {
-                    Draw(LightingRow(i),(lighting&&!lighting.Automatic&&lighting.selected==i?"● ":"")+FarmLightingStudy.Names[i],pointer);
-                    for(int k=0;k<3;k++)if(lighting)LightingColorPicker.Swatch(LightingSwatch(i,k),lighting.Colors.Get(i,k));
-                }
-                if(lighting){int minutes=Mathf.FloorToInt(lighting.Hour*60)%1440;Draw(AutomaticRow(),(lighting.Automatic?"● ":"")+"자동 순환 · "+(minutes/60).ToString("00")+":"+(minutes%60).ToString("00"),pointer);}
-                GUI.Label(new Rect(22,328,178,24),"하루 길이 (1배속 기준·분)");
-                GUI.skin.textField.fontSize=14;GUI.SetNextControlName("DayMinutesInput");
-                dayMinutesInput=GUI.TextField(new Rect(202,326,90,26),dayMinutesInput,4);
-                Draw(DayApply(),"적용",pointer);
-                for(int i=0;i<4;i++)Draw(DayPreset(i),FarmPlaybackSettings.SuggestedMinutes[i]+"분",pointer);
-                GUI.Label(new Rect(22,386,350,24),"재생속도 · 주민과 낮밤 함께");
-                for(int i=0;i<4;i++)Draw(RateButton(i),(director.Playback.Rate==FarmPlaybackSettings.Rates[i]?"● ":"")+FarmPlaybackSettings.Rates[i].ToString("0.#")+"×",pointer);
-                GUI.Label(new Rect(22,438,350,22),invalidDayMinutes?"1~120 사이의 정수(분)를 입력해주세요.":$"적용: {director.Playback.DayMinutes}분 · {director.Playback.Rate:0.#}× · 실제 하루 {director.Playback.DayMinutes/director.Playback.Rate:0.##}분");
-                GUI.Label(new Rect(22,460,350,22),"시간 고정 중에는 주민에게만 배속이 적용됩니다.");
-            }
+            if(lightingOpen)DrawLightingPanel(lighting,pointer);
             GUI.skin.label.normal.textColor=lighting&&lighting.selected!=1?new Color(.94f,.94f,.90f):new Color(.27f,.29f,.22f);
             GUI.Label(new Rect(18,12,w-36,28),"Tiny Days · 봄날의 작은 농가");
             GUI.skin.label.fontSize=12;
-            GUI.Label(new Rect(18,38,w-36,24),$"임시 생활 장면 · 이동과 머무르기 · {director.elapsed:F0}초");
+            GUI.Label(new Rect(18,42,w-36,22),$"임시 생활 장면 · 이동과 머무르기 · {director.elapsed:F0}초");
             string[] labels={director.paused?"재생":"일시정지","처음부터","전체 보기",views[view],"주민 목록","메뉴 숨김"};
             for(int i=0;i<6;i++)Draw(ButtonRect(i),labels[i],pointer);
-            GUI.Label(new Rect(18,62,w-36,22),"클릭 선택 · 더블클릭 따라보기 · 왼쪽 드래그 이동 · 가운데 회전 · 휠 줌 · Q/E 높이 · Home 전체");
+            GUI.Label(new Rect(18,66,w-36,24),"클릭 선택 · 더블클릭 따라보기 · 드래그 이동 · WASD/화살표 이동 · 가운데 드래그 높이 · 우클릭 드래그 회전 · 휠 줌 · Q/E 높이 · Home 전체");
             for(int i=0;i<director.residents.Length;i++)if((residentListOpen||selected==i)&&NameRect(i,out Rect rect))
                 Draw(rect,(selected==i?"● ":"")+"주민 "+(i+1),pointer);
             if(residentListOpen)
@@ -346,6 +439,36 @@ namespace TinyDays.Review
                 for(int i=0;i<director.residents.Length;i++)Draw(ListRow(i),(selected==i?"● ":"")+"주민 "+(i+1),pointer);
             }
             GUI.matrix=Matrix4x4.identity;
+        }
+        void DrawLightingPanel(FarmLightingStudy lighting,Vector2 pointer)
+        {
+            var panel=LightingPanel();ClampLightingScroll();GUI.Box(panel,"");
+            var localPointer=LightingPointer(pointer);
+            GUI.BeginGroup(panel);
+            GUI.BeginGroup(new Rect(0,-lightingScroll,panel.width,LightingContentHeight));
+            GUI.skin.label.normal.textColor=Color.white;GUI.skin.label.fontSize=13;
+            for(int k=0;k<3;k++)GUI.Label(new Rect(panel.width-158+k*50,12,42,24),LightingColors.Labels[k]);
+            for(int i=0;i<4;i++)
+            {
+                Draw(LightingRow(i),(lighting&&!lighting.Automatic&&lighting.selected==i?"● ":"")+FarmLightingStudy.Names[i],localPointer);
+                for(int k=0;k<3;k++)if(lighting)LightingColorPicker.Swatch(LightingSwatch(i,k),lighting.Colors.Get(i,k));
+            }
+            if(lighting){int minutes=Mathf.FloorToInt(lighting.Hour*60)%1440;Draw(AutomaticRow(),(lighting.Automatic?"● ":"")+"자동 순환 · "+(minutes/60).ToString("00")+":"+(minutes%60).ToString("00"),localPointer);}
+            GUI.Label(new Rect(8,308,164,24),"하루 길이 (1배속 기준·분)");
+            GUI.skin.textField.fontSize=16;GUI.SetNextControlName("DayMinutesInput");
+            dayMinutesInput=GUI.TextField(DayInput(),dayMinutesInput,4);
+            Draw(DayApply(),"적용",localPointer);
+            for(int i=0;i<4;i++)Draw(DayPreset(i),FarmPlaybackSettings.SuggestedMinutes[i]+"분",localPointer);
+            GUI.Label(new Rect(8,444,panel.width-16,24),"재생속도 · 주민과 낮밤 함께");
+            for(int i=0;i<4;i++)Draw(RateButton(i),(director.Playback.Rate==FarmPlaybackSettings.Rates[i]?"● ":"")+FarmPlaybackSettings.Rates[i].ToString("0.#")+"×",localPointer);
+            GUI.Label(new Rect(8,526,panel.width-16,24),invalidDayMinutes?"1~120 사이의 정수(분)를 입력해주세요.":$"적용: {director.Playback.DayMinutes}분 · {director.Playback.Rate:0.#}× · 실제 하루 {director.Playback.DayMinutes/director.Playback.Rate:0.##}분");
+            GUI.Label(new Rect(8,558,panel.width-16,24),"시간 고정 중에는 주민에게만 배속이 적용됩니다.");
+            GUI.EndGroup();GUI.EndGroup();
+            if(LightingContentHeight>panel.height)
+            {
+                GUI.skin.label.fontSize=12;GUI.skin.label.normal.textColor=Color.white;
+                GUI.Label(new Rect(panel.x+10,panel.y+panel.height-22,panel.width-20,18),"패널 위에서 휠로 스크롤");
+            }
         }
         void DrawClock(FarmLightingStudy lighting)
         {

@@ -26,7 +26,7 @@ public static class InteriorOcclusionChecks
             {
                 at(new Vector3(0,-5,0));foreach(var name in new[]{"Spring meadow","Meadow foundation","Backdrop"})faded(name,true);
                 at(new Vector3(0,3,0));faded("Spring meadow",false);
-                at(new Vector3(50,-5,50));faded("Spring meadow",false);faded("Backdrop",false);
+                at(new Vector3(50,-5,50));faded("Spring meadow",true);faded("Meadow foundation",true);faded("Backdrop",true);
                 at(homeA.position+Vector3.up*1.5f);faded("Home A",true);faded("Home B",false);
                 at(homeA.position+Vector3.up*3.6f);faded("Home A",true);
                 at(homeA.position+Vector3.left*2.12f+Vector3.up*1.6f);faded("Home A",true);
