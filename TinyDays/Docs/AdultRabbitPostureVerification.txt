@@ -1,0 +1,1 @@
+Posture / independent left-right soles: knee lateral deviation 0.000083m; min knee separation 0.291033m; 806 stopped samples, sole range 0.002499..0.002500m (direct calls, 8 stop phases + automatic stop + first three steps)

@@ -1,0 +1,12 @@
+AdultStandard_v2 first motion review; automatic sampling is not user motion approval.
+Four looping clips imported: PASS
+Existing farm and temporary RabbitMotion assets are not referenced or replaced: PASS
+AdultRig|Adult_Idle_Biped: 3.60s, deformation 0.045m, loop seam PASS
+AdultRig|Adult_Walk_Biped: 0.80s, deformation 0.460m, loop seam PASS
+AdultRig|Adult_Idle_Quadruped: 3.00s, deformation 0.063m, loop seam PASS
+AdultRig|Adult_Hop_Quadruped: 1.00s, deformation 0.168m, loop seam PASS
+Dense shoe contact: minimum sole -0.00530m; maximum support sole offset 0.00530m; virtual forward compensated support drift 0.04089m (0.92m/cycle)
+Eight walk poses ordered and captured; contact/recoil support-height drift < 0.03m; passing foot lift > 0.05m: PASS
+Face-forward (+Z) support-foot travel is front to back on both sides: PASS
+Imported walking elbow interior angles: 90.01 to 99.99 degrees: PASS
+Direct-call clock 1x/0.5x/pause/reset and camera pan/orbit/height/zoom: PASS (not actual input)

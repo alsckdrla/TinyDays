@@ -1,0 +1,47 @@
+{
+  "bodyFamily": "AdultStandard_v2",
+  "reference": "ref_walking_ani_01.jpg; ref_ani.mp4 is an incomplete 104-byte fragment",
+  "scope": "Disney-inspired biped idle/walk revision; quadruped clips preserved, farm replacement and transitions excluded.",
+  "walkPhases": [
+    "Contact L",
+    "Recoil L",
+    "Passing L",
+    "High Point L",
+    "Contact R",
+    "Recoil R",
+    "Passing R",
+    "High Point R"
+  ],
+  "walkVirtualDistance": 0.92,
+  "virtualSpeedMetersPerSecond": 1.15,
+  "clips": [
+    {
+      "name": "Adult_Idle_Biped",
+      "frames": 108,
+      "duration": 3.6,
+      "loop": true,
+      "style": "asymmetric breathing idle"
+    },
+    {
+      "name": "Adult_Walk_Biped",
+      "frames": 24,
+      "duration": 0.8,
+      "loop": true,
+      "style": "8-pose Disney-inspired cute walk"
+    },
+    {
+      "name": "Adult_Idle_Quadruped",
+      "frames": 90,
+      "duration": 3.0,
+      "loop": true,
+      "style": "preserved v0.70 quadruped"
+    },
+    {
+      "name": "Adult_Hop_Quadruped",
+      "frames": 30,
+      "duration": 1.0,
+      "loop": true,
+      "style": "preserved v0.70 quadruped"
+    }
+  ]
+}

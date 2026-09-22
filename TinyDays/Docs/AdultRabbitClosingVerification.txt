@@ -1,0 +1,1 @@
+Closing step: 8 stop phases, 295 closing samples, 24 interrupted closing restarts; final forward gap 0.000000m; maximum lifted sole 0.017500m; maximum transition segment scale 1.01307. Direct calls.

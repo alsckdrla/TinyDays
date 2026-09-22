@@ -1,0 +1,100 @@
+{
+  "reference": "Char_Rabbit_01_high.png",
+  "bodyFamily": "AdultStandard_v2",
+  "bodyGroup": "Adult",
+  "palette": {
+    "Fur": "F3E8DB",
+    "Cloth": "D9DBD7",
+    "Pink": "CF8C89",
+    "Dark": "403D42",
+    "Leather": "A87147",
+    "Brass": "D3B477"
+  },
+  "modules": [
+    {
+      "name": "Head",
+      "vertices": 862,
+      "triangles": 1660
+    },
+    {
+      "name": "BodyHands",
+      "vertices": 216,
+      "triangles": 416
+    },
+    {
+      "name": "BodyArms",
+      "vertices": 216,
+      "triangles": 424
+    },
+    {
+      "name": "Top",
+      "vertices": 348,
+      "triangles": 664
+    },
+    {
+      "name": "BodyLegs",
+      "vertices": 168,
+      "triangles": 328
+    },
+    {
+      "name": "Bottom",
+      "vertices": 168,
+      "triangles": 328
+    },
+    {
+      "name": "BodyFeet",
+      "vertices": 148,
+      "triangles": 288
+    },
+    {
+      "name": "Shoes",
+      "vertices": 148,
+      "triangles": 288
+    },
+    {
+      "name": "BodyTorso",
+      "vertices": 112,
+      "triangles": 220
+    },
+    {
+      "name": "BodyTail",
+      "vertices": 86,
+      "triangles": 168
+    },
+    {
+      "name": "Neckwear",
+      "vertices": 110,
+      "triangles": 204
+    },
+    {
+      "name": "Backpack",
+      "vertices": 484,
+      "triangles": 876
+    }
+  ],
+  "subdivision": false,
+  "trianglesAllModules": 5864,
+  "bones": [
+    "Root",
+    "Pelvis",
+    "Spine",
+    "Head",
+    "Tail",
+    "BackSocket",
+    "NeckSocket",
+    "Ear_L",
+    "UpperArm_L",
+    "Forearm_L",
+    "Hand_L",
+    "Thigh_L",
+    "Shin_L",
+    "Foot_L",
+    "Ear_R",
+    "UpperArm_R",
+    "Forearm_R",
+    "Hand_R",
+    "Thigh_R",
+    "Shin_R",
+    "Foot_R"
+  ]
+}

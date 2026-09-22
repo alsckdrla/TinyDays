@@ -1,0 +1,16 @@
+Adult rabbit review / automatic and camera render checks; not live input or minimum-PC benchmark.
+ManualEdits survives repeated generation: PASS
+v2 head width: 0.752m; shoulder joint spacing: 0.408m. Reference likeness remains a visual judgment.
+All modules triangles: 5864; Unity imported vertices: 3258
+Dressed triangles: 4604; active skinned renderers: 8; unique character materials: 6
+Three equip/unequip cycles, covered body recovery, age/v1/special-family rejection, separate v2 adult rig rebind with shared mesh: PASS
+Top: 664 triangles / bones=21
+Bottom: 328 triangles / bones=21
+Shoes: 288 triangles / bones=21
+Neckwear: 204 triangles / bones=21
+Backpack: 876 triangles / bones=21
+Eight Top/Neckwear/Backpack combinations: body visibility PASS; captured for visual review.
+Static pose 1 evaluated vertex displacement: 0.609m (deformation probe, not animation approval).
+Static pose 2 evaluated vertex displacement: 0.855m (deformation probe, not animation approval).
+Pose captures: static joint/low-posture probes only, not final quadruped locomotion or foot-contact approval.
+Other species/Infant/Child not implemented or verified. User design approval and live Game input: PENDING.

@@ -1,0 +1,1 @@
+First three steps (0..1.65s @240Hz): pelvis range 0.100474 -> 0.067380m; peak vertical speed 1.449137 -> 0.444403m/s; head peak 1.449537 -> 0.444489m/s. Direct sampling, not perceptual approval.
