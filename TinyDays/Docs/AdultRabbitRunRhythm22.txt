@@ -1,0 +1,2 @@
+authored: duration 0.733333s; pelvis range 0.078871m/max speed 0.676231m/s; head range 0.078618m/max speed 0.673971m/s
+moving: duration 0.733333s; pelvis range 0.078859m/max speed 0.676231m/s; head range 0.078602m/max speed 0.673971m/s

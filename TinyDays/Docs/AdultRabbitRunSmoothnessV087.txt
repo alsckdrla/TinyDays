@@ -1,0 +1,4 @@
+authored: pelvis range 0.078918m; head range 0.079380m; max acceleration 23.133/23.257m/s2; max 240Hz velocity change 0.096388/0.096903m/s; direction reversals 8/8 in two cycles; max safety drop 0.000000m; max runtime height correction 0.000000m.
+moving: pelvis range 0.078820m; head range 0.079284m; max acceleration 19.715/19.796m/s2; max 240Hz velocity change 0.082147/0.082483m/s; direction reversals 7/7 in two cycles; max safety drop 0.000000m; max runtime height correction 0.000001m.
+30/60/120fps common-time pelvis/head difference 0.0000000m.
+PASS numerical smoothness; actual input and user quality approval pending

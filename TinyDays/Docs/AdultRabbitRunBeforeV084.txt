@@ -1,0 +1,4 @@
+48 stop cases, 15178 samples: min sole 0.002499m; support slip 0.000001m; final forward gap 0.000000m; min knee spacing 0.286418m; airborne samples 594; frame-rate distance spread 0.062497m (frame-rounded request times).
+Coat front probes 3794: penetration 0.000000m, runtime correction 0.062758m. Sampled front visibility, not complete intersection proof.
+Speed 2m/s, 0.6s cycle, pause, run-to-walk, nine interrupted/restarted stops, automatic stop and coat cleanup checked.
+PASS: direct calls and captures only; user approval pending

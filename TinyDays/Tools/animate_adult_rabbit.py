@@ -1,5 +1,6 @@
-"""First AdultStandard_v2 locomotion review: four looping clips, no farm replacement."""
+"""AdultStandard_v2 locomotion: biped idle/walk/run and two preserved quadruped drafts."""
 import bpy, math, json
+import numpy as np
 from pathlib import Path
 from mathutils import Vector, Matrix, Euler
 
@@ -96,17 +97,93 @@ def walk_target(side_name,phase):
         lift=.105*math.sin(math.pi*t)**2
     return Vector((base['Foot_'+side_name].translation.x,y,ankle_ground[side_name]+lift))
 
-specs=[('Adult_Idle_Biped',108),('Adult_Walk_Biped',24),('Adult_Idle_Quadruped',90),('Adult_Hop_Quadruped',30)]
+run_spec=json.loads((ROOT/'Assets/Resources/AdultRunTiming.json').read_text(encoding='utf8'))
+run_phases=list(zip(run_spec['names'],run_spec['phases']))
+def pose_curve(knots,p):
+    for (a,x),(b,y) in zip(knots,knots[1:]):
+        if p<=b:
+            t=max(0,min(1,(p-a)/(b-a)));return x+(y-x)*t*t*(3-2*t)
+    return knots[-1][1]
+
+def run_foot(side_name,phase):
+    # Fold the recovering heel behind the body before driving the knee forward.
+    pitch=pose_curve([(0,-.15),(.10,0),(.22,.08),(run_spec['stance'],.72),(.56,1.05),(.68,.7),(.82,.08),(.94,-.25),(1,-.15)],phase)
+    rotation=Matrix.Rotation(pitch,4,'X')
+    group=shoe.vertex_groups['Foot_'+side_name].index
+    points=[v.co-base['Foot_'+side_name].translation for v in shoe.data.vertices if any(g.group==group and g.weight>.99 for g in v.groups)]
+    bottom=min((rotation.to_3x3()@p).z for p in points)
+    distance=run_spec['speed']*run_spec['duration']
+    stance=run_spec['stance'];start=-.23;end=start+distance*stance
+    # Periodic Hermite recovery matches planted velocity at both boundaries.
+    knots=[(stance,end,distance),(.425,.30,0),(.56,.31,0),(.68,.23,0),(.82,0,-2.4),(.94,start-.018,0),(1,start,distance)]
+    y=start+distance*phase
+    if phase>stance:
+        for (a,x,dx),(b,z,dz) in zip(knots,knots[1:]):
+            if phase<=b:
+                t=(phase-a)/(b-a);h=b-a
+                y=(2*t**3-3*t*t+1)*x+(t**3-2*t*t+t)*h*dx+(-2*t**3+3*t*t)*z+(t**3-t*t)*h*dz
+                break
+    lift=0 if phase<=stance else pose_curve([(stance,0),(.425,.08),(.56,.11),(.68,.11),(.82,.045),(.925,.03),(1,0)],phase)
+    return Vector((base['Foot_'+side_name].translation.x,y,.0025-bottom+lift)),rotation
+
+def prepare_run_height():
+    # Fit a single periodic C-infinity height curve to the WHOLE reach envelope.
+    # Never clip its height separately at each animation frame.
+    envelope=[]
+    for i in range(352):
+        p=i/352;a=2*math.pi*p
+        m={n:v.copy() for n,v in base.items()}
+        for n in m:
+            if n!='Root':m[n].translation+=Vector((.012*math.sin(a),-.018,0))
+        assign(m);rot('Pelvis',.045,0,-.028*math.cos(a));bpy.context.view_layer.update()
+        ceiling=float('inf')
+        for side,phase in [('L',p),('R',(p+.5)%1)]:
+            target,_=run_foot(side,phase)
+            hip=rig.pose.bones['Thigh_'+side].matrix.translation
+            delta=hip-target;reach=rig.data.bones['Thigh_'+side].length+rig.data.bones['Shin_'+side].length-.0001
+            ceiling=min(ceiling,math.sqrt(max(.0001,reach*reach-delta.x*delta.x-delta.y*delta.y))-delta.z)
+        envelope.append((p,ceiling))
+    amplitude=.079/2
+    # Compression follows contact; the crest MUST occur at the flight midpoint.
+    # Solve only the mean height. Do not trade flight timing for extra height.
+    apex=(run_spec['stance']+.5)/2
+    phase=apex-.25
+    offset=min(limit+amplitude*math.cos(4*math.pi*(p-phase)) for p,limit in envelope)-.004
+    return offset,phase,amplitude
+
+run_height_offset,run_height_phase,run_height_amplitude=prepare_run_height()
+
+def smooth_periodic_body_curve(curve):
+    # Uniform periodic cubic spline: solve tangents so first and second
+    # derivatives agree at every knot, including the repeated cycle boundary.
+    points=curve.keyframe_points;n=len(points)-1
+    if n<3:return
+    h=points[1].co.x-points[0].co.x
+    y=np.array([points[i].co.y for i in range(n)])
+    matrix=4*np.eye(n)
+    for i in range(n):matrix[i,(i-1)%n]=1;matrix[i,(i+1)%n]=1
+    slopes=np.linalg.solve(matrix,3*(np.roll(y,-1)-np.roll(y,1))/h)
+    for i,point in enumerate(points):
+        point.interpolation='BEZIER';point.handle_left_type='FREE';point.handle_right_type='FREE'
+        slope=float(slopes[i%n]);x,z=point.co
+        point.handle_left=(x-h/3,z-slope*h/3);point.handle_right=(x+h/3,z+slope*h/3)
+
+specs=[('Adult_Idle_Biped',108),('Adult_Walk_Biped',24),('Adult_Idle_Quadruped',90),('Adult_Hop_Quadruped',30),('Adult_Run_Biped',round(run_spec['duration']*30))]
 report={'bodyFamily':'AdultStandard_v2','reference':'ref_walking_ani_01.jpg; ref_ani.mp4 is an incomplete 104-byte fragment',
-        'scope':'Disney-inspired biped idle/walk revision; quadruped clips preserved, farm replacement and transitions excluded.',
-        'walkPhases':walk_phases,'walkVirtualDistance':.92,'virtualSpeedMetersPerSecond':1.15,'clips':[]}
+        'scope':'Biped run added; existing idle/walk and quadruped drafts preserved; no farm replacement.',
+        'runSpeedMetersPerSecond':run_spec['speed'],'runStanceFraction':run_spec['stance'],'runReference':'ref_run_ani_01.jpg','runPhases':run_phases,
+        'walkPhases':walk_phases,'walkVirtualDistance':.92,'virtualSpeedMetersPerSecond':1.15,'clips':[],
+        'runHeightCurve':{'offset':run_height_offset,'phase':run_height_phase,'amplitude':run_height_amplitude,'reachMargin':.004}}
 for name,frames in specs:
     old=bpy.data.actions.get(name)
     if old:bpy.data.actions.remove(old)
     action=bpy.data.actions.new(name);action.use_fake_user=True
     rig.animation_data_create();rig.animation_data.action=action
-    for f in range(frames+1):
-        scene.frame_set(f+1);reset();bpy.context.view_layer.update();p=f/frames;a=2*math.pi*p
+    # Four samples per frame preserve toe roll and heel fold at any authored duration.
+    sample_count=frames*4 if name=='Adult_Run_Biped' else frames
+    for sample in range(sample_count+1):
+        f=sample*frames/sample_count
+        scene.frame_set(int(f)+1,subframe=f-int(f));reset();bpy.context.view_layer.update();p=f/frames;a=2*math.pi*p
         pelvis=rig.pose.bones['Pelvis'];spine=rig.pose.bones['Spine'];head=rig.pose.bones['Head']
         if name=='Adult_Idle_Biped':
             # Asymmetric weight, slow breath, one small curious head response.
@@ -142,6 +219,36 @@ for name,frames in specs:
             for side_name,offset in [('L',0),('R',.5)]:
                 limb(solved,'Thigh_'+side_name,'Shin_'+side_name,'Foot_'+side_name,walk_target(side_name,(p+offset)%1),(0,-1,0))
             assign(solved)
+        elif name=='Adult_Run_Biped':
+            m={n:v.copy() for n,v in base.items()}
+            dz=run_height_offset-run_height_amplitude*math.cos(4*math.pi*(p-run_height_phase))
+            for n in m:
+                if n!='Root':m[n].translation+=Vector((.012*math.sin(a),-.018,dz))
+            # Slight extra waist lean; counter-rotate the head to retain forward gaze.
+            run_lean=math.radians(4)
+            assign(m);rot('Pelvis',.045,0,-.028*math.cos(a));rot('Spine',.11+run_lean,0,.07*math.cos(a));rot('Head',-.085-run_lean,0,-.04*math.cos(a))
+            for side_name,phase in [('L',0),('R',math.pi)]:
+                swing=math.cos(a+phase)
+                rot('UpperArm_'+side_name,.68*swing,0,.035*(1 if side_name=='L' else -1))
+                bend_elbow(side_name,92+6*math.cos(a+phase-.25));rot('Hand_'+side_name,.13*math.cos(a+phase-.38))
+                rot('Ear_'+side_name,.11*math.sin(2*a-.55)+.035*math.sin(a+phase))
+            rot('NeckSocket',-.065*math.sin(2*a-.4),0,-.025*math.sin(a));rot('BackSocket',.045*math.sin(2*a-.55),0,.025*math.sin(a-.4))
+            bpy.context.view_layer.update();solved={b.name:b.matrix.copy() for b in rig.pose.bones}
+            targets={side_name:run_foot(side_name,(p+offset)%1) for side_name,offset in [('L',0),('R',.5)]}
+            # The precomputed periodic curve already fits both legs. A failed fit
+            # is a generation error, not permission to reintroduce a sharp dip.
+            drop=0
+            for side_name in ('L','R'):
+                delta=solved['Thigh_'+side_name].translation-targets[side_name][0]
+                reach=rig.data.bones['Thigh_'+side_name].length+rig.data.bones['Shin_'+side_name].length-.0001
+                drop=max(drop,delta.z-math.sqrt(max(.0001,reach*reach-delta.x*delta.x-delta.y*delta.y)))
+            report['runMaximumPelvisFit']=max(report.get('runMaximumPelvisFit',0),drop)
+            if drop>.0005:raise RuntimeError(f'Run height envelope violation {drop:.6f}m at {p:.6f}')
+            for side_name,offset in [('L',0),('R',.5)]:
+                target,rotation=targets[side_name]
+                limb(solved,'Thigh_'+side_name,'Shin_'+side_name,'Foot_'+side_name,target,(0,-1,0))
+                solved['Foot_'+side_name]=rotation@base['Foot_'+side_name];solved['Foot_'+side_name].translation=target
+            assign(solved)
         else:
             assign(quad_pose(p,name=='Adult_Hop_Quadruped'))
             rot('Head',-.06*math.sin(a));rot('Ear_L',.08*math.sin(a-.4));rot('Ear_R',.07*math.sin(a-.65))
@@ -152,9 +259,11 @@ for name,frames in specs:
                 bag=strip.channelbag(slot)
                 if bag:
                     for curve in bag.fcurves:
-                        for point in curve.keyframe_points:point.interpolation='LINEAR' if name=='Adult_Walk_Biped' else 'BEZIER'
+                        for point in curve.keyframe_points:point.interpolation='LINEAR' if name in ('Adult_Walk_Biped','Adult_Run_Biped') else 'BEZIER'
+                        if name=='Adult_Run_Biped' and any('"'+bone+'"' in curve.data_path for bone in ('Pelvis','Spine','Head')):
+                            smooth_periodic_body_curve(curve)
     report['clips'].append({'name':name,'frames':frames,'duration':frames/30,'loop':True,
-        'style':'8-pose Disney-inspired cute walk' if name=='Adult_Walk_Biped' else 'asymmetric breathing idle' if name=='Adult_Idle_Biped' else 'preserved v0.70 quadruped'})
+        'style':'cute biped run with short flight' if name=='Adult_Run_Biped' else '8-pose Disney-inspired cute walk' if name=='Adult_Walk_Biped' else 'asymmetric breathing idle' if name=='Adult_Idle_Biped' else 'preserved v0.70 quadruped'})
 
 rig.animation_data.action=bpy.data.actions['Adult_Walk_Biped'];scene.frame_set(2);scene.frame_set(1);bpy.context.view_layer.update()
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
@@ -163,7 +272,7 @@ bpy.context.view_layer.objects.active=rig
 out=ROOT/'Assets/Art/Generated/AdultRabbit';out.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.fbx(filepath=str(out/'AdultRabbitMotion.fbx'),use_selection=True,object_types={'MESH','ARMATURE'},
     apply_unit_scale=True,axis_forward='-Z',axis_up='Y',add_leaf_bones=False,bake_anim=True,
-    bake_anim_use_all_actions=True,bake_anim_use_nla_strips=False,bake_anim_simplify_factor=0,mesh_smooth_type='FACE')
+    bake_anim_use_all_actions=True,bake_anim_use_nla_strips=False,bake_anim_step=.25,bake_anim_simplify_factor=0,mesh_smooth_type='FACE')
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbitMotion.blend'))
 (out/'AdultRabbitMotion.audit.json').write_text(json.dumps(report,indent=2),encoding='utf8')
 print('ADULT_RABBIT_MOTION_ART_OK')

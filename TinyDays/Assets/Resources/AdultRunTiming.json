@@ -1,0 +1,7 @@
+{
+  "duration": 0.7333333333333333,
+  "speed": 2.0,
+  "stance": 0.35,
+  "names": ["Contact", "Passing", "Kickoff", "Up"],
+  "phases": [0.0, 0.15, 0.30, 0.425]
+}

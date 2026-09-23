@@ -1,0 +1,6 @@
+Authored 89 poses: maximum segment-length error 0.000000m; pelvis Contact 0.4537, Passing 0.3930, Up 0.4699m.
+48 stop cases, 15472 samples: min sole 0.002499m; support slip 0.000001m; final forward gap 0.000000m; min knee spacing 0.293042m; airborne samples 1234; frame-rate distance spread 0.042797m (frame-rounded request times).
+Coat front probes 3868: penetration 0.000000m, runtime correction 0.053455m at Walking, phase 0.8758, run blend 1.000. Sampled front visibility, not complete intersection proof.
+Speed 2m/s, 0.733333s cycle at 0.5x/1x, pause, run-to-walk, nine interrupted/restarted stops, automatic stop and coat cleanup checked.
+Runtime minimum knee interior angle 59.42 degrees; foot rotation excursion 69.78 degrees; contact slip tracks the same sole vertex, not ankle translation.
+PASS: direct calls and captures only; user approval pending

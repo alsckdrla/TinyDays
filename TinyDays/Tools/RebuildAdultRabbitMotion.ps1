@@ -11,6 +11,15 @@ if(!$SkipArt){
 $uargs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitMotionBuilder.Execute','-logFile',('"'+(Join-Path $taskProject 'Logs/adult-rabbit-motion-unity.log')+'"'))
 $u=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $uargs -WindowStyle Hidden -Wait -PassThru
 if($u.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/adult-rabbit-motion-unity.log') -SimpleMatch 'ADULT_RABBIT_MOTION_OK' -Quiet)){throw 'Unity failed; see adult-rabbit-motion-unity.log'}
+$rargs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitRunChecks.Execute','-logFile',('"'+(Join-Path $taskProject 'Logs/adult-rabbit-run-checks.log')+'"'))
+$r=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $rargs -WindowStyle Hidden -Wait -PassThru
+if($r.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/adult-rabbit-run-checks.log') -SimpleMatch 'ADULT_RABBIT_RUN_OK' -Quiet)){throw 'Run validation failed; see adult-rabbit-run-checks.log'}
+$rhythmArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitRunChecks.MeasureRhythm','-logFile',('"'+(Join-Path $taskProject 'Logs/run-MeasureRhythm.log')+'"'))
+$rhythm=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $rhythmArgs -WindowStyle Hidden -Wait -PassThru
+if($rhythm.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/run-MeasureRhythm.log') -SimpleMatch 'RUN_RHYTHM_OK' -Quiet)){throw 'Run rhythm measurement failed'}
+$smoothArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitRunSmoothnessChecks.Execute','-logFile',('"'+(Join-Path $taskProject 'Logs/run-smoothness.log')+'"'))
+$smooth=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $smoothArgs -WindowStyle Hidden -Wait -PassThru
+if($smooth.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/run-smoothness.log') -SimpleMatch 'RUN_SMOOTHNESS_OK' -Quiet)){throw 'Run smoothness validation failed'}
 $bargs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitMotionBuilder.BuildPlayer','-logFile',('"'+(Join-Path $taskProject 'Logs/adult-rabbit-motion-player-build.log')+'"'))
 $b=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $bargs -WindowStyle Hidden -Wait -PassThru
 if($b.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/adult-rabbit-motion-player-build.log') -SimpleMatch 'ADULT_RABBIT_MOTION_PLAYER_OK' -Quiet)){throw 'Player build failed; see adult-rabbit-motion-player-build.log'}

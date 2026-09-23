@@ -12,6 +12,12 @@ namespace TinyDays.Review
         public float Speed { get; private set; }
         public float Weight { get; private set; }
         public double WalkTime { get; private set; }
+        public float RunWeight {get;private set;}
+        public bool WantsRun {get;private set;}
+        public void RequestRun(bool run){WantsRun=run;Request(true);}
+        float CruiseSpeed => Mathf.Lerp(1.15f,AdultRunTiming.Data.speed,RunWeight);
+        float CycleDuration => Mathf.Lerp(.8f,AdultRunTiming.Data.duration,RunWeight);
+        float StanceFraction => Mathf.Lerp(.5f,AdultRunTiming.Data.stance,RunWeight);
         public bool LeftPlanted => planted[0];
         public bool RightPlanted => planted[1];
         public float MaxReachError { get; private set; }
@@ -19,7 +25,7 @@ namespace TinyDays.Review
         public float RightSoleHeight { get; private set; }
         public bool BothFeetGrounded => LeftSoleHeight>=-.0005f&&LeftSoleHeight<=.005f&&RightSoleHeight>=-.0005f&&RightSoleHeight<=.005f;
         public float FootForwardGap => Mathf.Abs(Vector3.Dot(foot[0].position-foot[1].position,actor.forward));
-        public string StatusLabel => State==Stage.Landing?"착지 중":State==Stage.Closing?"발 모으기":State==Stage.Settling?"양발 안정 중":State==Stage.Idle?"정지 완료":State==Stage.Starting?"출발 중":"걷는 중";
+        public string StatusLabel => State==Stage.Landing?"착지 중":State==Stage.Closing?"발 모으기":State==Stage.Settling?"양발 안정 중":State==Stage.Idle?"정지 완료":State==Stage.Starting?"출발 중":RunWeight>.95f?"달리는 중":RunWeight>.01f?"걷기 ↔ 달리기":"걷는 중";
 #if UNITY_EDITOR
         // Editor-only A/B verification; never changes the player or source animation assets.
         public static bool DisableClearanceForChecks;
@@ -28,6 +34,9 @@ namespace TinyDays.Review
         float solveDt,smoothedHeight;
         bool heightReady;
         public float MaxTransitionLengthScale {get;private set;}=1;
+        public float SourcePelvisHeight {get;private set;}
+        public float ReachDrop {get;private set;}
+        public float SafetyDrop {get;private set;}
         readonly Vector3[][] shoePoints=new Vector3[2][];
         bool heldLowerBody,captureLanding;
         readonly Vector3[] heldHip=new Vector3[2];
@@ -39,8 +48,15 @@ namespace TinyDays.Review
         readonly Transform[] thigh=new Transform[2],shin=new Transform[2],foot=new Transform[2];
         readonly Vector3[] target=new Vector3[2],from=new Vector3[2],destination=new Vector3[2],swingOffset=new Vector3[2];
         readonly Quaternion[] flat=new Quaternion[2];
+        readonly Quaternion[] poseFoot=new Quaternion[2],landingRotation=new Quaternion[2];
+        readonly Vector3[] contactAnchor=new Vector3[2];
+        readonly int[] contactIndex={-1,-1};
+        readonly bool[] contactActive=new bool[2];
+        public int ContactIndex(int i)=>contactIndex[i];
+        public Vector3 ContactPosition(int i)=>contactIndex[i]<0?foot[i].position:foot[i].TransformPoint(shoePoints[i][contactIndex[i]]);
         readonly float[] ground=new float[2],lateral=new float[2],upper=new float[2],lower=new float[2];
         readonly bool[] planted={true,true};
+        readonly bool[] landingFoot=new bool[2];
         float clock,duration,startSpeed,startWeight,decelPower,startEndSpeed,startDecelPower;
         double startPhase,endPhase;
         int swing;
@@ -55,7 +71,7 @@ namespace TinyDays.Review
                 string suffix=i==0?"L":"R";
                 thigh[i]=bones.First(t=>t.name=="Thigh_"+suffix);shin[i]=bones.First(t=>t.name=="Shin_"+suffix);foot[i]=bones.First(t=>t.name=="Foot_"+suffix);
                 upper[i]=Vector3.Distance(thigh[i].position,shin[i].position);lower[i]=Vector3.Distance(shin[i].position,foot[i].position);
-                flat[i]=foot[i].rotation;lateral[i]=actor.InverseTransformPoint(foot[i].position).x;
+                flat[i]=poseFoot[i]=landingRotation[i]=foot[i].rotation;lateral[i]=actor.InverseTransformPoint(foot[i].position).x;
                 int bi=Array.FindIndex(shoes.bones,b=>b==foot[i]);var matrix=foot[i].localToWorldMatrix*mesh.bindposes[bi];
                 lateral[i]=actor.InverseTransformPoint(shoes.transform.TransformPoint(mesh.bindposes[bi].inverse.MultiplyPoint3x4(Vector3.zero))).x;
                 shoePoints[i]=Enumerable.Range(0,vertices.Length).Where(v=>weights[v].boneIndex0==bi&&weights[v].weight0>.99f).Select(v=>mesh.bindposes[bi].MultiplyPoint3x4(vertices[v])).ToArray();
@@ -102,10 +118,14 @@ namespace TinyDays.Review
             State=Stage.Starting;
         }
         void StopStep(){
+            for(int i=0;i<2;i++)landingRotation[i]=foot[i].rotation;
             if(heldLowerBody)HoldLowerBody();
             clock=0;startSpeed=Speed;startWeight=Weight;
             // Treat the sub-millimetre touchdown neighbourhood as double support.
-            for(int i=0;i<2;i++)if(target[i].y-ground[i]<.001f){target[i].y=ground[i];planted[i]=true;}
+            for(int i=0;i<2;i++){
+                float clearance=RunWeight>0?(i==0?LeftSoleHeight:RightSoleHeight)-.0025f:target[i].y-ground[i];
+                if(clearance<.001f){if(RunWeight==0)target[i].y=ground[i];planted[i]=true;}
+            }
             bool airborne=!planted[0]||!planted[1];swing=!planted[0]?0:!planted[1]?1:-1;
             startPhase=WalkTime;endPhase=airborne?(Math.Floor(WalkTime/.4+1e-6)+1)*.4:WalkTime;
             float phase=(float)(WalkTime/.8%1);float remaining=.4f*(1-((phase*2)%1));
@@ -114,7 +134,7 @@ namespace TinyDays.Review
             for(int i=0;i<2;i++)if(planted[i])allowed=Mathf.Min(allowed,Mathf.Max(.015f,.36f+Vector3.Dot(target[i]-actor.position,actor.forward)));
             decelPower=Mathf.Max(1,startSpeed*duration/allowed-1);
             float distance=startSpeed*duration/(decelPower+1);
-            for(int i=0;i<2;i++){from[i]=target[i];destination[i]=i==swing?GroundAt(i,Mathf.Max(distance+.045f,Vector3.Dot(target[i]-actor.position,actor.forward))):target[i];}
+            for(int i=0;i<2;i++){landingFoot[i]=!planted[i];from[i]=target[i];destination[i]=landingFoot[i]?GroundAt(i,Mathf.Max(distance+.045f,Vector3.Dot(target[i]-actor.position,actor.forward))):target[i];}
             State=Stage.Landing;
         }
         void BeginClosing(){
@@ -136,7 +156,7 @@ namespace TinyDays.Review
             float balance=standing?Mathf.Clamp(Vector3.Dot((target[0]+target[1])*.5f-actor.position,actor.forward),-.2f,.2f):0;
             balanceOffset=Mathf.MoveTowards(balanceOffset,balance,dt*1.5f);
             float before=clock;clock+=dt;float movement=0;
-            if(State==Stage.Idle){Speed=Weight=0;return 0;}
+            if(State==Stage.Idle){Speed=Weight=RunWeight=0;return 0;}
             if(State==Stage.Starting){
                 float a=Mathf.Clamp01(before/duration),b=Mathf.Clamp01(clock/duration);
                 movement=duration*(startSpeed*(b-a)+(startEndSpeed-startSpeed)*(b*b-a*a)*.5f);
@@ -148,13 +168,15 @@ namespace TinyDays.Review
                 // a second lift on top of the interrupted swing.
                 if(from[swing].y>ground[swing]+.01f)target[swing].y=Mathf.Lerp(from[swing].y,destination[swing].y,1-(1-b)*(1-b));
                 if(b>=1){State=Stage.Walking;planted[0]=planted[1]=true;clock=0;}
-            }else if(State==Stage.Walking){float oldSpeed=Speed;Speed=Mathf.MoveTowards(Speed,1.15f,dt*(1.15f/.15f));Weight=1;movement=(oldSpeed+Speed)*.5f*dt;WalkTime+=movement/1.15f;
+            }else if(State==Stage.Walking){
+                RunWeight=Mathf.MoveTowards(RunWeight,WantsRun?1:0,dt/.45f);
+                float oldSpeed=Speed;Speed=Mathf.MoveTowards(Speed,CruiseSpeed,dt*(1.15f/.15f));Weight=1;movement=(oldSpeed+Speed)*.5f*dt;WalkTime+=movement/CruiseSpeed*.8f/CycleDuration;
             }else if(State==Stage.Landing){
                 float a=Mathf.Clamp01(before/duration),b=Mathf.Clamp01(clock/duration);
                 movement=startSpeed*duration/(decelPower+1)*(Mathf.Pow(1-a,decelPower+1)-Mathf.Pow(1-b,decelPower+1));
                 Speed=startSpeed*Mathf.Pow(1-b,decelPower);Weight=startWeight;
                 WalkTime=startPhase+(endPhase-startPhase)*Ease(b);
-                if(swing>=0){target[swing]=Vector3.Lerp(from[swing],destination[swing],Ease(b));target[swing].y=Mathf.Lerp(from[swing].y,destination[swing].y,1-(1-b)*(1-b));}
+                for(int i=0;i<2;i++)if(landingFoot[i]){target[i]=Vector3.Lerp(from[i],destination[i],Ease(b));target[i].y=Mathf.Lerp(from[i].y,destination[i].y,1-(1-b)*(1-b));}
                 // Apply() checks each actual shoe after IK before completing the landing.
                 if(b>=1)Speed=0;
             }else if(State==Stage.Closing){
@@ -167,6 +189,7 @@ namespace TinyDays.Review
         }
         public void Apply(){
             CaptureSourcePose();
+            SourcePelvisHeight=pelvis.position.y;ReachDrop=SafetyDrop=0;
             // The source clips key segment translations as well as rotations. Mixing the legs
             // back to idle after a staggered landing would change their lengths and squat the
             // pelvis between fixed feet. Hold the landed lower body while the upper body settles.
@@ -192,14 +215,21 @@ namespace TinyDays.Review
             pelvis.position+=actor.forward*balanceOffset;
             if(State==Stage.Walking){
                 for(int i=0;i<2;i++){
-                    float phase=(float)((WalkTime/.8+(i==0?0:.5))%1);bool support=phase<.5f;
+                    float phase=(float)((WalkTime/.8+(i==0?0:.5))%1);bool support=phase<StanceFraction;
                     if(support){if(!planted[i]){target[i]=foot[i].position;target[i].y=ground[i];}planted[i]=true;}
                     else{
                         if(planted[i])swingOffset[i]=target[i]-foot[i].position;
                         // On first swing after starting, retain the previous supporting foot position.
-                        planted[i]=false;target[i]=foot[i].position+swingOffset[i]*(1-Ease((phase-.5f)*2));target[i].y=Mathf.Max(ground[i],target[i].y);
+                        planted[i]=false;target[i]=foot[i].position+swingOffset[i]*(1-Ease((phase-StanceFraction)/(1-StanceFraction)));target[i].y=Mathf.Max(ground[i],target[i].y);
                     }
                 }
+            }
+            // A running shoe rolls around its actual lowest sole vertex. The world
+            // contact remains fixed while the ankle is free to rotate above it.
+            for(int i=0;i<2;i++){
+                poseFoot[i]=State==Stage.Walking&&RunWeight>0?foot[i].rotation:
+                    State==Stage.Landing?Quaternion.Slerp(landingRotation[i],flat[i],Ease(Mathf.Clamp01(clock/duration))):flat[i];
+                if(RunWeight>0||contactActive[i])ApplyShoeContact(i);
             }
             // Fit both legs; transitions may also lift the pelvis out of a frozen crouch.
             float drop=float.NegativeInfinity;
@@ -213,6 +243,7 @@ namespace TinyDays.Review
                 float maxY=Mathf.Sqrt(Mathf.Max(.0001f,length*length-horizontal));drop=Mathf.Max(drop,d.y-maxY);
             }
             float rawHeight=pelvis.position.y-Mathf.Max(-.06f*postureWeight,drop);
+            ReachDrop=drop;
             if(!heightReady){smoothedHeight=rawHeight;heightReady=true;}
             if(solveDt>0)smoothedHeight=Mathf.MoveTowards(smoothedHeight,rawHeight,.35f*solveDt);
             var fitted=pelvis.position;fitted.y=Mathf.Lerp(rawHeight,smoothedHeight,postureWeight);pelvis.position=fitted;
@@ -228,7 +259,7 @@ namespace TinyDays.Review
             float safety=0;
             for(int i=0;i<2;i++){var d=thigh[i].position-target[i];float length=upper[i]+lower[i]-.0001f;
                 safety=Mathf.Max(safety,d.y-Mathf.Sqrt(Mathf.Max(.0001f,length*length-d.x*d.x-d.z*d.z)));}
-            pelvis.position-=Vector3.up*safety;solveDt=0;
+            SafetyDrop=safety;pelvis.position-=Vector3.up*safety;solveDt=0;
             for(int i=0;i<2;i++){
                 // Once recovery has finished, an unconstrained swing needs no IK rewrite.
                 // Keep the approved source knee/cloth pose instead of recomputing it numerically.
@@ -236,7 +267,7 @@ namespace TinyDays.Review
 #if UNITY_EDITOR
                 if(DisableClearanceForChecks)authoredSwing=false;
 #endif
-                if(!authoredSwing)Solve(i);
+                if(!authoredSwing)Solve(i);else foot[i].rotation=poseFoot[i];
             }
             LeftSoleHeight=SoleHeight(0);RightSoleHeight=SoleHeight(1);
             if((State==Stage.Landing||State==Stage.Closing)&&clock>=duration){
@@ -248,6 +279,17 @@ namespace TinyDays.Review
             if(captureLanding){HoldLowerBody();captureLanding=false;}
         }
         float SoleHeight(int i){float minimum=float.MaxValue;var matrix=foot[i].localToWorldMatrix;foreach(var p in shoePoints[i])minimum=Mathf.Min(minimum,matrix.MultiplyPoint3x4(p).y);return minimum;}
+        Vector3 ShoeOffset(int i,int vertex,Quaternion rotation)=>rotation*Vector3.Scale(foot[i].lossyScale,shoePoints[i][vertex]);
+        void ApplyShoeContact(int i){
+            int lowest=0;float minimum=float.PositiveInfinity;
+            for(int v=0;v<shoePoints[i].Length;v++){float y=ShoeOffset(i,v,poseFoot[i]).y;if(y<minimum){minimum=y;lowest=v;}}
+            if(planted[i]){
+                if(!contactActive[i]){contactAnchor[i]=target[i]+ShoeOffset(i,lowest,poseFoot[i]);contactActive[i]=true;}
+                else if(contactIndex[i]>=0&&lowest!=contactIndex[i])contactAnchor[i]+=ShoeOffset(i,lowest,poseFoot[i])-ShoeOffset(i,contactIndex[i],poseFoot[i]);
+                contactIndex[i]=lowest;contactAnchor[i].y=.0025f;
+                target[i]=contactAnchor[i]-ShoeOffset(i,lowest,poseFoot[i]);
+            }else{contactActive[i]=false;contactIndex[i]=lowest;target[i].y=Mathf.Max(target[i].y,.0025f-minimum);}
+        }
         void HoldLowerBody(){
             heldLowerBody=true;
             for(int i=0;i<2;i++){heldHip[i]=thigh[i].localPosition;heldUpper[i]=upper[i];heldLower[i]=lower[i];}
@@ -265,7 +307,7 @@ namespace TinyDays.Review
             shin[i].position=knee;
             shin[i].rotation=Quaternion.FromToRotation(foot[i].position-shin[i].position,target[i]-shin[i].position)*shin[i].rotation;
             foot[i].position=a+direction*distance;
-            foot[i].rotation=flat[i];
+            foot[i].rotation=poseFoot[i];
         }
     }
 }

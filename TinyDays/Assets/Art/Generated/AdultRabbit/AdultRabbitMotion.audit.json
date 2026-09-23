@@ -1,7 +1,28 @@
 {
   "bodyFamily": "AdultStandard_v2",
   "reference": "ref_walking_ani_01.jpg; ref_ani.mp4 is an incomplete 104-byte fragment",
-  "scope": "Disney-inspired biped idle/walk revision; quadruped clips preserved, farm replacement and transitions excluded.",
+  "scope": "Biped run added; existing idle/walk and quadruped drafts preserved; no farm replacement.",
+  "runSpeedMetersPerSecond": 2.0,
+  "runStanceFraction": 0.35,
+  "runReference": "ref_run_ani_01.jpg",
+  "runPhases": [
+    [
+      "Contact",
+      0.0
+    ],
+    [
+      "Passing",
+      0.15
+    ],
+    [
+      "Kickoff",
+      0.3
+    ],
+    [
+      "Up",
+      0.425
+    ]
+  ],
   "walkPhases": [
     "Contact L",
     "Recoil L",
@@ -42,6 +63,20 @@
       "duration": 1.0,
       "loop": true,
       "style": "preserved v0.70 quadruped"
+    },
+    {
+      "name": "Adult_Run_Biped",
+      "frames": 22,
+      "duration": 0.7333333333333333,
+      "loop": true,
+      "style": "cute biped run with short flight"
     }
-  ]
+  ],
+  "runHeightCurve": {
+    "offset": -0.09954434734971934,
+    "phase": 0.175,
+    "amplitude": 0.0395,
+    "reachMargin": 0.004
+  },
+  "runMaximumPelvisFit": 0
 }

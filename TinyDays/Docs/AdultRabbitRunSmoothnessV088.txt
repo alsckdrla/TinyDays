@@ -1,0 +1,6 @@
+authored: pelvis range 0.078871m; head range 0.078618m; max acceleration 23.121/23.106m/s2; max 240Hz velocity change 0.096338/0.096273m/s; direction reversals 8/8 in two cycles; max safety drop 0.000000m; max runtime height correction 0.000000m.
+Flight: body peak phase 0.420455; minimum sole at peak 0.032150m; nearest midpoint soles L/R 0.082268/0.030776m; any planted at peak False.
+moving: pelvis range 0.078859m; head range 0.078602m; max acceleration 19.698/19.659m/s2; max 240Hz velocity change 0.082076/0.081911m/s; direction reversals 8/8 in two cycles; max safety drop 0.000000m; max runtime height correction 0.000001m.
+Flight: body peak phase 0.421296; minimum sole at peak 0.031924m; nearest midpoint soles L/R 0.081763/0.030537m; any planted at peak False.
+30/60/120fps common-time pelvis/head difference 0.0000000m.
+PASS numerical smoothness; actual input and user quality approval pending

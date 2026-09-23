@@ -1,4 +1,4 @@
-Last-step contact 48 runs (8 phases x 3 frame rates x 2 speeds): drift 0.000001m; min sole 0.002443m; unreachable 0.000000m; travel spread 0.011042m
+Last-step contact 48 runs (8 phases x 3 frame rates x 2 speeds): drift 0.000001m; min sole 0.002486m; unreachable 0.000000m; travel spread 0.011042m
 run 0: 0.468750
 run 1: 0.568854
 run 2: 0.626354

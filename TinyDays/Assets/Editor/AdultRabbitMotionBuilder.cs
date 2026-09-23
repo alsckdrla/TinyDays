@@ -14,7 +14,7 @@ public static class AdultRabbitMotionBuilder
     const string Model="Assets/Art/Generated/AdultRabbit/AdultRabbitMotion.fbx";
     const string ScenePath="Assets/Scenes/AdultRabbitMotionStudy.unity";
     const string Owner="GeneratedAdultRabbitMotionReview";
-    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped"};
+    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped"};
     static void Check(bool value,string message){if(!value)throw new Exception(message);}
     [MenuItem("Tiny Days/Adult rabbit/Open motion review")]
     public static void Open(){EditorSceneManager.OpenScene(ScenePath);}
@@ -99,15 +99,15 @@ public static class AdultRabbitMotionBuilder
         var cg=new GameObject("Motion camera");cg.tag="MainCamera";cg.transform.SetParent(root.transform);var cam=cg.AddComponent<Camera>();cam.fieldOfView=35;cam.backgroundColor=new Color(.84f,.86f,.85f);cam.clearFlags=CameraClearFlags.SolidColor;cam.GetUniversalAdditionalCameraData().renderPostProcessing=false;
         cam.transform.position=new Vector3(3.3f,1.8f,5.2f);cam.transform.LookAt(new Vector3(0,1.0f,0));
         var allClips=AssetDatabase.LoadAllAssetsAtPath(Model).OfType<AnimationClip>().Where(c=>!c.name.StartsWith("__preview__")).ToArray();
-        var clips=Names.Select(n=>allClips.SingleOrDefault(c=>c.name.EndsWith(n,StringComparison.Ordinal))).ToArray();Check(clips.All(c=>c),"Expected four adult clips; found "+string.Join(", ",allClips.Select(c=>c.name)));
+        var clips=Names.Select(n=>allClips.SingleOrDefault(c=>c.name.EndsWith(n,StringComparison.Ordinal))).ToArray();Check(clips.All(c=>c),"Expected five adult clips; found "+string.Join(", ",allClips.Select(c=>c.name)));
         var review=root.AddComponent<AdultRabbitMotionReview>();review.resident=actor;review.reviewCamera=cam;review.clips=clips;
         EditorSceneManager.SaveScene(scene,ScenePath);AssetDatabase.SaveAssets();
     }
     static void Verify()
     {
-        var review=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();Check(review&&review.clips.Length==4,"Review missing");
+        var review=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();Check(review&&review.clips.Length==5,"Review missing");
         var actor=review.resident;var skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.enabled).ToArray();
-        var log=new[]{"AdultStandard_v2 first motion review; automatic sampling is not user motion approval.","Four looping clips imported: PASS","Existing farm and temporary RabbitMotion assets are not referenced or replaced: PASS"}.ToList();
+        var log=new[]{"AdultStandard_v2 motion review; automatic sampling is not user motion approval.","Five looping clips imported: PASS (two quadruped drafts deferred)","Existing farm and temporary RabbitMotion assets are not referenced or replaced: PASS"}.ToList();
         for(int i=0;i<review.clips.Length;i++){
             var clip=review.clips[i];Check(clip.isLooping,"Clip not looping: "+clip.name);float maxDelta=0;
             Vector3[] first=null,last=null;

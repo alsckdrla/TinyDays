@@ -21,13 +21,13 @@ namespace TinyDays.Review
         public float Speed => MovingReview&&footTransition!=null?footTransition.Speed:0;
         double walkTime,idleTime,movementRemainder;
         AnimationMixerPlayable mixer;
-        AnimationClipPlayable idlePlayable,walkPlayable;
+        AnimationClipPlayable idlePlayable,walkPlayable,runPlayable;
         Vector3 pivot=new Vector3(0,1,0),previous;
         float yaw=32.4f,pitch=7.4f,distance=6.21f;
         int drag=-1;
         Rect Panel => new Rect(14,14,Screen.width-28,255);
         PlayableGraph graph; AnimationClipPlayable playable; int active=-1; Font font;
-        static readonly string[] Labels={"두 발 대기","두 발 총총걸음","네 발 대기","낮은 깡충 이동"};
+        static readonly string[] Labels={"두 발 대기","두 발 총총걸음","네 발 대기 (보류)","깡충 (보류)","두 발 달리기"};
         void OnEnable(){if(!Application.isPlaying)return;font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",18);Sample(0);}
         void OnDisable(){coatClearance?.Dispose();coatClearance=null;drag=-1;active=-1;MovingReview=false;MoveWeight=0;WantsToWalk=false;footTransition?.RestoreSourcePose();footTransition=null;if(resident)resident.transform.localPosition=Vector3.zero;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
         void OnApplicationFocus(bool focus){if(!focus)drag=-1;}
@@ -39,7 +39,7 @@ namespace TinyDays.Review
             // Small deterministic integration steps keep speed, phase and travel synchronized.
             movementRemainder+=dt;
             while(movementRemainder+1e-6>=1.0/240){float step=1f/240f;movementRemainder-=1.0/240;
-                if(Travel>=5.25f&&WantsToWalk)RequestWalk(false);
+                if(Travel>=(footTransition.RunWeight>.01f?4.8f:5.25f)&&WantsToWalk)RequestWalk(false);
                 float distanceStep=footTransition.Step(step);
                 walkTime=footTransition.WalkTime;MoveWeight=footTransition.Weight;idleTime+=step;Travel+=distanceStep;
                 var delta=resident.transform.forward*distanceStep;resident.transform.position+=delta;pivot+=delta;
@@ -50,17 +50,20 @@ namespace TinyDays.Review
         void EvaluateMovement(){
             footTransition?.RestoreSourcePose();
             idlePlayable.SetTime(idleTime%clips[0].length);walkPlayable.SetTime(walkTime%clips[1].length);
-            mixer.SetInputWeight(0,1-MoveWeight);mixer.SetInputWeight(1,MoveWeight);graph.Evaluate(0);footTransition?.Apply();
+            float run=footTransition?.RunWeight??0;runPlayable.SetTime((walkTime/.8%1)*clips[4].length);
+            mixer.SetInputWeight(0,1-MoveWeight);mixer.SetInputWeight(1,MoveWeight*(1-run));mixer.SetInputWeight(2,MoveWeight*run);graph.Evaluate(0);footTransition?.Apply();
         }
         public void BeginMovement(){
             Select(0);MovingReview=true;paused=false;MoveWeight=0;Travel=0;walkTime=idleTime=movementRemainder=0;WantsToWalk=false;
             if(graph.IsValid())graph.Destroy();graph=PlayableGraph.Create("Adult movement transition");graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             idlePlayable=AnimationClipPlayable.Create(graph,clips[0]);walkPlayable=AnimationClipPlayable.Create(graph,clips[1]);
-            mixer=AnimationMixerPlayable.Create(graph,2);graph.Connect(idlePlayable,0,mixer,0);graph.Connect(walkPlayable,0,mixer,1);
+            runPlayable=AnimationClipPlayable.Create(graph,clips[4]);
+            mixer=AnimationMixerPlayable.Create(graph,3);graph.Connect(idlePlayable,0,mixer,0);graph.Connect(walkPlayable,0,mixer,1);graph.Connect(runPlayable,0,mixer,2);
             var animator=resident.GetComponent<Animator>();animator.enabled=true;animator.applyRootMotion=false;animator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
             var output=AnimationPlayableOutput.Create(graph,"Locomotion",animator);output.SetSourcePlayable(mixer);graph.Play();footTransition=null;EvaluateMovement();coatClearance=new AdultRabbitCoatClearance(resident);footTransition=new AdultRabbitFootTransition(resident);Advance(0);
         }
         public void RequestWalk(bool walk){if(!MovingReview)BeginMovement();WantsToWalk=walk;footTransition.Request(walk);}
+        public void RequestRun(bool run){if(!MovingReview)BeginMovement();WantsToWalk=true;footTransition.RequestRun(run);}
         public void Home(){pivot=resident.transform.position+new Vector3(0,1,0);yaw=32.4f;pitch=7.4f;distance=6.21f;drag=-1;ApplyCamera();}
         public void View(float angle){Home();yaw=angle;pitch=4;ApplyCamera();}
         void ApplyCamera(){reviewCamera.transform.rotation=Quaternion.Euler(pitch,180+yaw,0);reviewCamera.transform.position=pivot-reviewCamera.transform.forward*distance;}
@@ -80,22 +83,23 @@ namespace TinyDays.Review
             if(!ui){if(Input.mouseScrollDelta.y!=0)Zoom(Input.mouseScrollDelta.y);
                 float h=(Input.GetKey(KeyCode.E)?1:0)-(Input.GetKey(KeyCode.Q)?1:0);if(h!=0){pivot+=Vector3.up*h*2*Time.unscaledDeltaTime;ApplyCamera();}}
         }
-        public void Pose(int index){Select(1);paused=true;elapsed=clips[1].length*Mathf.Clamp(index,0,7)/8.0;Sample(elapsed);}
+        bool ShowingRun => selected==4||(MovingReview&&footTransition.RunWeight>.5f);
+        public void Pose(int index){int clip=ShowingRun?4:1;Select(clip);paused=true;elapsed=clips[clip].length*(clip==4?AdultRunTiming.Phase(Mathf.Clamp(index,0,7)):Mathf.Clamp(index,0,7)/8.0);Sample(elapsed);}
         void Rebuild(){if(graph.IsValid())graph.Destroy();graph=PlayableGraph.Create("Adult rabbit motion");graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-            var animator=resident.GetComponent<Animator>();animator.enabled=true;animator.applyRootMotion=false;
+            var animator=resident.GetComponent<Animator>();animator.enabled=true;animator.applyRootMotion=false;animator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
             playable=AnimationClipPlayable.Create(graph,clips[selected]);var output=AnimationPlayableOutput.Create(graph,"Adult",animator);output.SetSourcePlayable(playable);graph.Play();active=selected;}
-        public void Select(int index){coatClearance?.Dispose();coatClearance=null;footTransition?.RestoreSourcePose();footTransition=null;if(MovingReview){MovingReview=false;MoveWeight=0;WantsToWalk=false;Travel=0;resident.transform.localPosition=Vector3.zero;active=-1;Home();}selected=Mathf.Clamp(index,0,clips.Length-1);elapsed=0;Sample(0);}
-        public void Sample(double time){if(active!=selected||!graph.IsValid())Rebuild();playable.SetTime(time%clips[selected].length);graph.Evaluate(0);}
-        void OnGUI(){if(font)GUI.skin.font=font;GUILayout.BeginArea(Panel,GUI.skin.box);GUILayout.Label("Tiny Days · 성인 토끼 동작 검토 v0.82");GUILayout.BeginHorizontal();
-            for(int i=0;i<clips.Length;i++)if(GUILayout.Button((selected==i?"● ":"")+Labels[i],GUILayout.Height(32)))Select(i);
+        public void Select(int index){coatClearance?.Dispose();coatClearance=null;footTransition?.RestoreSourcePose();footTransition=null;if(MovingReview){MovingReview=false;MoveWeight=0;WantsToWalk=false;Travel=0;resident.transform.localPosition=Vector3.zero;active=-1;Home();}selected=Mathf.Clamp(index,0,clips.Length-1);elapsed=0;if(selected==4){clips[0].SampleAnimation(resident,0);coatClearance=new AdultRabbitCoatClearance(resident);}Sample(0);}
+        public void Sample(double time){if(active!=selected||!graph.IsValid())Rebuild();playable.SetTime(time%clips[selected].length);graph.Evaluate(0);if(selected==4)coatClearance?.Apply(1f/60);}
+        void OnGUI(){if(font)GUI.skin.font=font;GUILayout.BeginArea(Panel,GUI.skin.box);GUILayout.Label("Tiny Days · 성인 토끼 동작 검토 v0.84 · 달리기 자세");GUILayout.BeginHorizontal();
+            for(int i=0;i<clips.Length;i++){if(i==2||i==3)continue;if(GUILayout.Button((selected==i?"● ":"")+Labels[i],GUILayout.Height(32)))Select(i);}
             if(GUILayout.Button(paused?"재생":"일시정지",GUILayout.Height(32)))paused=!paused;
             if(GUILayout.Button((slow?"● ":"")+"0.5×",GUILayout.Height(32)))slow=true;
             if(GUILayout.Button((!slow?"● ":"")+"1×",GUILayout.Height(32)))slow=false;
-            GUILayout.EndHorizontal();GUILayout.Label(MovingReview?$"현재 {(slow?"0.5":"1")}× · {(paused?"일시정지":"재생 중")} · 걷기 혼합 {MoveWeight:P0} · 주기 {walkTime%clips[1].length:F2}/{clips[1].length:F2}초":$"현재 {(slow?"0.5":"1")}× · {(paused?"일시정지":"재생 중")} · 클립 {elapsed%clips[selected].length:F2}/{clips[selected].length:F2}초 · 누적 {elapsed:F2}초");
+            GUILayout.EndHorizontal();GUILayout.Label(MovingReview?$"현재 {(slow?"0.5":"1")}× · {(paused?"일시정지":"재생 중")} · 이동 {MoveWeight:P0} · 달리기 혼합 {footTransition.RunWeight:P0}":$"현재 {(slow?"0.5":"1")}× · {(paused?"일시정지":"재생 중")} · 클립 {elapsed%clips[selected].length:F2}/{clips[selected].length:F2}초 · 누적 {elapsed:F2}초");
             GUILayout.BeginHorizontal();if(GUILayout.Button("정면"))View(0);if(GUILayout.Button("측면"))View(90);if(GUILayout.Button("비스듬히 / Home"))Home();GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();string[] phases={"L Contact","L Recoil","L Passing","L High","R Contact","R Recoil","R Passing","R High"};for(int i=0;i<8;i++)if(GUILayout.Button(phases[i]))Pose(i);GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();string[] phases={"L Contact","L Recoil","L Passing","L High","R Contact","R Recoil","R Passing","R High"};for(int i=0;i<8;i++)if(GUILayout.Button(ShowingRun?AdultRunTiming.Label(i):phases[i]))Pose(i);GUILayout.EndHorizontal();
             GUILayout.Label("왼쪽 패닝 · 오른쪽 회전 · 가운데 높이 · 휠 줌 · Q/E 높이 · Home 복귀");
-            GUILayout.BeginHorizontal();if(GUILayout.Button("이동 검토 / 처음 위치"))BeginMovement();if(GUILayout.Button("출발"))RequestWalk(true);if(GUILayout.Button("정지"))RequestWalk(false);GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();if(GUILayout.Button("이동 검토 / 처음 위치"))BeginMovement();if(GUILayout.Button("걷기 / 출발"))RequestRun(false);if(GUILayout.Button("달리기"))RequestRun(true);if(GUILayout.Button("정지"))RequestWalk(false);GUILayout.EndHorizontal();
             GUILayout.Label(MovingReview?$"{footTransition.StatusLabel} · 지지발 {(footTransition.LeftPlanted?"왼쪽 ":"")}{(footTransition.RightPlanted?"오른쪽":"")} · {(paused?0:Speed*(slow?.5f:1)):F2}m/s · {Travel:F2}m / 약 6m":"제자리 검토 · 이동 검토에서 출발/정지를 확인하세요");GUILayout.EndArea();}
     }
 }

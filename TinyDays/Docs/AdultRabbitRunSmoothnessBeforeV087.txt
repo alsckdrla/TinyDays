@@ -1,0 +1,3 @@
+authored: pelvis range 0.080002m; head range 0.080002m; max acceleration 595.358/595.308m/s2; max 240Hz velocity change 2.480657/2.480449m/s; direction reversals 15/15 in two cycles; max safety drop 0.000000m.
+moving: pelvis range 0.079215m; head range 0.079226m; max acceleration 397.729/397.671m/s2; max 240Hz velocity change 1.657205/1.656961m/s; direction reversals 16/16 in two cycles; max safety drop 0.000000m.
+BASELINE; not a smoothness pass
