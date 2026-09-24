@@ -1,0 +1,71 @@
+{
+  "before": {
+    "5": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 1.0038401536061414,
+        "peak_acceleration_m_s2": 9.538153965782271,
+        "interior_slow_episodes": 2,
+        "after_1_1s_peak_speed": 0.482961363090962
+      },
+      "head": {
+        "range_m": 0.6370359999999999,
+        "peak_speed_m_s": 2.1520460818432907,
+        "peak_acceleration_m_s2": 46.778342624530545,
+        "interior_slow_episodes": 3,
+        "after_1_1s_peak_speed": 2.1520460818432907
+      }
+    },
+    "6": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 1.0998439937597466,
+        "peak_acceleration_m_s2": 12.527498940131421,
+        "interior_slow_episodes": 2,
+        "after_1_1s_peak_speed": 0.8420926325894118
+      },
+      "head": {
+        "range_m": 0.6366789999999999,
+        "peak_speed_m_s": 1.739349573982953,
+        "peak_acceleration_m_s2": 23.571857201142226,
+        "interior_slow_episodes": 3,
+        "after_1_1s_peak_speed": 1.1089512838973192
+      }
+    }
+  },
+  "after": {
+    "5": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 0.8771298296136338,
+        "peak_acceleration_m_s2": 2.7703538052974466,
+        "interior_slow_episodes": 0,
+        "after_1_1s_peak_speed": 0.00011999040076806085
+      },
+      "head": {
+        "range_m": 0.5206470000000001,
+        "peak_speed_m_s": 1.076323052922113,
+        "peak_acceleration_m_s2": 3.585456593205763,
+        "interior_slow_episodes": 1,
+        "after_1_1s_peak_speed": 0.2931717268690742
+      }
+    },
+    "6": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 0.868114724588987,
+        "peak_acceleration_m_s2": 2.8137127815054153,
+        "interior_slow_episodes": 0,
+        "after_1_1s_peak_speed": 0.8228941684665421
+      },
+      "head": {
+        "range_m": 0.5294769999999999,
+        "peak_speed_m_s": 1.0408016320652838,
+        "peak_acceleration_m_s2": 7.327670435171532,
+        "interior_slow_episodes": 1,
+        "after_1_1s_peak_speed": 0.943724502039856
+      }
+    }
+  },
+  "checks_pass": true
+}

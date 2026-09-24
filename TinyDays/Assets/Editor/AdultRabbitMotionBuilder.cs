@@ -14,7 +14,8 @@ public static class AdultRabbitMotionBuilder
     const string Model="Assets/Art/Generated/AdultRabbit/AdultRabbitMotion.fbx";
     const string ScenePath="Assets/Scenes/AdultRabbitMotionStudy.unity";
     const string Owner="GeneratedAdultRabbitMotionReview";
-    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped"};
+    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped","Adult_Sit_Down","Adult_Stand_Up","Adult_Sit_Hold","Adult_Breathe_Stand","Adult_Breathe_Sit"};
+    public static void BuildOnly(){Build();Debug.Log("ADULT_REVIEW_BUILD_OK");}
     static void Check(bool value,string message){if(!value)throw new Exception(message);}
     [MenuItem("Tiny Days/Adult rabbit/Open motion review")]
     public static void Open(){EditorSceneManager.OpenScene(ScenePath);}
@@ -83,7 +84,7 @@ public static class AdultRabbitMotionBuilder
             importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material),name),mat);}
         importer.SaveAndReimport();
         var clipSettings=importer.defaultClipAnimations;
-        foreach(var setting in clipSettings)if(Names.Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal))){setting.loopTime=true;setting.loopPose=true;}
+        foreach(var setting in clipSettings)if(Names.Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal))){bool loop=Names.Take(5).Concat(Names.Skip(8)).Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal));setting.loopTime=loop;setting.loopPose=loop;}
         importer.clipAnimations=clipSettings;importer.SaveAndReimport();
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         if(scene.path!=ScenePath)scene=File.Exists(ScenePath)?EditorSceneManager.OpenScene(ScenePath):EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
@@ -101,14 +102,17 @@ public static class AdultRabbitMotionBuilder
         var allClips=AssetDatabase.LoadAllAssetsAtPath(Model).OfType<AnimationClip>().Where(c=>!c.name.StartsWith("__preview__")).ToArray();
         var clips=Names.Select(n=>allClips.SingleOrDefault(c=>c.name.EndsWith(n,StringComparison.Ordinal))).ToArray();Check(clips.All(c=>c),"Expected five adult clips; found "+string.Join(", ",allClips.Select(c=>c.name)));
         var review=root.AddComponent<AdultRabbitMotionReview>();review.resident=actor;review.reviewCamera=cam;review.clips=clips;
+        var joints=actor.GetComponentsInChildren<Transform>();
+        review.idleProfile.Parts=new[]{"Ear_L","Ear_R","NeckSocket","BackSocket"}.Select((name,i)=>new IdleSecondaryMotion.Part{Joint=joints.FirstOrDefault(j=>j.name==name),Degrees=i<2?.45f:.3f,Lag=.18f+i*.08f}).ToArray();
+        review.idleProfile.Supports=new[]{"L","R"}.Select(side=>new IdleSupportLeg{Upper=joints.First(j=>j.name=="Thigh_"+side),Lower=joints.First(j=>j.name=="Shin_"+side),End=joints.First(j=>j.name=="Foot_"+side)}).ToArray();
         EditorSceneManager.SaveScene(scene,ScenePath);AssetDatabase.SaveAssets();
     }
     static void Verify()
     {
-        var review=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();Check(review&&review.clips.Length==5,"Review missing");
+        var review=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();Check(review&&review.clips.Length==10,"Review missing");
         var actor=review.resident;var skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.enabled).ToArray();
         var log=new[]{"AdultStandard_v2 motion review; automatic sampling is not user motion approval.","Five looping clips imported: PASS (two quadruped drafts deferred)","Existing farm and temporary RabbitMotion assets are not referenced or replaced: PASS"}.ToList();
-        for(int i=0;i<review.clips.Length;i++){
+        for(int i=0;i<5;i++){
             var clip=review.clips[i];Check(clip.isLooping,"Clip not looping: "+clip.name);float maxDelta=0;
             Vector3[] first=null,last=null;
             for(int s=0;s<=8;s++){clip.SampleAnimation(actor,clip.length*s/8f);var pts=skins.SelectMany(WorldVertices).ToArray();

@@ -265,6 +265,19 @@ for name,frames in specs:
     report['clips'].append({'name':name,'frames':frames,'duration':frames/30,'loop':True,
         'style':'cute biped run with short flight' if name=='Adult_Run_Biped' else '8-pose Disney-inspired cute walk' if name=='Adult_Walk_Biped' else 'asymmetric breathing idle' if name=='Adult_Idle_Biped' else 'preserved v0.70 quadruped'})
 
+import sys
+sys.path.insert(0,str(ROOT/'Tools'))
+from adult_rabbit_sitting import build as build_sitting
+build_sitting(rig,base,assign,limb,key)
+if '--validate-sit' in sys.argv:
+    print('ADULT_SIT_REACH_VALIDATED_NO_EXPORT',flush=True)
+    raise SystemExit(0)
+for sit_name,frames in [('Adult_Sit_Down',48),('Adult_Stand_Up',54),('Adult_Sit_Hold',30)]:
+    report['clips'].append({'name':sit_name,'frames':frames,'duration':frames/30,'loop':False})
+from adult_common_breathing import build as build_breathing
+build_breathing(rig,key,limb,assign,smooth_periodic_body_curve)
+for name in ('Adult_Breathe_Stand','Adult_Breathe_Sit'):
+    report['clips'].append({'name':name,'frames':120,'duration':4,'loop':True,'family':'AdultStandard_v2'})
 rig.animation_data.action=bpy.data.actions['Adult_Walk_Biped'];scene.frame_set(2);scene.frame_set(1);bpy.context.view_layer.update()
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
 for o in objects:o.select_set(True)

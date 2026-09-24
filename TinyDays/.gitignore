@@ -12,3 +12,4 @@
 *.blend2
 *.pidb
 *.user
+/Tools/__pycache__/

@@ -1,0 +1,15 @@
+clip 5: 1.600000s, minimum shoes/hands/coat/backpack 0.001019/0.004726/-0.057868/0.068917m, max segment change 0.000001m
+Pants minimum 0.004645m at 1.345833s; left-right knee gap 0.296106m
+clip 6: 1.800000s, minimum shoes/hands/coat/backpack 0.001019/0.004557/-0.058602/0.068917m, max segment change 0.000001m
+Pants minimum 0.002741m at 0.150000s; left-right knee gap 0.296092m
+Seated pants minimum 0.004657m
+support (5, 0.125, 0.40625, False): drift 0.000061m at 0.650000s
+support (5, 0.6375, 0.7125, True): drift 0.000041m at 1.038750s
+support (5, 0.84375, 1, False): drift 0.000048m at 1.365625s
+support (6, 0, 0.1388889, False): drift 0.000280m at 0.250000s
+support (6, 0.1944444, 0.3055556, True): drift 0.000249m at 0.561458s
+support (6, 0.3611111, 0.8333334, False): drift 0.000254m at 0.809375s
+Declared hand/foot supports (right hand release +1/30s): same-vertex drift 0.000280m, sole/palm gap 0.004473..0.004822m.
+Sit-down end to stand-up start vertex difference 0.000000m; explicit disable/reset and recreation checked (not actual Play Mode input).
+30/60/120fps x 0.5/1 clocks and all-renderer final poses, endpoint hold, mid-transition pause/resume including hem, repeated requests, moving stop then sit, coat restore checked by direct calls.
+NUMERICAL CHECKS PASS; contact/visual approval separate

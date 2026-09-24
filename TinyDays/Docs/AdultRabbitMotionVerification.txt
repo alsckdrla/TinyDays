@@ -12,7 +12,7 @@ Face-forward (+Z) support-foot travel is front to back on both sides: PASS
 Imported walking elbow interior angles: 90.01 to 99.99 degrees: PASS
 Direct-call clock 1x/0.5x/pause/reset and camera pan/orbit/height/zoom: PASS (not actual input)
 Moving review: direct start/last landing/closing step; 0.92m per cycle; pause, restart, 0.5x, track end and return to clips: PASS (direct calls)
-First three steps (0..1.65s @240Hz): pelvis range 0.100474 -> 0.067380m; peak vertical speed 1.449137 -> 0.444403m/s; head peak 1.449537 -> 0.444489m/s. Direct sampling, not perceptual approval.
+First three steps (0..1.65s @240Hz): pelvis range 0.100474 -> 0.067380m; peak vertical speed 1.449137 -> 0.444417m/s; head peak 1.449537 -> 0.444489m/s. Direct sampling, not perceptual approval.
 Last-step contact 48 runs (8 phases x 3 frame rates x 2 speeds): drift 0.000001m; min sole 0.002486m; unreachable 0.000000m; travel spread 0.011042m
 Interrupted start/restart/repeated requests: 15 scenarios; drift 0.000001m; min sole 0.002499m; unreachable 0.000000m (direct calls)
 Pause, position reset, disable/re-enable and clip switch anchor cleanup: PASS (direct calls)

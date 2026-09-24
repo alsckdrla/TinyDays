@@ -1,0 +1,143 @@
+{
+  "before": {
+    "5": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 0.8771298296136338,
+        "peak_acceleration_m_s2": 2.7703538052974466,
+        "interior_slow_episodes": 0,
+        "after_1_1s_peak_speed": 0.00011999040076806085
+      },
+      "head": {
+        "range_m": 0.5206470000000001,
+        "peak_speed_m_s": 1.076323052922113,
+        "peak_acceleration_m_s2": 3.585456593205763,
+        "interior_slow_episodes": 1,
+        "after_1_1s_peak_speed": 0.2931717268690742
+      },
+      "spineAngle": {
+        "peak_deg_s": 107.79071162846381,
+        "peak_deg_s2": 726.0562690850975,
+        "former_hold_range_deg": 0.010400000000004184
+      },
+      "headAngle": {
+        "peak_deg_s": 25.74030961238428,
+        "peak_deg_s2": 369.07148625115394,
+        "former_hold_range_deg": 0.04489000000000942
+      },
+      "leftHand": {
+        "peak_speed_m_s": 1.324313960732598,
+        "peak_speed_change_m_s2": 23.180921471845476
+      },
+      "rightHand": {
+        "peak_speed_m_s": 1.4071480982484785,
+        "peak_speed_change_m_s2": 25.216039095615198
+      }
+    },
+    "6": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 0.868114724588987,
+        "peak_acceleration_m_s2": 2.8137127815054153,
+        "interior_slow_episodes": 0,
+        "after_1_1s_peak_speed": 0.8228941684665421
+      },
+      "head": {
+        "range_m": 0.5294769999999999,
+        "peak_speed_m_s": 1.0408016320652838,
+        "peak_acceleration_m_s2": 7.327670435171532,
+        "interior_slow_episodes": 1,
+        "after_1_1s_peak_speed": 0.943724502039856
+      },
+      "spineAngle": {
+        "peak_deg_s": 173.1081243249727,
+        "peak_deg_s2": 1670.49158568236,
+        "former_hold_range_deg": 0.028530000000017708
+      },
+      "headAngle": {
+        "peak_deg_s": 33.567862714511364,
+        "peak_deg_s2": 317.7448540693816,
+        "former_hold_range_deg": 0.30131099999999833
+      },
+      "leftHand": {
+        "peak_speed_m_s": 1.198360586113311,
+        "peak_speed_change_m_s2": 11.6552679481778
+      },
+      "rightHand": {
+        "peak_speed_m_s": 1.1983605440524876,
+        "peak_speed_change_m_s2": 11.655334170988613
+      }
+    }
+  },
+  "after": {
+    "5": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 0.8771298296136338,
+        "peak_acceleration_m_s2": 2.7703538052974466,
+        "interior_slow_episodes": 0,
+        "after_1_1s_peak_speed": 0.00011999040076806085
+      },
+      "head": {
+        "range_m": 0.5198289999999999,
+        "peak_speed_m_s": 1.0605951523878199,
+        "peak_acceleration_m_s2": 3.556657745070517,
+        "interior_slow_episodes": 1,
+        "after_1_1s_peak_speed": 0.24432977319092788
+      },
+      "spineAngle": {
+        "peak_deg_s": 94.43004559635406,
+        "peak_deg_s2": 594.8015961351877,
+        "former_hold_range_deg": 2.229690000000005
+      },
+      "headAngle": {
+        "peak_deg_s": 25.31881449483963,
+        "peak_deg_s2": 349.86280660753783,
+        "former_hold_range_deg": 1.668943000000013
+      },
+      "leftHand": {
+        "peak_speed_m_s": 1.2803202857800868,
+        "peak_speed_change_m_s2": 23.35218753961346
+      },
+      "rightHand": {
+        "peak_speed_m_s": 1.3889450577735454,
+        "peak_speed_change_m_s2": 24.646013782840367
+      }
+    },
+    "6": {
+      "pelvis": {
+        "range_m": 0.4585,
+        "peak_speed_m_s": 0.8472338893555833,
+        "peak_acceleration_m_s2": 2.669823948813679,
+        "interior_slow_episodes": 0,
+        "after_1_1s_peak_speed": 0.7896568274538192
+      },
+      "head": {
+        "range_m": 0.528475,
+        "peak_speed_m_s": 0.9779217662587038,
+        "peak_acceleration_m_s2": 4.967801303843608,
+        "interior_slow_episodes": 1,
+        "after_1_1s_peak_speed": 0.8778497720182673
+      },
+      "spineAngle": {
+        "peak_deg_s": 147.19342452603743,
+        "peak_deg_s2": 1189.536422349412,
+        "former_hold_range_deg": 1.1500300000000152
+      },
+      "headAngle": {
+        "peak_deg_s": 39.4857794311779,
+        "peak_deg_s2": 295.9115964284233,
+        "former_hold_range_deg": 2.723547999999994
+      },
+      "leftHand": {
+        "peak_speed_m_s": 1.2688512002426184,
+        "peak_speed_change_m_s2": 12.199076564057785
+      },
+      "rightHand": {
+        "peak_speed_m_s": 1.301319459578394,
+        "peak_speed_change_m_s2": 12.544622356307105
+      }
+    }
+  },
+  "checks_pass": true
+}

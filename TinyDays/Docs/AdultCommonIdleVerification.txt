@@ -1,0 +1,12 @@
+v0.93 common idle: automatic function/clip checks; NOT real player input or visual approval.
+8 Foot_L sole 2.500mm.
+8 Foot_R sole 2.500mm.
+Stand: chest range 7.000mm; support drift 0.0000mm; neck change 0.0003mm; seam 0.0000mm.
+9 Foot_L sole 4.500mm.
+9 Foot_R sole 4.500mm.
+Sit: chest range 7.000mm; support drift 0.0000mm; neck change 0.0001mm; seam 0.0000mm.
+192 sit/stand × 8 phase × walk/run × fps/speed departure combinations PASS; launch root delta 0.3548mm.
+Pause, repeated requests, cancel during tidy/rise, empty automatic roster, clip reset PASS.
+Synthetic-only two-clip scheduler: seeded sequence/repeat exclusion PASS. No extra variants shipped.
+Departure diagnostics: minimum sole 1.002mm; first tidy support drift 0.053mm; largest 240Hz vertex step 7.316mm.
+Scrubbed pose departure, disable cleanup and explicit restart PASS (not real Play-mode lifecycle input).

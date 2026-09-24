@@ -70,6 +70,38 @@
       "duration": 0.7333333333333333,
       "loop": true,
       "style": "cute biped run with short flight"
+    },
+    {
+      "name": "Adult_Sit_Down",
+      "frames": 48,
+      "duration": 1.6,
+      "loop": false
+    },
+    {
+      "name": "Adult_Stand_Up",
+      "frames": 54,
+      "duration": 1.8,
+      "loop": false
+    },
+    {
+      "name": "Adult_Sit_Hold",
+      "frames": 30,
+      "duration": 1.0,
+      "loop": false
+    },
+    {
+      "name": "Adult_Breathe_Stand",
+      "frames": 120,
+      "duration": 4,
+      "loop": true,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Breathe_Sit",
+      "frames": 120,
+      "duration": 4,
+      "loop": true,
+      "family": "AdultStandard_v2"
     }
   ],
   "runHeightCurve": {

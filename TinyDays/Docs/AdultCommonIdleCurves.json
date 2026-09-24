@@ -1,0 +1,30 @@
+{
+  "Adult_Breathe_Stand": {
+    "Spine": {
+      "vertical_range_mm": 6.999969482421875,
+      "position_seam_mm": 0.0,
+      "velocity_seam_m_s": 2.6203514656484697e-09,
+      "peak_acceleration_m_s2": 0.013732910157035273
+    },
+    "Head": {
+      "vertical_range_mm": 6.999969482421875,
+      "position_seam_mm": 0.0,
+      "velocity_seam_m_s": 1.816079020500183e-08,
+      "peak_acceleration_m_s2": 0.021769464192131976
+    }
+  },
+  "Adult_Breathe_Sit": {
+    "Spine": {
+      "vertical_range_mm": 6.999999284744263,
+      "position_seam_mm": 0.0,
+      "velocity_seam_m_s": 0.0,
+      "peak_acceleration_m_s2": 0.009441375732421875
+    },
+    "Head": {
+      "vertical_range_mm": 6.77037239074707,
+      "position_seam_mm": 0.0,
+      "velocity_seam_m_s": 1.430511474609375e-05,
+      "peak_acceleration_m_s2": 0.015652338573349876
+    }
+  }
+}
