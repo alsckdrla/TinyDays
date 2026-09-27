@@ -1,12 +1,89 @@
 # Tiny Days 진행 기록
 
-최종 갱신: 2026-09-24
-기획 기준: [MasterPlan.md](MasterPlan.md) v0.93
-현재 단계: **v0.93 앉기·서기 기본 호흡과 이동 연결 사용자 확인 대기 / 2-7-3 미완료**
+최종 갱신: 2026-09-27
+기획 기준: [MasterPlan.md](MasterPlan.md) v0.105
+현재 단계: **v0.105 앉아서 낙서하기 사용자 확인 대기 / v0.104 짝발 확인 대기 / 앉은 발목 원본 승인 유지 / 2-7-3 미완료**
 
 이 문서는 다른 PC에서 작업을 이어갈 때 먼저 확인하는 최신 체크포인트다. 기획의 확정·미정 기준은 항상 MasterPlan.md를 따른다. 세부 검증 근거는 각 단계 관찰 문서를 확인한다.
 
 ## 현재 상태
+
+- **2026-09-27 전달 체크포인트:** 사용자 합의로 추가 심심한 대기 변형 제작은 당분간 보류한다. 다음은 눕기·잠들기·깨어나 일어서기, 이후 턱을 괴고 엎드려 쉬기·일어서기다. 뒤꿈치 톡톡·스트레칭은 미구현 보류. 아래 제작 당시의 다음 작업 안내보다 이 합의가 우선하며 기존 사용자 확인 대기는 유지한다.
+- v0.94~v0.105 코드·Blender/FBX·Unity 장면과 메타·검증/비교 자료, References 전체24개(55,950,968바이트), 루트/프로젝트 AGENTS·MasterPlan·Progress를 한 커밋으로 전달한다. Logs 실행 파일/캐시와 PC 전용 .lnk는 로컬에 보존한다. 원격 동기화 여부는 전달 커밋의 HEAD와 origin/main SHA 일치 및 파일 목록으로 확인하며 커밋만으로 푸시 성공을 판단하지 않는다.
+
+- **최신 v0.105 (2026-09-27):** 오른손 낙서8초 클립을17번째로 추가했다.5cm 원/곡선→손 보기/좌우 두리번→회수, 앉은 자동 후보3종·개별 버튼/8포즈,0.3초 손 회수→선택된 일어서기→이동 연결. 렌더 후 손 쪽 시선과 작은 호흡을 보완했다. 기존16개 액션/메시/골격은 `--v0105` 해시 일치, 작업 전 원본은 `Logs/BeforeV0105`에 보존했다.
+- 240Hz 손 바닥 간격1.4855~1.5106mm·엉덩이/뒤꿈치 이동0mm·관절 길이 차0.0002mm.240개 이동 연결+120개 취소/재요청 통과, 중단 손 최저1.5049mm·뒤꿈치 이동0.0002mm. 기존 발목/짝발756개, 호흡192개, 한숨384개 연결 및 걷기/달리기 회귀 통과. 상세 `AdultSandplayReview.md`, `AdultSandplayVerification.txt`, `AdultSandplayMotion.csv`.
+- `AdultSandplayChecks.Execute/Sequence`, `AdultFidgetChecks.Execute`, `AdultCommonIdleChecks.Execute`, `AdultSighChecks.Execute`, `AdultRabbitMotionBuilder.Execute`, `AdultRabbitRunChecks.Execute`, `AdultRabbitMotionBuilder.BuildPlayer`를 개별 실행했다. 전체 재빌드 스크립트를 실행한 것으로 기록하지 않는다. 해당 스크립트에는 낙서 검사/렌더 단계를 추가해 다른 PC에서 재현할 수 있게 했다.
+- Blender/FBX/검토 장면·Windows 갱신. `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 17:08:56**. `Captures/Sandplay`에3구도1×/8포즈/중단→걷기 영상을 보존했다. 렌더 표본에서 손 경로/시선/회수 흐름 확인. GUI 자동 검사3해상도·스크롤·카메라 포인터 경로·낙서 버튼 콜백 PASS(`Captures/ReviewPanelV0105`, `Logs/sandplay-v0105-player.log`, 종료0). 실제 OS 마우스 입력과 자연스러운 동작 품질은 사용자 확인 대기다.
+- 확인 경로: **앉기 기본 호흡 → 앉아서 낙서하기**, 중간 걷기/달리기 요청도 확인. 다음은 이번 동작 확인 후 서서 아래를 보며 뒤꿈치 톡톡 계획. v0.104 짝발의 최종 승인 추정 없음. 앉은 발목 원본 승인 유지. 상의 미세 보완·농가·다른 신규 변형·GitHub 업로드 없음. 다른 PC는 MasterPlan→Progress→AdultSandplayReview를 읽고 왼쪽UI를 유지하며 `Tools/RebuildAdultRabbitMotion.ps1 -SkipArt`로 프로그램을 재빌드한다.
+
+- **최신 v0.104 (2026-09-27):** v0.103의 첫0.4초 골반40mm/머리46mm 하강이 사용자에게 웅크림으로 보였으므로 높이 우선으로 수정했다. 자동 하강 맞춤을 제거하고 골반9mm 하강 경로·좌우40mm 이동·발 옆20mm·골반 기울기 오른발3/왼발6도로 접지를 맞췄다. 작은 비틀림/한 손 허리/13초/각5회·2Hz와 빠른 중단은 유지한다. 이전 원본/영상/수치는 `Logs/BeforeV0104`, `Captures/FidgetsBeforeV0104`, `AdultFidget*BeforeV0104` 보존.
+- 240Hz 최대 하강 골반9.000mm/가슴12.442mm/머리12.890mm, 지지 교대 중 골반 높이 일정. 지지점0.0713mm·신발 최저+0.0118mm·관절 길이 차0.0004mm.384개 이동 연결·216개 서기 중단/취소·156개 앉은 중단 통과. 기존15개 액션/메시/골격 `--v0104` 해시 일치. 걷기/출발/정지와 달리기 회귀도 재실행 통과. 상세 `AdultFidgetReview.md`/`AdultFidgetVerification.txt`/`AdultFidgetMotion.csv`.
+- 원본/FBX/검토 장면·Windows 갱신 완료. `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 **2026-09-27 16:18:09**. 이번 실행은 `AdultRabbitMotionBuilder.Execute`, `AdultRabbitRunChecks.Execute`, `AdultFidgetChecks.Poses/Execute/Sequence/InterruptSequence`, `AdultRabbitMotionBuilder.BuildPlayer`를 개별 실행했다. 전체 재빌드 스크립트를 다시 실행한 것은 아니며 앉기/한숨 등의 원본은 해시 보존으로 확인했다.
+- `Captures/Fidgets`의3구도1×/8포즈·`*BeforeLeftAfterRightV0104.mp4`(왼쪽v0.103/오른쪽v0.104)·`*_InterruptV0104.mp4` 갱신. 대표 자세와 연속 프레임 표본에서 하강 감소/발 간격/손 회수 확인. GUI 자동 검사3해상도·31버튼·스크롤·공유 포인터 경로 통과(`Captures/ReviewPanelV0104`, `Logs/fidget-v0104-player.log`, 종료0). 실제 OS 입력·자연스러운 체중감은 사용자 확인 대기.
+- 다음: `서기 기본 호흡 → 서서 짝발 대기`에서 웅크림 감소와 중간 걷기/달리기 요청 확인, 승인 후 다음 변형 계획. 앉은 발목 원본 승인 유지. 상의 미세 보완·농가·다음 변형·GitHub 업로드 없음. 다른 PC는 최신 문서/소스와 왼쪽UI를 유지하고 로컬 프로그램을 재빌드한다.
+
+- **최신 v0.103 (2026-09-27):** 새 참고 `ref_standing_boring_ani_02.png`에 맞춰 골반 이동90mm, 골반/가슴 회전 분리, 지지발 쪽 한 손 허리 자세와 가벼운 발끝 톡톡을 재제작했다. 지지 다리는 부드럽게 펴고 반대 무릎은 풀며 높이를 구간별 도달 범위에 맞춰 연속적으로 연결한다. 13초/각5회/2Hz와 서기0.4초·앉기0.25초 중단 연결 유지. v0.102는 수치 통과와 별개로 사용자 미승인, 앉은 원본 승인만 유지한다.
+- 보존: `Logs/BeforeV0103`, `Captures/FidgetsBeforeV0103`, `AdultFidgetVerificationBeforeV0103.txt`. `--v0103` 감사에서 기존15개 액션/메시/골격 해시 일치. 최종240Hz: 지지점0.1045mm·신발 최저+0.0073mm·관절 길이 차0.0003mm, 대표 지지 무릎163.51/163.24도·반대134.13/150.11도. 기존384개 연결·216개 서기 중단/취소·156개 앉기 중단 통과. 상세 `AdultFidgetReview.md`/`AdultFidgetVerification.txt`.
+- `RebuildAdultRabbitMotion.ps1 -SkipArt` 전체 회귀/렌더/빌드 성공. Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 15:50:48**. `Captures/Fidgets`의3구도 영상/8포즈, `*BeforeLeftAfterRightV0103.mp4`, `*_InterruptV0103.mp4` 갱신. 대표 자세·연속 프레임 표본에서 한 손 허리/지지 교대/손 회수→출발을 확인했다. 영상은 자동 렌더이며 실제 입력 녹화가 아니다.
+- 실행 GUI 자동 검사1920×1080/1280×720/800×600·31버튼·스크롤·공유 포인터 경로 통과(`Captures/ReviewPanelV0103`, `Logs/fidget-v0103-player.log`, 종료0). 직접 OS 입력과 자연스러운 체중감은 사용자 확인 대기다. 다음은 `서기 기본 호흡 → 서서 짝발 대기`와 중간 걷기/달리기 요청 확인, 승인 후 다음 변형 계획. 상의 미세 보완·농가·다음 변형·GitHub 업로드 없음. 다른 PC도 왼쪽UI 유지 후 로컬 재빌드한다.
+
+- **최신 v0.102 (2026-09-27):** 기존 서기 변형을13초 짝발/발끝 까딱으로 교체했다. 오른발 지지→왼발 옆 이동(신발 길이1/3, 바깥8도)→1초 유지→2.5초·5회→1.5초 유지→원위치→반대편 반복. 서기 이동 정리는0.4초, 앉기는0.25초 정리 후 기존 일어서기. 앉은 원본 승인 유지, 새 연결은 확인 대기다.
+- 이전 원본/영상/수치는 `Logs/BeforeV0102`, `Captures/FidgetsBeforeV0102`, `AdultFidget*BeforeV0102`에 보존했다. 최종 `--v0102` 감사에서 기존15개 동작/메시/골격 해시 일치. 초기 다리 도달 초과는 골반 자세로, 교대 중앙의 들썩임은 일정한 낮춤 높이로, 무릎 방향 뒤집힘에 의한 Unity 보간 접지 오류는 서기 무릎 전방 기준으로 수정했다.
+- 최종240Hz: 옆 이동116.454mm·각5회/2Hz·8도 바깥/10도 발끝, 지지점 이동0.1041mm·신발 최저0.0674mm·관절 길이 차0.0003mm. 공중 이동 곡선3mm에 바깥 착지 높이 여유가 더해져 실제 뒤꿈치 최대 상승3.878mm. 기존384개 연결·216개 서기 중단/취소/재요청·156개 앉기 중단 통과. 정리 지지점 최대0.2658mm. 근거 `AdultFidgetVerification.txt`/`AdultFidgetMotion.csv`/`AdultFidgetReview.md`.
+- `RebuildAdultRabbitMotion.ps1 -SkipArt` 전체 회귀/빌드 성공 후 편집기 전용 중단 영상 생성만 추가 실행했다. Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 15:09:02**. 기존 걷기/달리기/앉기/호흡/한숨 회귀 통과.
+- `Captures/Fidgets`에3구도×두 동작1× 영상·8포즈·전후 비교 `*BeforeLeftAfterRightV0102.mp4`·중단→걷기 `*_InterruptV0102.mp4` 보존. 정면/측면/비스듬한 포즈·연속 프레임 표본에서 짝발과 출발 연결 확인. GUI 자동 검사3해상도/31버튼/스크롤/포인터 경로·콜백 통과(`Captures/ReviewPanelV0102`, `Logs/fidget-v0102-player.log`). 직접 OS 입력과 자연스러움은 사용자 확인 대상이다.
+- 확인: `서기 기본 호흡 → 서서 짝발 대기`, 앉은 까딱 중 이동 요청. 다음은 이번 짝발/중단 연결 승인 후 바닥 긁기·뒤꿈치 톡톡 계획. 기존 앉은 발목 원본 승인 유지. 상의 미세 관통 보완·농가·다음 변형·GitHub 업로드 없음. 다른 PC도 왼쪽UI 유지, 최신 소스 후 재빌드한다.
+
+- **사용자 확인/PC 재개 기준 갱신 (2026-09-27):** 앉아서 발목 까딱은 사용자 확인 완료. 서서 체중 이동은 확인 대기다. 동작 자산/코드/실행 파일을 추가 수정하지 않았다.
+- **다른 PC에서도 버튼은 현재 왼쪽 세로 패널 유지:** 폭300px·여백12px·글씨13px·버튼24px·왼쪽부터 줄바꿈, 높이 초과 시 패널 오른쪽 세로 스크롤. 상세 MasterPlan의 ‘PC 공통 검토 UI’와 프로젝트 AGENTS.md를 따른다. 상단 가로 배치로 되돌리지 않는다.
+- 최신 소스를 받은 뒤 `Tools/RebuildAdultRabbitMotion.ps1 -SkipArt`로 `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`를 재생성한다. Logs 실행 파일은 Git에서 내려받아지지 않는다. 다른 PC의 실제 배치/입력 확인은 아직 수행하지 않았다. 이번 문서 갱신은 로컬 저장만 했으며 GitHub 커밋·푸시는 하지 않았다.
+- 다음 순서: 서기 체중 이동의 발 들기/방향 복귀 확인 → 다음 변형(앉아 두리번거리며 바닥 긁기 / 서서 뒤꿈치 톡톡) 계획. 아래 구현 당시의 ‘두 동작 확인 대기’ 기록보다 이 확인 상태가 우선한다.
+
+- **최신 v0.101 (2026-09-27):** 서기8초·발15mm 들기/바깥8도/마지막 원위치, 앉기4초·좌우3쌍 교대로 갱신했다. 이전 원본은 `Logs/BeforeV0101`, 영상/포즈는 `Captures/FidgetsBeforeV0101`, 이전 수치는 `AdultFidget*BeforeV0101`에 보존했다.
+- 최종240Hz: 발목12.032도·각3회 교대, 서기15.001mm 들기/8.003도. 지지 뒤꿈치 이동 최대0.0910mm·관절 길이 차0.0007mm. 기존384개 이동 연결과 추가216개 공중 진입/착지/방향 복귀 중 취소·재요청 통과. 정리 지지발 이동 최대0.3294mm, 신발 최저1.0024mm. 초기 골반 중앙 곡선 꺾임과 긴 관성에 의한 지지발 밀림을 수정했다.
+- `--v0101` 원본 감사에서 기존14개 액션/메시/바인드 해시 일치. `RebuildAdultRabbitMotion.ps1 -SkipArt` 전체 회귀·렌더·빌드 성공. Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 14:13:10**.
+- `Captures/Fidgets`에 두 동작×3구도1× 영상(호흡/연결 포함6초/10초),8포즈 및 `*BeforeLeftAfterRightV0101.mp4` 전후 비교 저장. `Tools/EncodeFidgetReview.ps1`로 재인코딩 가능하다. 렌더 표본에서 발 들기·무릎 방향·끝 복구·작은 화면 발목 순서를 확인했으나 연속 리듬의 최종 품질은 사용자 확인 대상이다.
+- 실행 GUI 자동 검사1920×1080/1280×720/800×600,31개 버튼·스크롤 끝·두 동작 콜백·카메라 포인터 경로 통과(`Captures/ReviewPanelV0101/Verification.txt`, `Logs/fidget-v0101-player.log`). 직접 OS 마우스 입력은 미검증. 상세 수치/한계는 `AdultFidgetReview.md`를 따른다.
+- 다음: 이번 발 들기/방향 복구와 빠른 교대 리듬을 사용자 확인한 뒤 앉아서 두리번거리며 바닥 긁기 / 서서 아래를 보며 뒤꿈치 톡톡. 이전 동작 승인 추정·상의 관통 미세 보완·농가·다음 변형·GitHub 업로드 없음. 다른 PC는 MasterPlan→Progress→AdultFidgetReview 후 `Tools/RebuildAdultRabbitMotion.ps1 -SkipArt`로 실행 파일을 재빌드한다.
+
+- **최신 v0.100 (2026-09-27):** 앉은 발목4초/서기 체중 이동6초 추가, 자세별 후보2개·개별 선택·8포즈·이동 중단 구현. 기존14개 액션/메시/바인드 해시 일치(`--v0100`), 작업 전 원본 `Logs/BeforeV0100` 보존. 최초 체중 이동의 다리 도달 초과4.22mm는 부드러운 골반 하강12mm로 해소했다.
+- 240Hz 뒤꿈치 이동 최대0.0021mm, 다리 길이 차이0.0006mm. 새384개 이동 연결 통과, 정리 뒤꿈치 이동 최대0.3043mm/신발 최저1.0024mm. 기존 한숨384개·기본호흡192개 연결과 걷기/달리기/앉기 전체 회귀 통과. 세부 `AdultFidgetVerification.txt`/`AdultFidgetMotion.csv`/`AdultFidgetReview.md`.
+- `RebuildAdultRabbitMotion.ps1 -SkipArt` 최종 성공. 중간 캡처 파일의 Windows1224 잠금은 저장 재시도와 렌더 자원 정리로 대응했다. Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 13:21:39**.
+- `Captures/Fidgets`에 두 동작×3구도1× 영상과 주요8포즈 보존. 렌더 표본에서 발목/체중 이동과 무릎 방향 확인. 실행 GUI 자동 검사도1920×1080/1280×720/800×600에서31개 버튼·내용753px·스크롤 끝/카메라 입력 경로/새 버튼 콜백 통과(`Captures/ReviewPanelV0100/Verification.txt`, `Logs/fidget-panel-player.log`). 직접 OS 마우스 입력과 사용자 동작 품질은 미확인.
+- 다음은 이 두 동작 사용자 확인 후 **앉아서 두리번거리며 바닥 긁기 / 서서 아래를 보며 뒤꿈치 톡톡**. 이전 동작 최종 승인은 추정하지 않는다. 농가/다음 변형/GitHub 업로드 없음. 다른 PC는 MasterPlan→Progress→AdultFidgetReview를 읽고 `Tools/RebuildAdultRabbitMotion.ps1 -SkipArt`로 실행 파일을 재빌드한다.
+
+- **최신 v0.99 (2026-09-27):** 들이쉬기0~1초/내쉬기1~2초/복귀2~5초. 동작 크기·머리2프레임 후행·기존 기능 유지. 원본/FBX 재생성 및 기존12개 액션·메시·골격 해시 일치 확인(`--v098` 감사 기준). 직전 원본은 `Logs/BeforeV099`, 영상/포즈는 `Captures/SighBeforeV099`, 수치는 `AdultSighMotionBeforeV099.csv`/`AdultSighVerificationBeforeV099.txt`에 보존했다.
+- 최종240Hz: 1초 가슴 정점+24mm/2초 최저점-20mm·전방20mm, 머리6/8도 정점2.075초, 지지점0mm·목 차이최대0.0003mm. 전체 연결 인접머리속도차0.006349m/s·384개 연결·192개 기본호흡 연결 및 기존 전체 회귀 통과. `RebuildAdultRabbitMotion.ps1 -SkipArt` 성공, Windows 데이터2026-09-27 12:30:26 갱신.
+- `Captures/Sigh/*V099.mp4`에 3구도×2자세1× 영상과 전후 비교(왼쪽v0.98/오른쪽v0.99)를 보존했다. 렌더 표본에서 들이쉬기/내쉬기 실루엣을 확인했으며 실제 입력·연속 동작 품질은 사용자 확인 대기다. 다음은 빠른 들이쉬기의 감정/연결감 확인 후 앉은 발목 까딱임/서기 체중 이동 순서다. 농가·다음 변형·GitHub 업로드 없음.
+- 8초 시작 검사에서 프로세스 유지·입력 초기화·예외 없는 로그 확인(`Logs/sigh-v099-player-smoke.log`). 직접 버튼/마우스 조작은 미검증이다.
+
+- **최신 v0.98 (2026-09-27):** 내쉬기1.65~2.65초·5초 복귀, 가슴+24/-20mm·전방20mm·상체앞18/12도, 내쉬기 머리8/6도 및2프레임 후행 구현. 원본 재생성 후 기존12개 액션/메시/골격 해시 일치(`--v098`, 로컬 `Logs/BeforeV098`). 이전 영상/포즈 `Captures/SighBeforeV098`와 수치 `AdultSighMotionBeforeV098.csv`/`AdultSighVerificationBeforeV098.txt` 보존.
+- 최종240Hz: 가슴 범위44mm·전방20mm, 고개 서기6/앉기8도 정점2.7125초. 들이쉬기 정점에서 머리 하강53.116/72.628mm·전진150.480/205.179mm. 지지점0mm·목 차이최대0.0003mm, 전체 연결 인접머리속도차0.006366m/s. 내쉬기 중 불필요한 재상승 검사,384개 연결·192개 기본호흡 연결과 기존 전체 회귀 통과. 수치 통과는 동작 품질 승인이 아니다.
+- `RebuildAdultRabbitMotion.ps1 -SkipArt` 성공. Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 12:12:37**. 12초 시작 검사에서 프로세스 유지·입력 초기화·예외 없는 로그 확인(`Logs/sigh-v098-player-smoke.log`). 직접 버튼/마우스 입력은 미검증이다.
+- `Captures/Sigh/*V098.mp4`에 3구도×2자세 7초·1× 영상과 360px 전후 비교(왼쪽v0.97/오른쪽v0.98)를 보존했다. 렌더 표본에서 머리 전방 하강·지지 자세를 확인했으며 빠른 내쉬기의 감정/연속 부드러움은 사용자 확인 대기다. 왼쪽UI는 제목/8포즈 시점만 갱신. 농가·다음 변형·상의–다리 미세 보완·GitHub 업로드 없음. Unity 직렬화 빈 필드 공백 경고는 유지했다.
+
+- **최신 v0.97 (2026-09-27):** 왼쪽300px 세로 패널·13px 글씨/24px 버튼·줄바꿈/세로 스크롤, 한숨 가슴 +24/-12mm·전방10mm 및 기울기 확대 구현. 원본 재생성 및 기존12개 액션/메시/바인드 해시 일치(`--v097`, 로컬 `Logs/BeforeV097`). 이전 영상·포즈는 `Captures/SighBeforeV097`, 이전 측정은 `AdultSighMotionBeforeV097.csv`/`AdultSighVerificationBeforeV097.txt`로 보존했다.
+- 240Hz 실제 가슴 +24/-12mm·전방10mm, 지지점 이동0mm·목 차이 최대0.0003mm. 전체 연결 지지점0.0001mm/인접 머리속도차0.003018m/s. 한숨384개·기본호흡192개 이동 연결과 기존 걷기/달리기/양손·한손 앉기 전체 회귀 통과. `RebuildAdultRabbitMotion.ps1 -SkipArt` 성공, 새 자동 영상6개·360px 전후 비교2개를 `Captures/Sigh/*V097.mp4`에 저장했다.
+- Windows 데이터 갱신 **2026-09-27 11:56:25**, `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`. `-review-panel-checks`로 실행하여 1920×1080/1280×720/800×600 실제 GUI 렌더를 캡처했다. 내용 높이736px, 스크롤0/56/176px 끝 접근·30개 버튼 정렬/높이·패널 안팎 포인터 경로/콜백 검사 통과(`Captures/ReviewPanelV097/Verification.txt`, `Logs/panel-v097-player.log`). 직접 OS 휠/드래그/클릭은 미검증이며 렌더 표본과 자동 경로 검사를 구분한다.
+- 남은 확인: 작은 글씨 가독성·스크롤 조작성·한숨의 감정/부드러움. 이전 동작 품질 승인은 추정하지 않는다. 상의–다리 미세 보완·농가·다음 변형·GitHub 업로드 없음. Unity 장면의 빈 필드 공백 경고는 포맷 변경 없이 유지했다.
+
+- **최신 v0.96 (2026-09-27):** 5초 비반복 한숨 두 개를 12/13번에 추가했다. 기존 12개 액션·메시·바인드 골격 해시 일치(`verify_sitting_preservation.py --v096`, 로컬 `Logs/BeforeV096`). 기본 호흡 14mm/4초 유지. 한숨 가슴 범위 18.000mm, 지지점 이동 0.0000mm, 목 길이 차이 최대 0.0003mm, 신발 최저 서기 +2.500/앉기 +4.500mm. 384개 양방식/자세/위상/이동/배속/프레임률 연결·반복/취소/일시정지 검사 통과. 상세 `AdultSighVerification.txt`/`AdultSighMotion.csv`.
+- 자동 선택은 현재 자세에 맞는 한숨만 사용한다. 진입/복귀 각0.25초와 본동작5초를 분리하며 다음 자동 선택 전 기본 호흡6~12초를 유지한다. 이동 중단은 현재 자세/속도에서 기존 정리 단계로 연결한다. 240Hz 전체 연결 지지점 이동0.0001mm, 인접 머리 속도차 최대0.003018m/s. 기본 호흡192개 이동 연결과 기존 걷기/달리기/양손·한손 앉기 회귀까지 전체 재빌드 통과.
+- Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 갱신 **2026-09-27 11:26:45**. `ADULT_SIGH_OK`, `ADULT_SIGH_SEQUENCE_OK`, `ADULT_RABBIT_MOTION_PLAYER_OK` 확인. 8초 시작 검사에서 프로세스 유지·입력 초기화와 예외 없는 로그 확인(`Logs/sigh-player-smoke.log`). 실제 버튼/마우스 입력은 미검증이다.
+- `Captures/Sigh`에 정면/비스듬한/측면 7초·30fps·1× 자동 영상6개와 주요8포즈를 저장했다. 렌더 표본의 전방 시선과 지지 자세를 확인했지만 한숨 감정·작은 화면에서의 가시성·연속 동작 품질은 사용자 확인 대기다. 상의–다리 미세 보완·농가·다음 변형·GitHub 업로드 없음. Unity 직렬화 장면의 빈 속성 공백 경고는 형식 변경 없이 유지했다.
+
+- **최신 v0.95 (2026-09-26):** 오른손 바닥/왼손 무릎 지지 전환 2개를 기존 뒤 10/11에 추가했다. 1.6/1.8초, 기존 앉은/선 끝 자세 유지. 기존 0~9 액션 전체·메시·바인드 해시 보존(`verify_sitting_preservation.py --v095`, 로컬 작업 전 백업 `Logs/BeforeV095`). 기본 요청/호흡 이동은 새 방식이며 화면 상단 `기본 한 손 지지 / 기존 양손 지지`로 선택한다. 전환 중에는 선택이 잠긴다.
+- 초기 검사에서 이른 무릎 접근의 팔 도달 초과와 무릎 손의 뜸을 발견해 접근 경로와 실제 무릎 표면 접촉으로 수정했다. 렌더에서 뒤로 접혀 가려지는 팔을 추가 발견해 팔꿈치·발 위치·몸 기울기를 조정했다. 팔/다리 길이를 늘리거나 코트 관통을 미세 보완하지 않았다.
+- 최종 240Hz: 오른손 바닥 고정 이동 최대 0.233mm, 접촉 높이 4.588~4.818mm; 발 고정 이동 최대 0.948mm, 접촉 높이 4.473~4.697mm. 왼손 실제 무릎 표면 수직 간격 3.994~4.543mm, 무릎 상대 수평 이동 최대 0.113mm. 관절 길이 차이 최대 0.0011mm. 양방식 요청·배속/프레임률·일시정지·취소·초기화 검사 통과. 근거 `AdultSupportedSitVerification.txt`/`AdultSupportedSitMotion.csv`.
+- 전체 재빌드 회귀(걷기/달리기/양손 앉기/호흡)를 실행한 뒤 새 포즈만 마지막 보완했다. 최종 포즈에 한 손 지지 검사/렌더·192개 호흡→이동 연결·빌드를 재실행했고 기존 클립 해시도 다시 일치 확인했다. 최종 성공 로그 `Logs/v095-final-AdultSupportedSitChecks.Execute.log`, `...Sequence.log`, `...AdultCommonIdleChecks.Execute.log`, `...AdultRabbitMotionBuilder.BuildPlayer.log`.
+- Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 `sharedassets0.assets` 갱신 **2026-09-26 17:41:07**. 8초 시작 검사에서 엔진/입력 초기화·프로세스 유지와 예외 없는 로그 확인(`Logs/v095-player-smoke.log`). 실제 키/마우스 입력은 미검증이다.
+- `Captures/AdultSupportedSit`에 정면/측면/비스듬한 1×·30fps·4.2초 영상, 주요 포즈, 이전 양손 왼쪽/새 방식 오른쪽 비교를 저장했다. 자동 렌더 표본 확인이며 실제 플레이 녹화나 사용자 승인이 아니다. 소매/코트로 일부 손이 가리는 시점과 생동감은 사용자 확인 대상으로 남긴다. 상의–다리 미세 보완·농가·추가 변형·GitHub 업로드 없음.
+
+- **최신 v0.94 (2026-09-26):** 서기/앉기 가슴 이동 폭을 7→14mm(평균 기준 ±7mm)로 변경했다. 4초 주기·기존 회전/후행·이동 연결 시간 유지. 원본의 기존 8개 동작, 메시/바인드 골격 및 두 호흡의 가슴 이동 이외 채널 해시 일치. 기존 원본은 로컬 `Logs/BeforeV094`, 이전 검사 결과는 `AdultCommonIdleCurvesBeforeV094.json`/`AdultCommonIdleVerificationBeforeV094.txt`, 비교용 영상은 v0.93 파일로 보존했다.
+- 240Hz Unity 검사: 가슴 각각 14.000mm, 지지점 이동/반복 자세 차이 0.0000mm, 목 길이 변화 최대 0.0002mm. 192개 연결·예약 취소·일시정지·초기화·30/60/120fps·0.5×/1× 통과. 정리 지지발 이동 0.053mm, 연결 중 신발 최저 +1.002mm. 원본 머리 최대 가속도 서기 0.02849/앉기 0.02512m/s²로 기존 0.05 기준 통과. 기존 걷기/달리기/앉기 회귀도 전체 재실행 통과했다.
+- Blender/FBX/검토 장면·Windows 프로그램 갱신 완료. 데이터 `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion_Data/sharedassets0.assets` 갱신 **2026-09-26 16:45:55**. 8초 시작 검사에서 프로세스 유지·입력 초기화 및 예외 없는 로그 확인(`Logs/idle-player-v094-smoke.log`); 실제 버튼/마우스 조작 검증은 하지 않았다.
+- 같은 구도 1× 자동 영상 `Captures/CommonIdle/StandBreathToRunV094.mp4` / `SitBreathToWalkV094.mp4`, 4초 전후 비교 `StandBeforeLeftAfterRightV094.mp4` / `SitBeforeLeftAfterRightV094.mp4` 보존. 작은 화면 연속 표본을 확인했지만 자연스러움/가시성의 최종 승인은 사용자 확인 대기다. 세부 근거는 `AdultCommonIdleReview.md`. 상의 관통 미세 보완·농가·추가 변형·GitHub 업로드 없음.
 
 - **최신 v0.93 (2026-09-24):** 4초 앉기/서기 호흡 2개와 공통 대기 제어·이동 예약을 추가했다. 기존 8개 동작·메시·바인드 골격 해시 일치 확인. 240Hz 호흡, 192개 배속/프레임률/위상별 출발, 반복/취소/일시정지·출발 시간·초기화 검사 통과. 기존 전체 회귀·렌더·Windows 빌드 완료. 상세 근거와 다음 변형 순서는 `AdultCommonIdleReview.md`를 따른다. 이전 앉기 최종 품질 승인은 추정하지 않는다. 실제 입력과 다른 동물 호환은 미검증이며 GitHub 업로드 없음.
 - 새 서기 호흡은 양발 +2.500mm, 앉기 +4.500mm 접지를 유지한다. 가슴 상하 폭 7mm, 정리 구간 지지발 이동 최대 0.053mm, 전체 연결 신발 최저 +1.002mm. 기존 서기 기준에서 오른발이 떠 있던 문제는 새 호흡에만 반영하고, 정리 구간에는 실제 출발 자세와 연결되는 접지 처리를 추가했다. 기존 걷기/달리기·앉기 클립을 바꾸지 않았다.
@@ -224,7 +301,7 @@ v0.59 자동 검사·Windows 검토 빌드: `Logs/right-rotate-v059.log`의 `STA
 
 ## 남은 확인과 보류
 
-- v0.93 기본 호흡·이동 연결의 실제 프로그램 입력과 사용자 자연스러움 확인이 남아 있다. 다른 동물 적용은 아직 하지 않았다. v0.92 앉기 최종 품질 승인도 추정하지 않는다. 아래 UI/농가 항목은 후순위로 유지한다.
+- v0.95 한 손 지지 전환의 실제 입력·자연스러움, 기존 v0.94 호흡 크기 확인이 남아 있다. 다른 동물 적용은 아직 하지 않았으며 이전 앉기 최종 품질 승인도 추정하지 않는다. 아래 UI/농가 항목은 후순위다.
 - 600×900 세로 창에서 오른쪽 창고와 대지 일부가 잘린다. 전체 구도 조정 후 다시 확인해야 한다.
 - 작은 창의 안내문과 Esc 설정 패널의 제목·안내문 대비가 낮다. 수정 여부는 사용자와 합의한다.
 - 메뉴 표시 중 상단 입력 차단 영역이 시계를 포함한다. 시계가 카메라 입력을 막지 않는지 실제 입력으로 재현·보완이 필요하다.
@@ -235,16 +312,18 @@ v0.59 자동 검사·Windows 검토 빌드: `Logs/right-rotate-v059.log`의 `STA
 
 ## 다음 작업 순서
 
-1. v0.93의 서기/앉기 기본 호흡, 걷기/달리기 연결·예약 취소·배속과 실제 입력을 사용자 확인한다. 기존 앉기 연결감 확인도 남아 있다. 상의–다리의 세밀한 관통 검사는 요구하지 않는다.
-2. 확인 후 **앉아 크게 숨 내쉬기 / 서서 가슴 들며 크게 숨쉬기**를 한 묶음으로 제작한다.
-3. 이어서 **좌우 발목 까딱 / 서서 체중 이동 → 두리번거리며 바닥 긁기 / 내려다보며 뒤꿈치 톡톡 → 양손 앞으로 미는 스트레칭** 순서로 제작·확인한다. 자동 선택에는 완성된 동작만 등록한다.
-4. 이후 옆으로 웅크린 수면/일어서기 → 턱을 괴고 엎드려 쉬기/일어서기는 별도 후속이다. 네 발 동작·방향 전환·농가 적용은 이번에 진행하지 않는다.
+1. 추가 심심한 대기 변형은 당분간 보류한다. 앉은 발목 원본 승인은 유지하고 낙서·짝발 등 기존 사용자 확인 대기는 별도로 남긴다. 상의–다리 세밀한 관통 검사는 요구하지 않는다.
+2. 다음은 **눕기 → 잠들기 → 깨어나 일어서기**의 참고 자세·배낭 처리와 전환을 계획한다. 새 눕기 참고 이미지는 References/Anim에 보존한다.
+3. 이후 **턱을 괴고 엎드려 쉬기 → 일어서기**를 제작한다. 뒤꿈치 톡톡·양손 스트레칭은 미구현 보류다.
+4. 네 발 동작·방향 전환·농가 적용은 별도 후속 합의로 진행한다.
 5. 후순위인 세로 구도·UI 가독성·상단 입력 차단과 남은 실제 카메라 검증은 유지한다. 2-7-3 완료 및 3단계 착수는 별도 사용자 확인으로 결정한다.
 
 ## PC 간 이어가기
 
+- **2026-09-27 v0.105 전달:** 최신 main을 받은 뒤 MasterPlan → Progress → AdultSandplayReview를 읽고 `Assets/Scenes/AdultRabbitMotionStudy.unity`에서 재개한다. 다음 작업은 눕기/수면/일어서기 계획이다. 아래 v0.98 등의 미업로드 표기는 당시 이력이며 이 전달 체크포인트가 최신이다.
+
 - **2026-09-24 v0.93 전달 체크포인트:** 사용자 요청에 따라 v0.89~v0.93 앉기/일어서기·기본 호흡/이동 연결의 코드, Blender/FBX, Unity 장면과 메타, 참고 이미지/사용자 영상, 검증 자료와 최신 문서를 한 커밋으로 전달한다. 아래 각 제작 시점의 ‘GitHub 업로드 없음’은 당시 이력이다. 원격 반영 여부는 이 전달 커밋과 `origin/main`의 SHA 일치로 확인한다.
-- 현재 상태는 **기본 호흡·이동 연결 사용자 확인 대기**이며, 다음 제작은 앉기/서기 큰 호흡 2종이다. 다른 PC에서는 최신 `main`을 받은 뒤 MasterPlan → Progress → AdultCommonIdleReview 순으로 읽고 `Assets/Scenes/AdultRabbitMotionStudy.unity`를 연다.
+- 위 전달 당시 상태는 기본 호흡·이동 연결 사용자 확인 대기였다. 현재 로컬은 v0.98 빠른 내쉬기·머리 숙임 사용자 확인 대기이며 아직 업로드하지 않았다. 다른 PC에서는 이 작업을 업로드한 후 최신 `main`을 받아 MasterPlan → Progress → AdultSighReview 순으로 읽고 `Assets/Scenes/AdultRabbitMotionStudy.unity`를 연다.
 - `Logs`의 실행 파일/데이터·캐시와 PC 전용 `.lnk`는 포함하지 않는다. Unity 2022.3.20f1(Windows 빌드 지원)과 Blender 5.2.1 설치 경로를 확인하고 저장소 루트에서 `& .\TinyDays\Tools\RebuildAdultRabbitMotion.ps1 -SkipArt`로 검토 프로그램을 재생성한다. 현재 스크립트의 도구 경로가 다른 PC와 다르면 해당 설치 경로를 먼저 맞춘다. 재생성 시 같은 프로젝트의 Unity 편집기는 저장 후 닫는다.
 - 작업 전 백업인 `Logs/BeforeV089`, `Logs/BeforeV093`도 로컬 전용이다. `verify_sitting_preservation.py`의 과거 원본 해시 비교는 이 백업이 없는 다른 PC에서 바로 재실행할 수 없다. 기존 비교 결과는 검토 문서에 보존했으며, 일반 재빌드 절차는 이 로컬 백업을 요구하지 않는다.
 

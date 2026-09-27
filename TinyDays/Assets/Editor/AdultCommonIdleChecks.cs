@@ -20,7 +20,8 @@ public static class AdultCommonIdleChecks {
     }
     static void Run(){
         AdultRabbitMotionBuilder.BuildOnly();var r=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();
-        var report=new List<string>{"v0.93 common idle: automatic function/clip checks; NOT real player input or visual approval."};
+        r.AutomaticIdle=false;
+        var report=new List<string>{"v0.96 common idle regression: 14mm chest range; automatic function/clip checks; NOT real player input or visual approval."};
         var bones=r.resident.GetComponentsInChildren<Transform>();var spine=bones.First(b=>b.name=="Spine");var head=bones.First(b=>b.name=="Head");
         var fixedBones=new[]{"Pelvis","Foot_L","Foot_R"}.Select(n=>bones.First(b=>b.name==n)).ToArray();
         foreach(bool seated in new[]{false,true}){
@@ -34,7 +35,7 @@ public static class AdultCommonIdleChecks {
                 Check(Delta(scales,bones.Select(b=>b.localScale).ToArray())<1e-5,"Animated body scale");
             }
             float seam=Delta(first,Points(r));Check(seam<.0001&&drift<.0001&&neckDelta<.0001,"Loop/support/neck changed");
-            Check(high-low>.004&&high-low<.009,$"Breathing amplitude {high-low}");
+            Check(Mathf.Abs(high-low-.014f)<=.001f,$"Breathing amplitude {high-low}");
             report.Add($"{(seated?"Sit":"Stand")}: chest range {(high-low)*1000:F3}mm; support drift {drift*1000:F4}mm; neck change {neckDelta*1000:F4}mm; seam {seam*1000:F4}mm.");
         }
         int count=0;float maxTeleport=0;
@@ -53,9 +54,9 @@ public static class AdultCommonIdleChecks {
             r.RequestWalk(false);r.Advance(3);Check(!r.MovingReview&&r.Idle.Pending==CommonIdleDirector.Departure.None,"Cancelled launch ran");
         }
         r.StartBreathing(true);r.RequestRun(true);r.Advance(.5f);Check(r.Idle.State==CommonIdleDirector.Stage.Rising,"Not rising");r.RequestWalk(false);r.Advance(2);Check(!r.MovingReview&&!r.Idle.Seated,"Cancelled rise not safely finished");
-        r.StartBreathing(false);r.Advance(30);Check(r.Idle.State==CommonIdleDirector.Stage.Breathing&&r.Idle.CandidateCount==0,"Unfinished variant selected");
+        r.StartBreathing(false);r.Advance(30);Check(r.Idle.State==CommonIdleDirector.Stage.Breathing&&r.Idle.CandidateCount==2,"Automatic off / completed roster failed");
         r.RequestRun(true);r.Select(0);Check(r.Idle==null&&!r.MovingReview,"Reset retained queue");
-        report.Add("Pause, repeated requests, cancel during tidy/rise, empty automatic roster, clip reset PASS.");
+        report.Add("Pause, repeated requests, cancel during tidy/rise, automatic-off completed roster, clip reset PASS.");
         // Completed synthetic test clips exercise selection, not shipped actions.
         string Schedule(int seed){
             var director=new CommonIdleDirector(r.resident,r.clips[8],r.clips[9],r.clips[6],r.clips[0],r.clips[7],false,seed);
@@ -64,7 +65,7 @@ public static class AdultCommonIdleChecks {
             for(int i=0;i<2000;i++){director.Advance(.1f);if(director.State==CommonIdleDirector.Stage.Variation&&director.CurrentId!=last){last=director.CurrentId;ids.Add(last);}if(director.State==CommonIdleDirector.Stage.Breathing)Check(director.Wait<=12.0001,"Wait above 12 seconds");}
             Check(ids.Count>=10&&ids.Zip(ids.Skip(1),(a,b)=>a!=b).All(x=>x),"Repeated variant");return string.Join(",",ids);
         }
-        Check(Schedule(173)==Schedule(173),"Seed not reproducible");report.Add("Synthetic-only two-clip scheduler: seeded sequence/repeat exclusion PASS. No extra variants shipped.");
+        Check(Schedule(173)==Schedule(173),"Seed not reproducible");report.Add("Synthetic two-candidate scheduler: seeded sequence/repeat exclusion PASS; shipping sigh + fidget per posture.");
         float minSole=999,maxTidyDrift=0,maxFrameJump=0;
         foreach(bool seated in new[]{false,true})foreach(int phase in Enumerable.Range(0,8)){
             r.StartBreathing(seated);r.slow=false;r.Advance(phase*.5f);var feet=fixedBones.Skip(1).Select(b=>b.position).ToArray();r.RequestRun(false);

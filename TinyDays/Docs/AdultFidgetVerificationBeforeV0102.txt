@@ -1,0 +1,8 @@
+v0.101 lifted feet and three alternating ankle pairs: automatic checks, not physical input or user quality approval.
+앉아서 발목 까딱: max angles 12.032/12.032deg, heel lifts 0.003/0.003mm, ankle pulse counts 3/3.
+앉아서 발목 까딱: heel drift 0.0047mm; sole 4.4963mm; leg length error 0.0002mm; pelvis width 0.000mm; adjacent vertical head velocity change 0.000515m/s; endpoints PASS.
+서서 체중 이동: max angles 8.003/8.003deg, heel lifts 15.001/15.000mm, ankle pulse counts 0/0.
+서서 체중 이동: heel drift 0.0910mm; sole 2.4128mm; leg length error 0.0007mm; pelvis width 40.000mm; adjacent vertical head velocity change 0.012703m/s; endpoints PASS.
+384 departure combinations PASS; recovery sole 1.0024mm; seated heel drift 0.2213mm; standing heel drift 0.3294mm.
+216 airborne lift/landing/return interruption, cancel and renewed-request cases PASS; sole 2.2799mm; fixed heel drift 0.3281mm.
+Pose selection/departure, cancellation, pause, fixed-seed two-candidate alternation, reset PASS. Fine coat collision excluded.

@@ -36,6 +36,31 @@ foreach($taskIdleMethod in @('Execute','Sequence')){
   $taskIdle=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskIdleArgs -WindowStyle Hidden -Wait -PassThru
   if($taskIdle.ExitCode -ne 0){throw ('Common idle validation failed: '+$taskIdleMethod)}
 }
+foreach($taskSupportedMethod in @('Execute','Sequence')){
+  $taskSupportedLog=Join-Path $taskProject ('Logs/supported-sit-'+$taskSupportedMethod+'.log')
+  $taskSupportedArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSupportedSitChecks.'+$taskSupportedMethod),'-logFile',('"'+$taskSupportedLog+'"'))
+  $taskSupported=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSupportedArgs -WindowStyle Hidden -Wait -PassThru
+  $taskMarker=if($taskSupportedMethod -eq 'Execute'){'SUPPORTED_SIT_OK'}else{'SUPPORTED_SIT_SEQUENCE_OK'}
+  if($taskSupported.ExitCode -ne 0 -or !(Select-String -LiteralPath $taskSupportedLog -SimpleMatch $taskMarker -Quiet)){throw ('Supported sitting failed: '+$taskSupportedMethod)}
+}
+foreach($taskSighMethod in @('Execute','Sequence')){
+  $taskSighLog=Join-Path $taskProject ('Logs/sigh-'+$taskSighMethod+'.log')
+  $taskSighArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSighChecks.'+$taskSighMethod),'-logFile',('"'+$taskSighLog+'"'))
+  $taskSigh=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSighArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskSigh.ExitCode -ne 0){throw ('Sigh validation failed: '+$taskSighMethod)}
+}
+foreach($taskFidgetMethod in @('Execute','Sequence','InterruptSequence')){
+  $taskFidgetLog=Join-Path $taskProject ('Logs/fidget-'+$taskFidgetMethod+'.log')
+  $taskFidgetArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultFidgetChecks.'+$taskFidgetMethod),'-logFile',('"'+$taskFidgetLog+'"'))
+  $taskFidget=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskFidgetArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskFidget.ExitCode -ne 0){throw ('Fidget validation failed: '+$taskFidgetMethod)}
+}
+foreach($taskSandMethod in @('Execute','Sequence')){
+  $taskSandLog=Join-Path $taskProject ('Logs/sandplay-'+$taskSandMethod+'.log')
+  $taskSandArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSandplayChecks.'+$taskSandMethod),'-logFile',('"'+$taskSandLog+'"'))
+  $taskSand=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSandArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskSand.ExitCode -ne 0){throw ('Sandplay validation failed: '+$taskSandMethod)}
+}
 $bargs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitMotionBuilder.BuildPlayer','-logFile',('"'+(Join-Path $taskProject 'Logs/adult-rabbit-motion-player-build.log')+'"'))
 $b=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $bargs -WindowStyle Hidden -Wait -PassThru
 if($b.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/adult-rabbit-motion-player-build.log') -SimpleMatch 'ADULT_RABBIT_MOTION_PLAYER_OK' -Quiet)){throw 'Player build failed; see adult-rabbit-motion-player-build.log'}

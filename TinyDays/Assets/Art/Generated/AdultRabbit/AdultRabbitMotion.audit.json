@@ -102,6 +102,55 @@
       "duration": 4,
       "loop": true,
       "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Sit_Down_Supported",
+      "frames": 48,
+      "duration": 1.6,
+      "loop": false,
+      "support": "right palm / left knee"
+    },
+    {
+      "name": "Adult_Stand_Up_Supported",
+      "frames": 54,
+      "duration": 1.8,
+      "loop": false,
+      "support": "right palm / left knee"
+    },
+    {
+      "name": "Adult_Sigh_Stand",
+      "frames": 150,
+      "duration": 5,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Sigh_Sit",
+      "frames": 150,
+      "duration": 5,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Fidget_Ankles",
+      "frames": 120,
+      "duration": 4,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Fidget_Weight",
+      "frames": 390,
+      "duration": 13,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Fidget_Sandplay",
+      "frames": 240,
+      "duration": 8,
+      "loop": false,
+      "family": "AdultStandard_v2"
     }
   ],
   "runHeightCurve": {

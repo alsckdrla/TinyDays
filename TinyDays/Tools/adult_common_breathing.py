@@ -38,11 +38,11 @@ def build(rig, key, limb, assign, periodic):
             phase=2*math.pi*frame/120
             for b in rig.pose.bones:b.matrix_basis=rest[b.name].copy()
             # Local chest displacement is parallel to rig/world up. Pelvis, feet
-            # and seated support remain untouched. 7mm peak-to-peak, no scaling.
+            # and seated support remain untouched. 14mm peak-to-peak, no scaling.
             spine=rig.pose.bones['Spine']
             parent_rotation=rig.pose.bones['Pelvis'].matrix.to_quaternion()
             local_up=parent_rotation.inverted()@Vector((0,0,1))
-            spine.location+=local_up*(.0035*math.sin(phase))
+            spine.location+=local_up*(.007*math.sin(phase))
             spine.rotation_quaternion=rest['Spine'].to_quaternion()@Quaternion((1,0,0),math.radians(.35)*math.sin(phase))
             head=rig.pose.bones['Head']
             head.rotation_quaternion=rest['Head'].to_quaternion()@Quaternion((1,0,0),math.radians(-.22)*math.sin(phase-.18))

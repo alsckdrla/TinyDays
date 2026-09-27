@@ -15,7 +15,7 @@ public static class AdultRabbitSitChecks {
     public static void Inspect(){Run(false);}
     public static void Execute(){Run(true);}
     static void Run(bool strict){
-        AdultRabbitMotionBuilder.BuildOnly();var r=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();
+        AdultRabbitMotionBuilder.BuildOnly();var r=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();r.SetSitStyle(false);
         var bones=r.resident.GetComponentsInChildren<Transform>();var skins=r.resident.GetComponentsInChildren<SkinnedMeshRenderer>();
         var shoes=skins.Single(s=>s.name=="Shoes");var hands=skins.Single(s=>s.name=="BodyHands");var top=skins.Single(s=>s.name=="Top");var pack=skins.Single(s=>s.name=="Backpack");
         var errors=new List<string>();var report=new List<string>();var rows=new List<string>{"clip,time,pelvis,head,shoeMin,handMin,coatMin,packMin,spineAngle,headAngle,leftHandX,leftHandY,leftHandZ,rightHandX,rightHandY,rightHandZ"};
@@ -83,7 +83,7 @@ public static class AdultRabbitSitChecks {
         if(strict&&errors.Count>0){Debug.LogError(string.Join("\n",report));EditorApplication.Exit(1);}else Debug.Log(errors.Count==0?"ADULT_SIT_OK":"ADULT_SIT_INSPECTED");
     }
     public static void Sequence(){
-        AdultRabbitMotionBuilder.BuildOnly();var r=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();r.Select(5);r.paused=false;r.slow=false;
+        AdultRabbitMotionBuilder.BuildOnly();var r=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();r.SetSitStyle(false);r.Select(5);r.paused=false;r.slow=false;
         for(int frame=0;frame<126;frame++){
             if(frame==66)r.RequestStand();if(frame>0)r.Advance(1f/30);
             foreach(var view in new[]{("Front",new Vector3(0,1,4.4f)),("Side",new Vector3(4.4f,1,0)),("Quarter",new Vector3(2.8f,1.2f,3.4f))}){r.reviewCamera.transform.position=view.Item2;r.reviewCamera.transform.LookAt(new Vector3(0,.8f,0));Capture(r,$"{view.Item1}{frame:D3}","Logs/AdultRabbitSitSequence");}

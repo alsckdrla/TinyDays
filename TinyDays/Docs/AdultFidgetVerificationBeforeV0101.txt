@@ -1,0 +1,5 @@
+v0.100 fidgets: automatic clip/function checks, not actual input or user quality approval.
+앉아서 발목 까딱: heel drift 0.0009mm; sole 4.4995mm; leg length error 0.0002mm; pelvis width 0.000mm; adjacent vertical head velocity change 0.000515m/s; endpoints PASS.
+서서 체중 이동: heel drift 0.0021mm; sole 2.4992mm; leg length error 0.0006mm; pelvis width 40.000mm; adjacent vertical head velocity change 0.000687m/s; endpoints PASS.
+384 departure combinations PASS; recovery sole 1.0024mm; seated heel drift 0.3043mm; standing heel drift 0.2960mm.
+Pose selection/departure, cancellation, pause, fixed-seed two-candidate alternation, reset PASS. Fine coat collision excluded.

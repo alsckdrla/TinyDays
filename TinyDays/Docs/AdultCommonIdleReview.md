@@ -1,4 +1,22 @@
-# 공통 기본 호흡과 이동 연결 — v0.93
+# 공통 기본 호흡과 이동 연결 — v0.94
+
+2026-09-27 v0.96 추가: 기본 호흡은 그대로 유지하며 한숨 2종을 공통 변형에 등록했다. 최신 결과와 다음 순서는 [AdultSighReview.md](AdultSighReview.md)와 Progress를 우선한다. 아래 다음 작업은 당시 이력이다.
+
+갱신: 2026-09-26. **호흡 크기 사용자 확인 대기**. 아래 v0.93은 당시 검사/전달 이력이며 최신 기준은 이 절을 따른다.
+
+## v0.94 — 14mm 기본 호흡
+
+- 생성 코드의 가슴 사인파 계수만 3.5→7mm로 변경했다. 최저~최고 14mm, 평균/4초 주기/주기형 연속 곡선 유지. 발·골반·앉은 지지점, 회전/귀/장비 후행 강도, 기존 전환 시간과 정상 이동 코드는 변경하지 않았다.
+- `verify_sitting_preservation.py --v094`: 작업 전 `Logs/BeforeV094/AdultRabbitMotion.blend` 대비 기존 8개 액션·메시·바인드 뼈와 두 호흡의 가슴 이동 이외 모든 채널 해시 일치. 원본/FBX/검토 장면/Windows 프로그램 재생성 완료.
+- `AdultCommonIdleVerification.txt`: 240Hz에서 두 자세 가슴 14.000mm(기준 14±1mm), 지지점 이동·반복 자세 차이 0.0000mm, 목 길이 변화 서기 0.0002/앉기 0.0001mm. 스케일 변화 없음. 서기 양쪽 신발 +2.500mm, 앉기 +4.500mm 유지.
+- 192개 위상/자세/걷기·달리기/프레임률/배속 연결, 마지막 요청·취소·일시정지·초기화 통과. 정리 지지발 이동 최대 0.053mm, 연결 중 신발 최저 +1.002mm. 실제 Game 입력이 아닌 함수/클립 검사다.
+- `AdultCommonIdleCurves.json`: 원본 240Hz 가슴 14.000mm, 머리 서기 14.000/앉기 13.770mm. 반복 위치 차이 0, 속도 경계 차이 최대 0.00002861m/s. 머리 최대 가속도 0.02849/0.02512m/s²로 기존 0.05m/s² 기준 유지·통과. 이전 곡선/Unity 측정은 `AdultCommonIdleCurvesBeforeV094.json`과 `AdultCommonIdleVerificationBeforeV094.txt`에 보존했다.
+- 전체 `RebuildAdultRabbitMotion.ps1` 성공. 기존 걷기/달리기/리듬/부드러움/앉기 회귀, `COMMON_IDLE_CURVES_OK`, `COMMON_IDLE_OK`, `COMMON_IDLE_SEQUENCE_OK`, `ADULT_RABBIT_MOTION_PLAYER_OK` 확인. 기존 코트 회귀는 재실행했으나 새 관통 미세 보완은 하지 않았다.
+- Windows `Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe`, 데이터 `sharedassets0.assets` 갱신 2026-09-26 16:45:55. 8초 시작 검사에서 프로세스 유지·엔진/입력 초기화와 예외 없는 로그 확인(`Logs/idle-player-v094-smoke.log`). **실제 키·마우스 입력과 사용자 품질 승인은 미확인**.
+- 같은 카메라/조명의 1×·30fps 자동 영상: [서기 호흡→달리기](Captures/CommonIdle/StandBreathToRunV094.mp4), [앉기 호흡→일어서기→걷기](Captures/CommonIdle/SitBreathToWalkV094.mp4), 각각 8초. 첫 4초의 [서기 전후](Captures/CommonIdle/StandBeforeLeftAfterRightV094.mp4) / [앉기 전후](Captures/CommonIdle/SitBeforeLeftAfterRightV094.mp4)는 **왼쪽 v0.93 / 오른쪽 v0.94**, 각 360px 작은 화면이다. 연속 표본에서 지지점 유지와 상체 변화를 확인했지만 작은 화면 차이는 미세하며, 정지 표본만으로 시간적 자연스러움·통통거림 부재를 승인하지 않는다. 실제 플레이 녹화가 아니다.
+- 다음은 호흡 크기 사용자 확인 후 앉기/서기 큰 호흡 2종. 농가·다음 변형·GitHub 업로드 제외. 이번 결과는 로컬에만 저장했다.
+
+## v0.93 이력
 
 갱신: 2026-09-24. **앉기·서기 기본 호흡과 이동 연결 사용자 확인 대기**. v0.92 최종 품질 승인은 추정하지 않는다.
 

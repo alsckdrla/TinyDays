@@ -1,0 +1,22 @@
+v0.95 supported sitting; automatic clip/function checks, NOT real input/quality approval.
+10: minimum shoe/palm 1.019/4.758mm, segment error 0.0010mm, knee separation 294.797mm.
+10: minimum pants/backpack height 4.330/68.917mm (coat-leg intersections intentionally not tested).
+10: right palm ground drift 0.043mm, gap 4.762..4.818mm.
+10: left palm to actual pants surface vertical gap 3.994..4.182mm.
+10: knee-relative horizontal hand drift 0.041mm; vertical follows actual knee surface, not world fixation.
+10 foot (R, 0.2, 0.65): drift 0.062mm, gap 4.473..4.507mm.
+10 foot (R, 1.35, 1.6): drift 0.048mm, gap 4.500..4.500mm.
+10 foot (L, 0.2, 0.48): drift 0.081mm, gap 4.473..4.517mm.
+10 foot (L, 0.94, 1.1): drift 0.070mm, gap 4.491..4.521mm.
+10 foot (L, 1.55, 1.6): drift 0.066mm, gap 4.500..4.500mm.
+11: minimum shoe/palm 1.019/4.582mm, segment error 0.0011mm, knee separation 296.093mm.
+11: minimum pants/backpack height 2.508/68.917mm (coat-leg intersections intentionally not tested).
+11: right palm ground drift 0.233mm, gap 4.588..4.815mm.
+11: left palm to actual pants surface vertical gap 3.998..4.543mm.
+11: knee-relative horizontal hand drift 0.113mm; vertical follows actual knee surface, not world fixation.
+11 foot (R, 0, 0.25): drift 0.278mm, gap 4.476..4.526mm.
+11 foot (R, 0.65, 1.5): drift 0.256mm, gap 4.474..4.531mm.
+11 foot (L, 0, 0.08): drift 0.175mm, gap 4.500..4.518mm.
+11 foot (L, 0.35, 0.56): drift 0.948mm, gap 4.495..4.525mm.
+11 foot (L, 0.78, 1.5): drift 0.778mm, gap 4.475..4.697mm.
+Both style routes, 30/60/120fps x 0.5/1, endpoint holds, pause, repeat, queued movement, cancel and reset PASS. Legacy regression and visual checks separate.

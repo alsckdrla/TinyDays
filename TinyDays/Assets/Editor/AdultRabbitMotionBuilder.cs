@@ -14,7 +14,7 @@ public static class AdultRabbitMotionBuilder
     const string Model="Assets/Art/Generated/AdultRabbit/AdultRabbitMotion.fbx";
     const string ScenePath="Assets/Scenes/AdultRabbitMotionStudy.unity";
     const string Owner="GeneratedAdultRabbitMotionReview";
-    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped","Adult_Sit_Down","Adult_Stand_Up","Adult_Sit_Hold","Adult_Breathe_Stand","Adult_Breathe_Sit"};
+    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped","Adult_Sit_Down","Adult_Stand_Up","Adult_Sit_Hold","Adult_Breathe_Stand","Adult_Breathe_Sit","Adult_Sit_Down_Supported","Adult_Stand_Up_Supported","Adult_Sigh_Stand","Adult_Sigh_Sit","Adult_Fidget_Ankles","Adult_Fidget_Weight","Adult_Fidget_Sandplay"};
     public static void BuildOnly(){Build();Debug.Log("ADULT_REVIEW_BUILD_OK");}
     static void Check(bool value,string message){if(!value)throw new Exception(message);}
     [MenuItem("Tiny Days/Adult rabbit/Open motion review")]
@@ -84,7 +84,7 @@ public static class AdultRabbitMotionBuilder
             importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material),name),mat);}
         importer.SaveAndReimport();
         var clipSettings=importer.defaultClipAnimations;
-        foreach(var setting in clipSettings)if(Names.Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal))){bool loop=Names.Take(5).Concat(Names.Skip(8)).Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal));setting.loopTime=loop;setting.loopPose=loop;}
+        foreach(var setting in clipSettings)if(Names.Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal))){bool loop=Names.Take(5).Concat(Names.Skip(8).Take(2)).Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal));setting.loopTime=loop;setting.loopPose=loop;}
         importer.clipAnimations=clipSettings;importer.SaveAndReimport();
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         if(scene.path!=ScenePath)scene=File.Exists(ScenePath)?EditorSceneManager.OpenScene(ScenePath):EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
@@ -109,7 +109,7 @@ public static class AdultRabbitMotionBuilder
     }
     static void Verify()
     {
-        var review=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();Check(review&&review.clips.Length==10,"Review missing");
+        var review=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();Check(review&&review.clips.Length==Names.Length,"Review missing");
         var actor=review.resident;var skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.enabled).ToArray();
         var log=new[]{"AdultStandard_v2 motion review; automatic sampling is not user motion approval.","Five looping clips imported: PASS (two quadruped drafts deferred)","Existing farm and temporary RabbitMotion assets are not referenced or replaced: PASS"}.ToList();
         for(int i=0;i<5;i++){
@@ -405,7 +405,15 @@ public static class AdultRabbitMotionBuilder
         Check(minimum>=-.0005f&&maxSupport<=.005f&&drift<=.0035f,"Dense shoe contact or compensated sliding exceeds tolerance");
     }
     static void Capture(Camera camera,SkinnedMeshRenderer[] skins,string name,string directory="Docs/Captures/AdultRabbitMotion"){var proxies=skins.Select(s=>{var go=new GameObject("__MotionCapture");var mesh=UnityEngine.Object.Instantiate(s.sharedMesh);mesh.vertices=WorldVertices(s);mesh.RecalculateBounds();go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterials=s.sharedMaterials;s.enabled=false;return go;}).ToArray();
-        var rt=new RenderTexture(720,720,24);rt.antiAliasing=4;rt.Create();camera.targetTexture=rt;camera.Render();var old=RenderTexture.active;RenderTexture.active=rt;var tex=new Texture2D(720,720,TextureFormat.RGB24,false);tex.ReadPixels(new Rect(0,0,720,720),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(directory,name+".png"),tex.EncodeToPNG());RenderTexture.active=old;camera.targetTexture=null;UnityEngine.Object.DestroyImmediate(tex);rt.Release();UnityEngine.Object.DestroyImmediate(rt);
-        foreach(var p in proxies){UnityEngine.Object.DestroyImmediate(p.GetComponent<MeshFilter>().sharedMesh);UnityEngine.Object.DestroyImmediate(p);}foreach(var s in skins)s.enabled=true;}
+        var rt=new RenderTexture(720,720,24);var old=RenderTexture.active;Texture2D tex=null;
+        try{
+            rt.antiAliasing=4;rt.Create();camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;tex=new Texture2D(720,720,TextureFormat.RGB24,false);tex.ReadPixels(new Rect(0,0,720,720),0,0);tex.Apply();
+            var bytes=tex.EncodeToPNG();var path=Path.Combine(directory,name+".png");
+            for(int attempt=0;;attempt++)try{File.WriteAllBytes(path,bytes);break;}catch(IOException)when(attempt<5){System.Threading.Thread.Sleep(200);}
+        }finally{
+            RenderTexture.active=old;camera.targetTexture=null;if(tex)UnityEngine.Object.DestroyImmediate(tex);rt.Release();UnityEngine.Object.DestroyImmediate(rt);
+            foreach(var p in proxies){UnityEngine.Object.DestroyImmediate(p.GetComponent<MeshFilter>().sharedMesh);UnityEngine.Object.DestroyImmediate(p);}foreach(var s in skins)s.enabled=true;
+        }
+    }
     public static void BuildPlayer(){var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=new[]{ScenePath},locationPathName="Logs/AdultRabbitMotionPlayer/TinyDaysAdultRabbitMotion.exe",target=BuildTarget.StandaloneWindows64,options=BuildOptions.None});Check(report.summary.result==BuildResult.Succeeded,"Adult motion player failed");Debug.Log("ADULT_RABBIT_MOTION_PLAYER_OK");}
 }

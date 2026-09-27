@@ -1,0 +1,10 @@
+v0.98 fast exhale/head dip: automatic function/clip tests; not actual player input or user quality approval.
+12: exhale trough 2.6583s; head pitch 6.000deg at 2.7125s; head descent 53.116mm, advance 150.480mm from crest.
+12: lift 24.000mm; lower -20.000mm; forward 20.000mm.
+12: 240Hz range 44.000mm; supports 0.0000mm; neck 0.0003mm; min sole 2.4997mm; endpoints PASS.
+13: exhale trough 2.6500s; head pitch 8.000deg at 2.7125s; head descent 72.628mm, advance 205.179mm from crest.
+13: lift 24.000mm; lower -20.000mm; forward 20.000mm.
+13: 240Hz range 44.000mm; supports 0.0000mm; neck 0.0002mm; min sole 4.5000mm; endpoints PASS.
+240Hz complete entry/clip/exit: support 0.0001mm; maximum adjacent head velocity difference 0.006366m/s (diagnostic bound .08). This is not a visual smoothness approval.
+384 departure combinations: both rise styles/postures, 8 phases, walk/run, 30/60/120fps, .5/1x, pause and latest request PASS.
+Cancellation, automatic selection and reset PASS. Fine coat/leg collision intentionally excluded.

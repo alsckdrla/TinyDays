@@ -1,30 +1,30 @@
 {
   "Adult_Breathe_Stand": {
     "Spine": {
-      "vertical_range_mm": 6.999969482421875,
+      "vertical_range_mm": 13.999998569488525,
       "position_seam_mm": 0.0,
-      "velocity_seam_m_s": 2.6203514656484697e-09,
-      "peak_acceleration_m_s2": 0.013732910157035273
+      "velocity_seam_m_s": 5.240702931296939e-09,
+      "peak_acceleration_m_s2": 0.02059936524312366
     },
     "Head": {
-      "vertical_range_mm": 6.999969482421875,
+      "vertical_range_mm": 14.0000581741333,
       "position_seam_mm": 0.0,
-      "velocity_seam_m_s": 1.816079020500183e-08,
-      "peak_acceleration_m_s2": 0.021769464192131976
+      "velocity_seam_m_s": 2.8610233619019412e-05,
+      "peak_acceleration_m_s2": 0.02848473453216356
     }
   },
   "Adult_Breathe_Sit": {
     "Spine": {
-      "vertical_range_mm": 6.999999284744263,
+      "vertical_range_mm": 13.999998569488525,
       "position_seam_mm": 0.0,
       "velocity_seam_m_s": 0.0,
-      "peak_acceleration_m_s2": 0.009441375732421875
+      "peak_acceleration_m_s2": 0.018024444176406453
     },
     "Head": {
-      "vertical_range_mm": 6.77037239074707,
+      "vertical_range_mm": 13.770341873168945,
       "position_seam_mm": 0.0,
-      "velocity_seam_m_s": 1.430511474609375e-05,
-      "peak_acceleration_m_s2": 0.015652338573349876
+      "velocity_seam_m_s": 0.0,
+      "peak_acceleration_m_s2": 0.025115561293715626
     }
   }
 }

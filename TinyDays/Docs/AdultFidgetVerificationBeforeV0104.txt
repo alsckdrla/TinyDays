@@ -1,0 +1,12 @@
+v0.103 loaded hip / waist hand / toe taps: automatic checks, not physical input or user quality approval.
+앉아서 발목 까딱: max angles 12.032/12.032deg, heel lifts 0.003/0.003mm, ankle pulse counts 3/3.
+앉아서 발목 까딱: heel drift 0.0047mm; sole 4.4963mm; leg length error 0.0002mm; pelvis width 0.000mm; adjacent vertical head velocity change 0.000515m/s; endpoints PASS.
+Standing offsets 116.454/116.453mm = shoe length / 3; toe 10deg x5 each at 2Hz; yaw 8deg; neutral switch PASS.
+Loaded pose 1.20s: pelvis-to-support lateral 85.07mm, knee angles support/free 163.51/134.13, waist hand height difference 45.00mm (visual quality remains unapproved).
+Loaded pose 7.30s: pelvis-to-support lateral 57.58mm, knee angles support/free 163.24/150.11, waist hand height difference 45.00mm (visual quality remains unapproved).
+서서 짝발 대기: max angles 12.836/12.836deg, heel lifts 3.878/3.880mm, ankle pulse counts 5/5.
+서서 짝발 대기: heel drift 0.1045mm; sole 0.0073mm; leg length error 0.0003mm; pelvis width 183.000mm; adjacent vertical head velocity change 0.013561m/s; endpoints PASS.
+384 departure combinations PASS; recovery sole 1.0024mm; seated heel drift 0.2213mm; standing heel drift 0.2911mm.
+216 airborne lift/landing/return interruption, cancel and renewed-request cases PASS; sole 2.3663mm; fixed heel drift 0.2372mm.
+156 seated tap interruptions PASS: tidy <= .25s + frame, then existing selected rise; sole 4.2546mm.
+Pose selection/departure, cancellation, pause, fixed-seed two-candidate alternation, reset PASS. Fine coat collision excluded.

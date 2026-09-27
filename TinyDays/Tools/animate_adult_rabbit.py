@@ -269,6 +269,8 @@ import sys
 sys.path.insert(0,str(ROOT/'Tools'))
 from adult_rabbit_sitting import build as build_sitting
 build_sitting(rig,base,assign,limb,key)
+from adult_rabbit_supported_sitting import build as build_supported_sitting
+build_supported_sitting(rig,base,assign,limb,key)
 if '--validate-sit' in sys.argv:
     print('ADULT_SIT_REACH_VALIDATED_NO_EXPORT',flush=True)
     raise SystemExit(0)
@@ -278,6 +280,19 @@ from adult_common_breathing import build as build_breathing
 build_breathing(rig,key,limb,assign,smooth_periodic_body_curve)
 for name in ('Adult_Breathe_Stand','Adult_Breathe_Sit'):
     report['clips'].append({'name':name,'frames':120,'duration':4,'loop':True,'family':'AdultStandard_v2'})
+for name,frames in [('Adult_Sit_Down_Supported',48),('Adult_Stand_Up_Supported',54)]:
+    report['clips'].append({'name':name,'frames':frames,'duration':frames/30,'loop':False,'support':'right palm / left knee'})
+from adult_common_sigh import build as build_sigh
+build_sigh(rig,assign,limb,key)
+for name in ('Adult_Sigh_Stand','Adult_Sigh_Sit'):
+    report['clips'].append({'name':name,'frames':150,'duration':5,'loop':False,'family':'AdultStandard_v2'})
+from adult_common_fidgets import build as build_fidgets
+build_fidgets(rig,assign,limb,key)
+for name,seconds in [('Adult_Fidget_Ankles',4),('Adult_Fidget_Weight',13)]:
+    report['clips'].append({'name':name,'frames':seconds*30,'duration':seconds,'loop':False,'family':'AdultStandard_v2'})
+from adult_common_sandplay import build as build_sandplay
+build_sandplay(rig,assign,limb,key)
+report['clips'].append({'name':'Adult_Fidget_Sandplay','frames':240,'duration':8,'loop':False,'family':'AdultStandard_v2'})
 rig.animation_data.action=bpy.data.actions['Adult_Walk_Biped'];scene.frame_set(2);scene.frame_set(1);bpy.context.view_layer.update()
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
 for o in objects:o.select_set(True)
