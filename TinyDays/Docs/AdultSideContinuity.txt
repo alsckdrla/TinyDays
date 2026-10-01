@@ -1,0 +1,3 @@
+8 phase continuous roll traces: max joint step 1.8225mm at 240Hz, max finite-difference acceleration 6.8029m/s2, clip-boundary velocity difference 0.004084m/s. Phase strictly advances. These are measurements, not visual approval.
+phase 6, frame 600, 28->27, Head, velocity (0.00, 0.00, 0.00)->(0.00, 0.00, 0.00)
+Max acceleration: phase 7, frame 1131, clip 27, Head

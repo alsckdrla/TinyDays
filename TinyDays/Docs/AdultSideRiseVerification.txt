@@ -1,0 +1,6 @@
+v0.112 direct side returns. Automatic method/geometry samples, not OS input or user quality approval.
+240Hz floor 0.9109mm at 33 / 3.0167 / Shoes; limb length difference 0.0017mm; tail attachment 0.0000mm/0.00000deg.
+Hands contact drift 0.8223mm; contact floor gap 2.1897mm; individual hand gap 2.2217mm; kneeling leg minimum surface gap 4.2080mm at 1.7500s; final planted-foot drift 0.6105mm; endpoint joint difference 0.0002mm.
+Head step 8.0018mm at240Hz; max finite-difference acceleration 22.9427m/s2.
+v0.114 designated knee support1.66-1.74s: drift 0.0106mm; max surface gap 4.9697mm.
+576 phase/fps/speed awake/sleep direct destinations PASS;32 cancel/latest-posture checks; pause/resume/exit PASS.

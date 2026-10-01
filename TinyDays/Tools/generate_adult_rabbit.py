@@ -257,7 +257,8 @@ nose,nose_rotation=face_attachment(0,1.397)
 ell('Head',nose,(.034,.020,.026),'Pink','Head',10,5,orientation=nose_rotation)
 torso('BodyTorso','Fur');torso('Top','Cloth',1.06)
 ell('BodyTail',(0,.22,.595),(.12,.125,.12),'Fur','Tail',12,8)
-rounded_box('Top',(.15,-.165,.642),(.095,.018,.095),'Cloth','Spine',.012)
+# Sewn decorations must follow the local garment surface and its skin weights.
+# The former rigid Spine-bound pocket is intentionally omitted.
 # Neck scarf ring and two simple folded tails.
 # Flared collar: a narrow neck opening and straight sloping sides toward the chest.
 tube('Neckwear',[(0,0,1.098),(0,0,1.145),(0,0,1.188)],[(.160,.138),(.129,.110),(.100,.085)],'Pink',[{'NeckSocket':1}]*3,16)
@@ -352,6 +353,10 @@ for name,(verts,faces,materials,weights,smooth) in modules.items():
     assert all(t.area>1e-10 for t in mesh.loop_triangles),name+' degenerate faces'
     report['modules'].append({'name':name,'vertices':len(mesh.vertices),'triangles':tris})
     objects.append(ob)
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from adult_rabbit_sleep import add_eyes
+add_eyes()
 report['trianglesAllModules']=sum(m['triangles'] for m in report['modules'])
 assert report['trianglesAllModules']<=6000,report['trianglesAllModules']
 report['bones']=list(bones)

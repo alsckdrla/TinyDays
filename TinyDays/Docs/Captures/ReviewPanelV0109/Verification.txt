@@ -1,0 +1,13 @@
+1920x1080: 40 buttons, content 1031.0px; bounds, wrap, row alignment PASS.
+Bottom 0.0px reachable; direct button callback preserved camera (not OS input).
+Fidget and sandplay callbacks PASS (not physical input).
+1280x720: 40 buttons, content 1031.0px; bounds, wrap, row alignment PASS.
+Bottom 351.0px reachable; direct button callback preserved camera (not OS input).
+Fidget and sandplay callbacks PASS (not physical input).
+800x600: 40 buttons, content 1031.0px; bounds, wrap, row alignment PASS.
+Bottom 471.0px reachable; direct button callback preserved camera (not OS input).
+Fidget and sandplay callbacks PASS (not physical input).
+Runtime GUI render/layout, shared pointer routing for three drags + wheel, and direct callbacks PASS. Physical OS wheel/drag/click interaction not verified.
+Lying/return panel callbacks and review exit PASS (not physical input).
+Sleep/wake callbacks, closed/open eye restoration PASS (not OS input).
+Left roll/return callbacks and awake side state PASS (not OS input).

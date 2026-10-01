@@ -1,0 +1,6 @@
+v0.114 240Hz raw/runtime angular continuity. Anatomical right=legacy L; left=legacy R. Not user quality approval.
+32 raw: max angular step Thigh_L=0.4597, Shin_L=0.5828, Foot_L=0.4131, Thigh_R=0.4298, Shin_R=0.6330, Foot_R=0.4243 deg; seated settle chest inclination 34.526deg.
+32 runtime: max angular step Thigh_L=0.4597, Shin_L=0.5855, Foot_L=0.4131, Thigh_R=0.4334, Shin_R=0.6318, Foot_R=0.4224 deg; seated settle chest inclination 34.615deg.
+33 raw: max angular step Thigh_L=0.8421, Shin_L=0.8704, Foot_L=0.5553, Thigh_R=3.5354, Shin_R=3.8322, Foot_R=0.5908 deg; seated settle chest inclination 0.000deg.
+33 runtime: max angular step Thigh_L=0.8412, Shin_L=0.8713, Foot_L=0.5525, Thigh_R=3.5363, Shin_R=3.8320, Foot_R=0.5922 deg; seated settle chest inclination 0.000deg.
+Overall max 3.8322deg / 240Hz; endpoint max 0.0000deg.

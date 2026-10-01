@@ -1,0 +1,40 @@
+{
+  "family": "AdultStandard_v2",
+  "preservedSourceActions": 36,
+  "clips": [
+    [
+      "Adult_Water_Carry_Idle",
+      4,
+      true
+    ],
+    [
+      "Adult_Water_Carry_Walk",
+      0.8,
+      true
+    ],
+    [
+      "Adult_Water_Pour",
+      6,
+      false
+    ]
+  ],
+  "canTriangles": 512,
+  "canMaterials": 2,
+  "grips": [
+    [
+      0.12,
+      0.08,
+      0.305
+    ],
+    [
+      -0.12,
+      0.08,
+      0.305
+    ]
+  ],
+  "spout": [
+    0,
+    -0.455,
+    0.16
+  ]
+}

@@ -28,8 +28,8 @@
     },
     {
       "name": "Top",
-      "vertices": 348,
-      "triangles": 664
+      "vertices": 324,
+      "triangles": 636
     },
     {
       "name": "BodyLegs",
@@ -73,7 +73,7 @@
     }
   ],
   "subdivision": false,
-  "trianglesAllModules": 5864,
+  "trianglesAllModules": 5836,
   "bones": [
     "Root",
     "Pelvis",

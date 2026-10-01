@@ -1,0 +1,13 @@
+Rabbit home deterministic editor scenario checks; not live OS input.
+30fps 1x: 2 trips, closed door, automatic opening/closing, no handle IK; distance=9.245m
+60fps 1x: 2 trips, closed door, automatic opening/closing, no handle IK; distance=9.245m
+120fps 1x: 2 trips, closed door, automatic opening/closing, no handle IK; distance=9.245m
+30fps 0.5x: 2 trips, closed door, automatic opening/closing, no handle IK; distance=9.245m
+60fps 0.5x: 2 trips, closed door, automatic opening/closing, no handle IK; distance=9.245m
+120fps 0.5x: 2 trips, closed door, automatic opening/closing, no handle IK; distance=9.245m
+Pause/resume, duplicate exit, opposite request deferred to safe endpoint: PASS
+Request while paused at inside, then resume: PASS
+Occupied closing envelope holds door open; reset clears door/request state: PASS (injected geometry check, not OS input)
+Both closing waits: pause/resume, repeat/opposite request and reset: PASS
+20 automatic round trips: closed at inside, first/final position errors=0.1221/0.1274m, drift=5.33mm (15cm bounded stop area; no coordinate-chasing steps); PASS
+40 closing stops: root drift 0.000000m; premature departures 0; PASS

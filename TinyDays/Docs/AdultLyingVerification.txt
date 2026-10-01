@@ -1,0 +1,13 @@
+240Hz limb length error 0.0178mm; shoe minimum -0.3021mm; head/ears minimum 3.5806mm; hands minimum 1.8976mm; seated palm hold gap 2.0016mm / drift 0.0088mm.
+Supine anatomical torso support clearance 2.6529mm (coat hem excluded).
+Endpoint 17@0 -> 8: 0.0004mm at Foot_R
+Endpoint 17@3 -> 21: 0.0003mm at Hand_L
+Endpoint 18@0 -> 21: 0.0001mm at Hand_L
+Endpoint 18@3.2 -> 8: 0.0006mm at Ear_L
+Endpoint 19@0 -> 9: 0.0002mm at Hand_L
+Endpoint 19@2 -> 21: 0.0006mm at Foot_R
+Endpoint 20@0 -> 21: 0.0001mm at Hand_L
+Endpoint 20@2.2 -> 9: 0.0006mm at Foot_R
+Endpoint joint-position difference to shared breathing/supine references 0.0006mm.
+48 timing/return/latest-request/cancel cases at 30/60/120fps and .5/1 speed PASS; pause/repeat/reset/previous visibility/disable/moving-stop PASS.
+Automatic samples and method calls, not physical mouse input or user motion-quality approval. Fine coat/leg collision excluded.

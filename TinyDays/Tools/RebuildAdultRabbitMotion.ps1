@@ -61,6 +61,50 @@ foreach($taskSandMethod in @('Execute','Sequence')){
   $taskSand=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSandArgs -WindowStyle Hidden -Wait -PassThru
   if($taskSand.ExitCode -ne 0){throw ('Sandplay validation failed: '+$taskSandMethod)}
 }
+foreach($taskLyingMethod in @('Execute','Sequence')){
+  $taskLyingLog=Join-Path $taskProject ('Logs/lying-'+$taskLyingMethod+'.log')
+  $taskLyingArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultLyingChecks.'+$taskLyingMethod),'-logFile',('"'+$taskLyingLog+'"'))
+  $taskLying=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskLyingArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskLying.ExitCode -ne 0){throw ('Lying validation failed: '+$taskLyingMethod)}
+}
+foreach($taskSleepMethod in @('Execute','Sequence','Cycle')){
+  $taskSleepArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSleepChecks.'+$taskSleepMethod),'-logFile',('"'+(Join-Path $taskProject ('Logs/sleep-'+$taskSleepMethod+'.log'))+'"'))
+  $taskSleep=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSleepArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskSleep.ExitCode -ne 0){throw ('Sleep validation failed: '+$taskSleepMethod)}
+}
+& (Join-Path $PSScriptRoot 'EncodeSleepReview.ps1')
+$taskPillowArgs=@('--background','--factory-startup','--python-exit-code','1','--python',('"'+(Join-Path $PSScriptRoot 'verify_side_pillow.py')+'"'))
+$taskPillow=Start-Process 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -ArgumentList $taskPillowArgs -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskProject 'Logs/side-pillow-source.log') -RedirectStandardError (Join-Path $taskProject 'Logs/side-pillow-source-errors.log') -Wait -PassThru
+if($taskPillow.ExitCode -ne 0){throw 'Side head/forearm source verification failed'}
+$taskTailArgs=@('--background','--factory-startup','--python-exit-code','1','--python',('"'+(Join-Path $PSScriptRoot 'verify_rest_tail.py')+'"'))
+$taskTail=Start-Process 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -ArgumentList $taskTailArgs -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskProject 'Logs/rest-tail-source.log') -RedirectStandardError (Join-Path $taskProject 'Logs/rest-tail-source-errors.log') -Wait -PassThru
+if($taskTail.ExitCode -ne 0){throw 'Rest tail attachment source verification failed'}
+foreach($taskSideMethod in @('Execute','Pillow','Continuity','Sequence')){
+  $taskSideArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSideChecks.'+$taskSideMethod),'-logFile',('"'+(Join-Path $taskProject ('Logs/side-'+$taskSideMethod+'.log'))+'"'))
+  $taskSide=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSideArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskSide.ExitCode -ne 0){throw ('Side validation failed: '+$taskSideMethod)}
+}
+& (Join-Path $PSScriptRoot 'EncodeSideReview.ps1')
+foreach($taskSideSleepMethod in @('Execute','Continuous','Sequence')){
+  $taskSideSleepArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSideSleepChecks.'+$taskSideSleepMethod),'-logFile',('"'+(Join-Path $taskProject ('Logs/side-sleep-'+$taskSideSleepMethod+'.log'))+'"'))
+  $taskSideSleep=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskSideSleepArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskSideSleep.ExitCode -ne 0){throw ('Side sleep validation failed: '+$taskSideSleepMethod)}
+}
+& (Join-Path $PSScriptRoot 'EncodeSideSleepReview.ps1')
+foreach($taskRiseMethod in @('AdultSideRiseRotationChecks.Execute','AdultSideRiseChecks.Execute','AdultSideRiseChecks.Sequence')){
+  $taskRiseLog=Join-Path $taskProject ('Logs/side-rise-'+$taskRiseMethod+'.log')
+  $taskRiseArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',$taskRiseMethod,'-logFile',('"'+$taskRiseLog+'"'))
+  $taskRise=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskRiseArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskRise.ExitCode -ne 0){throw ('Direct side return validation failed: '+$taskRiseMethod)}
+}
+& (Join-Path $PSScriptRoot 'EncodeSideRiseReview.ps1')
+foreach($taskDownMethod in @('Execute','Extras','Sequence')){
+  $taskDownLog=Join-Path $taskProject ('Logs/side-down-'+$taskDownMethod+'.log')
+  $taskDownArgs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod',('AdultSideDownChecks.'+$taskDownMethod),'-logFile',('"'+$taskDownLog+'"'))
+  $taskDown=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $taskDownArgs -WindowStyle Hidden -Wait -PassThru
+  if($taskDown.ExitCode -ne 0){throw ('Direct side entry validation failed: '+$taskDownMethod)}
+}
+& (Join-Path $PSScriptRoot 'EncodeSideDownReview.ps1')
 $bargs=@('-batchmode','-quit','-projectPath',('"'+$taskProject+'"'),'-executeMethod','AdultRabbitMotionBuilder.BuildPlayer','-logFile',('"'+(Join-Path $taskProject 'Logs/adult-rabbit-motion-player-build.log')+'"'))
 $b=Start-Process 'C:\Program Files\Unity\Hub\Editor\2022.3.20f1\Editor\Unity.exe' -ArgumentList $bargs -WindowStyle Hidden -Wait -PassThru
 if($b.ExitCode -ne 0 -or !(Select-String -LiteralPath (Join-Path $taskProject 'Logs/adult-rabbit-motion-player-build.log') -SimpleMatch 'ADULT_RABBIT_MOTION_PLAYER_OK' -Quiet)){throw 'Player build failed; see adult-rabbit-motion-player-build.log'}

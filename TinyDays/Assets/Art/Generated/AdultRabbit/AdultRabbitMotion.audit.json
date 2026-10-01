@@ -151,6 +151,139 @@
       "duration": 8,
       "loop": false,
       "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Stand_To_Lie",
+      "frames": 90,
+      "duration": 3,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Lie_To_Stand",
+      "frames": 96,
+      "duration": 3.2,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Sit_To_Lie",
+      "frames": 60,
+      "duration": 2,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Lie_To_Sit",
+      "frames": 66,
+      "duration": 2.2,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Lie_Hold",
+      "frames": 30,
+      "duration": 1,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Breathe_Lie",
+      "frames": 120,
+      "duration": 4,
+      "loop": true,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Fall_Asleep",
+      "frames": 90,
+      "duration": 3,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Sleep_Lie",
+      "frames": 180,
+      "duration": 6,
+      "loop": true,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Wake_Lie",
+      "frames": 45,
+      "duration": 1.5,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Lie_To_Left",
+      "frames": 72,
+      "duration": 2.4,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Left_To_Lie",
+      "frames": 72,
+      "duration": 2.4,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Breathe_Left",
+      "frames": 120,
+      "duration": 4,
+      "loop": true,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Fall_Asleep_Left",
+      "frames": 90,
+      "duration": 3,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Sleep_Left",
+      "frames": 180,
+      "duration": 6,
+      "loop": true,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Wake_Left",
+      "frames": 45,
+      "duration": 1.5,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Left_To_Sit",
+      "frames": 72,
+      "duration": 2.4,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Left_To_Stand",
+      "frames": 96,
+      "duration": 3.2,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Stand_To_Left",
+      "frames": 96,
+      "duration": 3.2,
+      "loop": false,
+      "family": "AdultStandard_v2"
+    },
+    {
+      "name": "Adult_Sit_To_Left",
+      "frames": 72,
+      "duration": 2.4,
+      "loop": false,
+      "family": "AdultStandard_v2"
     }
   ],
   "runHeightCurve": {

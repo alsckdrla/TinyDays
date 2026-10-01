@@ -1,0 +1,14 @@
+v0.108 continuous supine sleep: automated samples/method calls, not OS input or quality approval.
+Geometry 5836 triangles / 6 unique materials; optional eye blendshape imported.
+Clip 22: 4.0s, loop=True, chest landmark range 7.9264mm; eyes endpoint 0.
+Clip 23: 3.0s, loop=False, chest landmark range 10.2469mm; eyes endpoint 1.
+Clip 24: 6.0s, loop=True, chest landmark range 10.3115mm; eyes endpoint 1.
+Clip 25: 1.5s, loop=False, chest landmark range 6.5584mm; eyes endpoint 0.
+Support joint drift 0.6288mm; limb difference 0.0003mm; neck-pivot distance difference 0.0003mm; shoe minimum 4.4997mm; head/ears minimum 3.5806mm.
+Loop position 0.0000mm; finite-difference seam velocity 0.000286m/s.
+16 awake/sleep phase switch + pause cases at 240Hz PASS; immediate chest jump 0.0000mm, velocity change 0.000152m/s.
+12 awake/sleep period cases at 30/60/120fps and .5/1 speed PASS; breathing clock and clip clock remain independent.
+17s awake/sleep/wake trace at 240Hz PASS; maximum chest step 0.0324mm, finite-difference acceleration 0.053215m/s². Full trace: AdultContinuousBreathMotion.csv.
+Continuous phase-blended support drift 0.6288mm; limb difference 0.0003mm; neck-pivot distance difference 0.0003mm PASS.
+432 request/return/cancel/latest/pause cases at 30/60/120fps and .5/1 speed PASS; lying arrival, eye/bag reset/disable PASS.
+Existing 22 source actions/base geometry audited separately. Skin support sampling is not physical support-force verification. Fine coat/leg tests excluded.

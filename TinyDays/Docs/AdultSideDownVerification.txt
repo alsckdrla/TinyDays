@@ -1,0 +1,6 @@
+v0.115 direct left-side entry: automatic geometry/callback checks; not physical OS input or user motion approval.
+240Hz floor -0.3421mm; limb error 0.0016mm; tail 0.0000mm / 0.00000deg.
+Hand drift 1.2131mm / gap 3.1237mm; knee drift 0.1228mm / gap 4.4070mm; supporting right foot drift 0.8192mm.
+Endpoint 0.3107mm; leg maximum step 3.5221deg/240Hz at 34 / 1.320833.
+Lowest surface at 34 / 0.8833333 / Shoes
+384 phase/fps/speed request combinations;16 cancel/latest-request/sleep paths; moving stop, pause/resume and cleanup PASS.

@@ -1,13 +1,13 @@
 v0.104 upright contrapposto: automatic checks, not physical input or user quality approval.
 앉아서 발목 까딱: max angles 12.032/12.032deg, heel lifts 0.003/0.003mm, ankle pulse counts 3/3.
-앉아서 발목 까딱: heel drift 0.0047mm; sole 4.4963mm; leg length error 0.0002mm; pelvis width 0.000mm; adjacent vertical head velocity change 0.000515m/s; endpoints PASS.
+앉아서 발목 까딱: heel drift 0.0047mm; sole 4.4963mm; leg length error 0.0002mm; pelvis width 0.000mm; adjacent vertical head velocity change 0.000529m/s; endpoints PASS.
 Upright max drop: pelvis 9.000mm, chest 12.442mm, head 12.890mm; pelvis <= 10mm PASS.
 Standing offsets 20.019/20.019mm (height priority); toe 10deg x5 each at 2Hz; yaw 8deg; neutral switch PASS.
 Loaded pose 1.20s: pelvis-to-support lateral 135.07mm, knee angles support/free 166.67/143.41, waist hand height difference 45.00mm (visual quality remains unapproved).
 Loaded pose 7.30s: pelvis-to-support lateral 107.58mm, knee angles support/free 167.85/146.43, waist hand height difference 45.00mm (visual quality remains unapproved).
 서서 짝발 대기: max angles 12.836/12.836deg, heel lifts 3.881/3.881mm, ankle pulse counts 5/5.
 서서 짝발 대기: heel drift 0.0713mm; sole 0.0118mm; leg length error 0.0004mm; pelvis width 83.000mm; adjacent vertical head velocity change 0.002518m/s; endpoints PASS.
-384 departure combinations PASS; recovery sole 1.0024mm; seated heel drift 0.2213mm; standing heel drift 0.2106mm.
-216 airborne lift/landing/return interruption, cancel and renewed-request cases PASS; sole 2.3508mm; fixed heel drift 0.1801mm.
+384 departure combinations PASS; recovery sole 1.0024mm; seated heel drift 0.2212mm; standing heel drift 0.2106mm.
+216 airborne lift/landing/return interruption, cancel and renewed-request cases PASS; sole 2.3509mm; fixed heel drift 0.1801mm.
 156 seated tap interruptions PASS: tidy <= .25s + frame, then existing selected rise; sole 4.2546mm.
 Pose selection/departure, cancellation, pause, fixed-seed two-candidate alternation, reset PASS. Fine coat collision excluded.

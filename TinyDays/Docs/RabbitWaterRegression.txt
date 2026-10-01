@@ -1,0 +1,11 @@
+v0.120 water carry/pour deterministic checks. Not OS input or quality approval.
+AdultRig|Adult_Water_Carry_Idle: 4.000s; local boundary position 0.000000; angle 0.0000deg; local velocity delta 0.000000
+AdultRig|Adult_Water_Carry_Walk: 0.800s; local boundary position 0.000000; angle 0.0000deg; local velocity delta 0.004107
+30fps 1x: 8.600s; distance 1.5607; grip 0.000293; reach 0.000000; sole 0.002467; planted drift 0.000298
+60fps 1x: 8.600s; distance 1.5607; grip 0.000293; reach 0.000000; sole 0.002467; planted drift 0.000298
+120fps 1x: 8.608s; distance 1.5607; grip 0.000293; reach 0.000000; sole 0.002467; planted drift 0.000298
+30fps 0.5x: 17.200s; distance 1.5607; grip 0.000293; reach 0.000000; sole 0.002467; planted drift 0.000298
+60fps 0.5x: 17.217s; distance 1.5607; grip 0.000293; reach 0.000000; sole 0.002467; planted drift 0.000298
+120fps 0.5x: 17.225s; distance 1.5607; grip 0.000293; reach 0.000000; sole 0.002467; planted drift 0.000298
+8 pour phases: pause, resume, repeated stop, upright within .55s: PASS
+walking stops x4, mode restoration x3: PASS

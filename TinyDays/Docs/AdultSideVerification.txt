@@ -1,0 +1,5 @@
+v0.110 side rest: actual left=legacy R, head rests on forearm, not floor. Automated methods and skin samples, not OS input or user approval.
+240Hz floor minimum 1.8754mm; limb difference 0.0004mm; neck difference 0.0003mm.
+Side resting support drift 0.0016mm, contact gap 2.7183mm; chest outward range 7.7900mm.
+8 live breath phases both roll directions at 240Hz: minimum floor 1.3528mm, entry joint difference 0.0000mm.
+384 phase/destination/fps/speed cases PASS. Repeat, cancellation, latest request, pause, wake-before-roll and exit PASS. Fine coat/leg checks excluded.

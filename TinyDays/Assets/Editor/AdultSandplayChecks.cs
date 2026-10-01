@@ -12,7 +12,7 @@ public static class AdultSandplayChecks {
     public static void Execute(){try{Run();Debug.Log("ADULT_SANDPLAY_OK");}catch(Exception e){Debug.LogException(e);if(Application.isBatchMode)EditorApplication.Exit(1);else throw;}}
     static void Run(){
         AdultRabbitMotionBuilder.BuildOnly();var r=UnityEngine.Object.FindObjectOfType<AdultRabbitMotionReview>();r.AutomaticIdle=false;
-        Check(r.clips.Length==17&&Mathf.Abs(r.clips[16].length-8)<.001&&!r.clips[16].isLooping,"Roster / timing");
+        Check(r.clips.Length>=17&&Mathf.Abs(r.clips[16].length-8)<.001&&!r.clips[16].isLooping,"Roster / timing");
         var bones=r.resident.GetComponentsInChildren<Transform>();var hand=bones.Single(b=>b.name=="Hand_R");var head=bones.First(b=>b.name=="Head"&&!b.GetComponent<Renderer>());var pelvis=bones.Single(b=>b.name=="Pelvis");
         var mesh=r.resident.GetComponentsInChildren<SkinnedMeshRenderer>().Single(s=>s.name=="BodyHands");int bi=Array.IndexOf(mesh.bones,hand);var weights=mesh.sharedMesh.boneWeights;
         var indices=Enumerable.Range(0,weights.Length).Where(i=>weights[i].boneIndex0==bi&&weights[i].weight0>.99f).ToArray();

@@ -1,0 +1,165 @@
+{
+  "version": "0.111",
+  "sampleRate": 240,
+  "anatomicalLeftSuffix": "R",
+  "leftShoulderHeight": 0.21164973080158234,
+  "rightShoulderHeight": 0.5997408032417297,
+  "clips": [
+    {
+      "clip": "Adult_Lie_To_Left",
+      "head_arm_min_m": [
+        0.0008688549278303981,
+        [
+          1.65,
+          "Top",
+          "R",
+          213
+        ]
+      ],
+      "arm_floor_min_m": [
+        0.002735055284574628,
+        [
+          2.4,
+          "BodyHands",
+          "R",
+          154
+        ]
+      ],
+      "pillow_gap_range_m": [
+        0.0008688549278303981,
+        0.22321105003356934
+      ],
+      "all_left_forearm_vertices_motion_m_not_fixed_contact": 0.8007245960978087
+    },
+    {
+      "clip": "Adult_Left_To_Lie",
+      "head_arm_min_m": [
+        0.0009821734856814146,
+        [
+          0.6666666666666666,
+          "Top",
+          "R",
+          213
+        ]
+      ],
+      "arm_floor_min_m": [
+        0.0026714291889220476,
+        [
+          0.65,
+          "BodyHands",
+          "R",
+          154
+        ]
+      ],
+      "pillow_gap_range_m": [
+        0.0009821734856814146,
+        0.2273440659046173
+      ],
+      "all_left_forearm_vertices_motion_m_not_fixed_contact": 0.8007259585612817
+    },
+    {
+      "clip": "Adult_Breathe_Left",
+      "head_arm_min_m": [
+        0.0012234511086717248,
+        [
+          1.6791666666666667,
+          "Top",
+          "R",
+          213
+        ]
+      ],
+      "arm_floor_min_m": [
+        0.0027349444571882486,
+        [
+          1.4208333333333334,
+          "BodyHands",
+          "R",
+          154
+        ]
+      ],
+      "pillow_gap_range_m": [
+        0.0012234511086717248,
+        0.0014999499544501305
+      ],
+      "all_left_forearm_vertices_motion_m_not_fixed_contact": 0.0034596901684607727
+    },
+    {
+      "clip": "Adult_Fall_Asleep_Left",
+      "head_arm_min_m": [
+        0.0011394037865102291,
+        [
+          2.2333333333333334,
+          "Top",
+          "R",
+          213
+        ]
+      ],
+      "arm_floor_min_m": [
+        0.0027349398005753756,
+        [
+          1.6208333333333333,
+          "BodyHands",
+          "R",
+          154
+        ]
+      ],
+      "pillow_gap_range_m": [
+        0.0011394037865102291,
+        0.0014999499544501305
+      ],
+      "all_left_forearm_vertices_motion_m_not_fixed_contact": 0.004576948601981205
+    },
+    {
+      "clip": "Adult_Sleep_Left",
+      "head_arm_min_m": [
+        0.0011372577864676714,
+        [
+          2.5791666666666666,
+          "Top",
+          "R",
+          213
+        ]
+      ],
+      "arm_floor_min_m": [
+        0.0027349491138011217,
+        [
+          0.7708333333333334,
+          "BodyHands",
+          "R",
+          154
+        ]
+      ],
+      "pillow_gap_range_m": [
+        0.0011372577864676714,
+        0.0014999494887888432
+      ],
+      "all_left_forearm_vertices_motion_m_not_fixed_contact": 0.004605995008553184
+    },
+    {
+      "clip": "Adult_Wake_Left",
+      "head_arm_min_m": [
+        0.001264849561266601,
+        [
+          1.5,
+          "Top",
+          "R",
+          213
+        ]
+      ],
+      "arm_floor_min_m": [
+        0.0027349579613655806,
+        [
+          1.2791666666666666,
+          "BodyHands",
+          "R",
+          154
+        ]
+      ],
+      "pillow_gap_range_m": [
+        0.001264849561266601,
+        0.0014999494887888432
+      ],
+      "all_left_forearm_vertices_motion_m_not_fixed_contact": 0.0029230893730430776
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+v0.110 Unity imported mesh, 240Hz side breathing. Actual left=legacy R. Fixed forearm support vertex 112, head triangle 472.
+Head/forearm gap 1.2233..1.4998mm; support patch drift 1.4268mm; visible lower sleeve floor 22.0366mm. Head floor contact is not required. Full transition signed mesh-distance audit is in AdultSidePillowVerification.json. Not OS input or visual approval.

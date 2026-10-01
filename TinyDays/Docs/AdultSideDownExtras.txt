@@ -1,0 +1,1 @@
+16 breathing-phase entries, 15 variation interruptions, pose selection, clip/disable cleanup PASS. Automatic calls; not OS input.

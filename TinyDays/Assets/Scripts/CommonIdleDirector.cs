@@ -132,6 +132,10 @@ namespace TinyDays.Review {
                 if(remaining<1e-8||State==Stage.Ready)break;
             }while(true);
         }
+        public void SetBreathingPhase(double phase){
+            if(State!=Stage.Breathing)throw new InvalidOperationException("Breathing phase applies to a breathing state");
+            clock=(phase-Math.Floor(phase))*4;Sample();
+        }
         public void Sample(){
             if(State==Stage.Breathing)SampleBreath(clock);
             else if(State==Stage.Variation)SampleVariation(clock);
@@ -165,11 +169,11 @@ namespace TinyDays.Review {
         public Transform Upper,Lower,End;
         public Vector3 HeelLocal;
         [NonSerialized] public Vector3[] SoleLocal=Array.Empty<Vector3>();
-        public void Solve(Vector3 target,Quaternion rotation,Vector3 forward){
+        public void Solve(Vector3 target,Quaternion rotation,Vector3 forward,Vector3? authoredBend=null){
             Vector3 a=Upper.position,b=Lower.position,c=End.position,delta=target-a;
             float l1=Vector3.Distance(a,b),l2=Vector3.Distance(b,c),distance=delta.magnitude;
             if(distance<1e-6f||l1<1e-6f||l2<1e-6f)return;
-            Vector3 axis=delta/distance,pole=b-a;pole-=axis*Vector3.Dot(pole,axis);
+            Vector3 axis=delta/distance,pole=authoredBend??(b-a);pole-=axis*Vector3.Dot(pole,axis);
             if(pole.sqrMagnitude<1e-8f)pole=forward-axis*Vector3.Dot(forward,axis);
             float d=Mathf.Clamp(distance,Mathf.Abs(l1-l2)+1e-6f,l1+l2-1e-6f);
             float along=(l1*l1-l2*l2+d*d)/(2*d);

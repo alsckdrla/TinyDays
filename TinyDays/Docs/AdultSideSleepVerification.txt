@@ -1,0 +1,4 @@
+v0.111, direct calls/imported geometry, not OS input/user approval.
+240Hz 17-31 tail pelvis-local drift 0.00000mm, angle 0.00000deg. Short-tail ground overlap allowed.
+Awake/sleep chest 7.7900/10.3547mm; support 0.0016mm; measured head/hands/shoes floor 2.0011mm.
+480 side sleep departure cases, 48 phase/pause/cancel cases PASS. Entry head step 0.0000mm. Tail-only preservation audited separately.

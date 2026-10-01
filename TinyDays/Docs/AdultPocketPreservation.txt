@@ -1,0 +1,2 @@
+AdultRabbit: removed 24 vertices / 28 triangles. Remaining geometry/weights, other meshes, bind and all actions exact PASS. Action hash 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+AdultRabbitMotion: removed 24 vertices / 28 triangles. Remaining geometry/weights, other meshes, bind and all actions exact PASS. Action hash f6b32109480b638979969fbfc469dea79256d98a8fa9e9fe3b15b96a0eed061a

@@ -1,10 +1,10 @@
 Adult rabbit review / automatic and camera render checks; not live input or minimum-PC benchmark.
 ManualEdits survives repeated generation: PASS
 v2 head width: 0.752m; shoulder joint spacing: 0.408m. Reference likeness remains a visual judgment.
-All modules triangles: 5864; Unity imported vertices: 3258
-Dressed triangles: 4604; active skinned renderers: 8; unique character materials: 6
+All modules triangles: 5836; Unity imported vertices: 3194
+Dressed triangles: 4576; active skinned renderers: 8; unique character materials: 6
 Three equip/unequip cycles, covered body recovery, age/v1/special-family rejection, separate v2 adult rig rebind with shared mesh: PASS
-Top: 664 triangles / bones=21
+Top: 636 triangles / bones=21
 Bottom: 328 triangles / bones=21
 Shoes: 288 triangles / bones=21
 Neckwear: 204 triangles / bones=21

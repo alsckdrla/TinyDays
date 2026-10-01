@@ -1,0 +1,9 @@
+v0.119 stop, close, resume; direct-call verification, not OS input.
+Exit: 7.317s, root (-0.4375, 0.2750, -4.1335), forward (0.000, 0.000, -1.000)
+Closing wait 0.900s at (-0.4375, 0.2750, -2.8483); resumed distance 1.285m; target (-0.4375, 0.2750, -2.9863)
+Entry: 9.117s, root (-0.4375, 0.2750, 0.4280), forward (0.000, 0.000, 1.000)
+Closing wait 0.917s at (-0.4375, 0.2750, -0.2976); resumed distance 0.726m; target (-0.4375, 0.2750, -0.2512)
+sole 0.002484m; support gap 0.002500m; planted drift 0.000001m; step reach 0.000000m; maximum turn footfalls 3; reverse travel 0.000000m; lateral 0.000000m
+Unsafe closing samples 0; horizontal body safety radius 0.550m; hand contact/gesture removed.
+Support detail: WalkToRoom nav 1 door Closed t 0.000 foot 1 walk True actor (-0.438, 0.275, -4.127) anchor (-0.255, 0.404, -4.113) actual (-0.255, 0.404, -4.113); reach detail: 
+Closing stops 2; root drift 0.000000m; premature departures 0

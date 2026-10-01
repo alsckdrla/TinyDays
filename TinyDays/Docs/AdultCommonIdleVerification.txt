@@ -1,7 +1,7 @@
 v0.96 common idle regression: 14mm chest range; automatic function/clip checks; NOT real player input or visual approval.
 8 Foot_L sole 2.500mm.
 8 Foot_R sole 2.500mm.
-Stand: chest range 14.000mm; support drift 0.0000mm; neck change 0.0002mm; seam 0.0000mm.
+Stand: chest range 14.000mm; support drift 0.0000mm; neck change 0.0004mm; seam 0.0000mm.
 9 Foot_L sole 4.500mm.
 9 Foot_R sole 4.500mm.
 Sit: chest range 14.000mm; support drift 0.0000mm; neck change 0.0001mm; seam 0.0000mm.

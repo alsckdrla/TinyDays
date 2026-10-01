@@ -1,0 +1,12 @@
+v0.118 original motion/scene SHA256 preservation: unchanged from task entry and v0.117 baseline.
+PASS D:\mc da kim\Codex\TinyDays\TinyDays\ArtSource\AdultRabbitMotion.blend
+D113ADFF32A69F6766EB45E4B7413C52AFFD027BC02B2B982C747D89F0694453
+PASS D:\mc da kim\Codex\TinyDays\TinyDays\Assets\Art\Generated\AdultRabbit\AdultRabbitMotion.fbx
+F98C867807131CABC4840E863697BE41D16B98286D3DD3C48BE82CA6F0A66FFF
+PASS D:\mc da kim\Codex\TinyDays\TinyDays\Assets\Scenes\AdultRabbitMotionStudy.unity
+B6B41D53A1ECA7FB588D775CB1826F9BB4C78BDA3C79372A8A8971E073132B50
+PASS D:\mc da kim\Codex\TinyDays\TinyDays\Assets\Scenes\FarmStudy.unity
+E1E82EADB4EFBC63605BD10097AF983B25DD872928D71745FF5591B02EFBDDBE
+PASS D:\mc da kim\Codex\TinyDays\TinyDays\Assets\Scenes\HouseVillageStudy.unity
+3AD476E743F5BAF44A38427C6A94D532D3B2D1FF64E2BE326F92213A85B64545
+Only home runtime/turning, editor checks, scene and review artifacts updated. Original 36 clips and farm/house/motion scenes preserved. No GitHub upload.

@@ -1,0 +1,8 @@
+state Ready; poured True; distance 1.560726; grip 0.000293; reach 0.000000; sole 0.002467; support gap 0.002580; drift 0.000298
+Spine (1.1607, 0.9607, -3.7078)
+UpperArm_L (1.1314, 1.2963, -3.5069)
+Hand_L (1.4207, 1.1657, -3.5878)
+UpperArm_R (1.1317, 1.2926, -3.9148)
+Hand_R (1.4207, 1.1657, -3.8278)
+Can (1.5007, 0.8607, -3.7078) scales (100.00, 100.00, 100.00)
+Droplets 384, outside soil 0; max boundary position delta 0.004981m/240Hz; max hand speed 1.267733m/s

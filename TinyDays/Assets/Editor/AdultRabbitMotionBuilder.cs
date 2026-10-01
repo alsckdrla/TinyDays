@@ -14,7 +14,15 @@ public static class AdultRabbitMotionBuilder
     const string Model="Assets/Art/Generated/AdultRabbit/AdultRabbitMotion.fbx";
     const string ScenePath="Assets/Scenes/AdultRabbitMotionStudy.unity";
     const string Owner="GeneratedAdultRabbitMotionReview";
-    static readonly string[] Names={"Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped","Adult_Sit_Down","Adult_Stand_Up","Adult_Sit_Hold","Adult_Breathe_Stand","Adult_Breathe_Sit","Adult_Sit_Down_Supported","Adult_Stand_Up_Supported","Adult_Sigh_Stand","Adult_Sigh_Sit","Adult_Fidget_Ankles","Adult_Fidget_Weight","Adult_Fidget_Sandplay"};
+    static readonly string[] Names={
+        "Adult_Idle_Biped","Adult_Walk_Biped","Adult_Idle_Quadruped","Adult_Hop_Quadruped","Adult_Run_Biped",
+        "Adult_Sit_Down","Adult_Stand_Up","Adult_Sit_Hold","Adult_Breathe_Stand","Adult_Breathe_Sit",
+        "Adult_Sit_Down_Supported","Adult_Stand_Up_Supported","Adult_Sigh_Stand","Adult_Sigh_Sit",
+        "Adult_Fidget_Ankles","Adult_Fidget_Weight","Adult_Fidget_Sandplay",
+        "Adult_Stand_To_Lie","Adult_Lie_To_Stand","Adult_Sit_To_Lie","Adult_Lie_To_Sit","Adult_Lie_Hold",
+        "Adult_Breathe_Lie","Adult_Fall_Asleep","Adult_Sleep_Lie","Adult_Wake_Lie",
+        "Adult_Lie_To_Left","Adult_Left_To_Lie","Adult_Breathe_Left","Adult_Fall_Asleep_Left","Adult_Sleep_Left","Adult_Wake_Left",
+        "Adult_Left_To_Sit","Adult_Left_To_Stand","Adult_Stand_To_Left","Adult_Sit_To_Left"};
     public static void BuildOnly(){Build();Debug.Log("ADULT_REVIEW_BUILD_OK");}
     static void Check(bool value,string message){if(!value)throw new Exception(message);}
     [MenuItem("Tiny Days/Adult rabbit/Open motion review")]
@@ -77,14 +85,16 @@ public static class AdultRabbitMotionBuilder
     {
         Directory.CreateDirectory("Docs/Captures/AdultRabbitMotion");AssetDatabase.Refresh();
         var importer=AssetImporter.GetAtPath(Model) as ModelImporter;Check(importer,"Missing adult motion FBX");
-        importer.animationType=ModelImporterAnimationType.Generic;importer.avatarSetup=ModelImporterAvatarSetup.CreateFromThisModel;importer.importAnimation=true;
+        importer.animationType=ModelImporterAnimationType.Generic;importer.avatarSetup=ModelImporterAvatarSetup.CreateFromThisModel;importer.importAnimation=true;importer.importBlendShapes=true;
         importer.animationCompression=ModelImporterAnimationCompression.Off;importer.optimizeGameObjects=false;importer.isReadable=true;importer.importNormals=ModelImporterNormals.Import;
         foreach(var name in new[]{"Fur","Cloth","Pink","Dark","Leather","Brass"}){
             var mat=AssetDatabase.LoadAssetAtPath<Material>($"Assets/Art/Generated/AdultRabbit/{name}.mat");
             importer.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material),name),mat);}
+        // Refresh generated take definitions when additive actions are appended.
+        importer.clipAnimations=Array.Empty<ModelImporterClipAnimation>();
         importer.SaveAndReimport();
         var clipSettings=importer.defaultClipAnimations;
-        foreach(var setting in clipSettings)if(Names.Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal))){bool loop=Names.Take(5).Concat(Names.Skip(8).Take(2)).Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal));setting.loopTime=loop;setting.loopPose=loop;}
+        foreach(var setting in clipSettings)if(Names.Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal))){bool loop=Names.Take(5).Concat(Names.Skip(8).Take(2)).Concat(new[]{"Adult_Breathe_Lie","Adult_Sleep_Lie","Adult_Breathe_Left","Adult_Sleep_Left"}).Any(n=>setting.name.EndsWith(n,StringComparison.Ordinal));setting.loopTime=loop;setting.loopPose=loop;}
         importer.clipAnimations=clipSettings;importer.SaveAndReimport();
         var scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         if(scene.path!=ScenePath)scene=File.Exists(ScenePath)?EditorSceneManager.OpenScene(ScenePath):EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
@@ -100,8 +110,8 @@ public static class AdultRabbitMotionBuilder
         var cg=new GameObject("Motion camera");cg.tag="MainCamera";cg.transform.SetParent(root.transform);var cam=cg.AddComponent<Camera>();cam.fieldOfView=35;cam.backgroundColor=new Color(.84f,.86f,.85f);cam.clearFlags=CameraClearFlags.SolidColor;cam.GetUniversalAdditionalCameraData().renderPostProcessing=false;
         cam.transform.position=new Vector3(3.3f,1.8f,5.2f);cam.transform.LookAt(new Vector3(0,1.0f,0));
         var allClips=AssetDatabase.LoadAllAssetsAtPath(Model).OfType<AnimationClip>().Where(c=>!c.name.StartsWith("__preview__")).ToArray();
-        var clips=Names.Select(n=>allClips.SingleOrDefault(c=>c.name.EndsWith(n,StringComparison.Ordinal))).ToArray();Check(clips.All(c=>c),"Expected five adult clips; found "+string.Join(", ",allClips.Select(c=>c.name)));
-        var review=root.AddComponent<AdultRabbitMotionReview>();review.resident=actor;review.reviewCamera=cam;review.clips=clips;
+        var clips=Names.Select(n=>allClips.SingleOrDefault(c=>c.name.EndsWith(n,StringComparison.Ordinal))).ToArray();Check(clips.All(c=>c),"Expected "+Names.Length+" adult clips; found "+string.Join(", ",allClips.Select(c=>c.name)));
+        var review=root.AddComponent<AdultRabbitMotionReview>();review.resident=actor;review.reviewCamera=cam;review.clips=clips;review.sleepTiming=AssetDatabase.LoadAssetAtPath<TextAsset>("Assets/Art/Generated/AdultRabbit/SleepTiming.json");
         var joints=actor.GetComponentsInChildren<Transform>();
         review.idleProfile.Parts=new[]{"Ear_L","Ear_R","NeckSocket","BackSocket"}.Select((name,i)=>new IdleSecondaryMotion.Part{Joint=joints.FirstOrDefault(j=>j.name==name),Degrees=i<2?.45f:.3f,Lag=.18f+i*.08f}).ToArray();
         review.idleProfile.Supports=new[]{"L","R"}.Select(side=>new IdleSupportLeg{Upper=joints.First(j=>j.name=="Thigh_"+side),Lower=joints.First(j=>j.name=="Shin_"+side),End=joints.First(j=>j.name=="Foot_"+side)}).ToArray();

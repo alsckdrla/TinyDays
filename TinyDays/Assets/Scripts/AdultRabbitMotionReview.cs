@@ -5,7 +5,7 @@ using UnityEngine.Playables;
 
 namespace TinyDays.Review
 {
-    public sealed class AdultRabbitMotionReview : MonoBehaviour
+    public sealed partial class AdultRabbitMotionReview : MonoBehaviour
     {
         public GameObject resident; public Camera reviewCamera; public AnimationClip[] clips;
         public int selected; public bool paused,slow; double elapsed;
@@ -15,12 +15,12 @@ namespace TinyDays.Review
         public static bool IsBreathing(int clip)=>clip==8||clip==9;
         public static bool IsSigh(int clip)=>clip==12||clip==13;
         public static bool IsVariation(int clip)=>AdultIdleVariations.Find(clip)!=null;
-        public static bool IsOneShot(int clip)=>IsSitDown(clip)||IsStandUp(clip)||clip==7||IsVariation(clip);
+        public static bool IsOneShot(int clip)=>IsSitDown(clip)||IsStandUp(clip)||clip==7||IsVariation(clip)||(IsLyingClip(clip)&&!IsSleepLoop(clip));
         public int DisplayClip => Idle!=null&&Idle.IsVariation?Array.IndexOf(clips,Idle.CurrentClip):selected;
         public bool SupportedSitting=true;
         public int SitClip => SupportedSitting?10:5;
         public int StandClip => SupportedSitting?11:6;
-        public bool CanChangeSitStyle => !SitTransition&&!MovingReview&&(Idle==null||Idle.State==CommonIdleDirector.Stage.Breathing);
+        public bool CanChangeSitStyle => !SitTransition&&!LyingTransition&&!MovingReview&&(Idle==null||Idle.State==CommonIdleDirector.Stage.Breathing);
         public bool SetSitStyle(bool supported){
             if(!CanChangeSitStyle)return false;
             if(SupportedSitting==supported)return true;
@@ -29,7 +29,7 @@ namespace TinyDays.Review
             if(breathing){StartBreathing(seated);AdvanceIdle((float)time);paused=wasPaused;}
             return true;
         }
-        double DisplayTime => IsOneShot(selected)?Math.Min(elapsed,clips[selected].length):elapsed%clips[selected].length;
+        double DisplayTime {get{double t=IsSleepClip(selected)?SleepTime(elapsed):elapsed;return IsOneShot(selected)?Math.Min(t,clips[selected].length):t%clips[selected].length;}}
         public IdleSecondaryMotion idleProfile=new IdleSecondaryMotion();
         public CommonIdleDirector Idle {get;private set;}
         public bool AutomaticIdle=true;
@@ -68,7 +68,8 @@ namespace TinyDays.Review
         void AdvanceIdle(float dt){
             idleProfile.RestoreFidget();
             idleCoatClock+=dt;
-            Idle.Automatic=AutomaticIdle;Idle.Advance(dt);
+            Idle.Automatic=AutomaticIdle&&!PendingLie;Idle.Advance(dt);
+            if(AdvanceLying())return;
             if(Idle.State==CommonIdleDirector.Stage.Ready){var request=Idle.Pending;float remaining=(float)Idle.UnusedTime;Idle=null;BeginMovement(false);WantsToWalk=true;footTransition.RequestRun(request==CommonIdleDirector.Departure.Run);if(remaining>0)Advance(remaining/(slow?.5f:1));return;}
             sitCoat?.Apply(Idle.State==CommonIdleDirector.Stage.Rising?StandClip:Idle.Seated?9:8,Idle.State==CommonIdleDirector.Stage.Rising?Idle.Time:idleCoatClock,Idle.State==CommonIdleDirector.Stage.Rising?clips[StandClip].length:4);
         }
@@ -82,8 +83,8 @@ namespace TinyDays.Review
         bool pendingSit;
         public string SitState => pendingSit?"정지 후 앉기 대기":IsSitDown(selected)?(SitTransition?"앉는 중":"앉음"):IsStandUp(selected)?(SitTransition?"일어나는 중":"서기"):selected==7?"앉음":"서기";
         public bool SitTransition => (IsSitDown(selected)||IsStandUp(selected))&&elapsed+1e-5<clips[selected].length;
-        public void RequestSit(){if(Idle!=null){if(Idle.Seated||Idle.State!=CommonIdleDirector.Stage.Breathing)return;Select(SitClip);followBreathing=true;paused=false;return;}if(SitTransition||selected==7||IsSitDown(selected))return;if(MovingReview){pendingSit=true;RequestWalk(false);return;}Select(SitClip);paused=false;}
-        public void RequestStand(){if(Idle!=null){Idle.Rise();return;}if(selected==9){StartBreathing(true);Idle.Rise();return;}if(SitTransition||!(IsSitDown(selected)||selected==7))return;Select(StandClip);paused=false;}
+        public void RequestSit(){if(IsLyingClip(selected)){RequestLyingReturn(true);return;}if(Idle!=null){if(Idle.Seated||Idle.State!=CommonIdleDirector.Stage.Breathing)return;Select(SitClip);followBreathing=true;paused=false;return;}if(SitTransition||selected==7||IsSitDown(selected))return;if(MovingReview){pendingSit=true;RequestWalk(false);return;}Select(SitClip);paused=false;}
+        public void RequestStand(){if(IsLyingClip(selected)){RequestLyingReturn(false);return;}if(Idle!=null){Idle.Rise();return;}if(selected==9){StartBreathing(true);Idle.Rise();return;}if(SitTransition||!(IsSitDown(selected)||selected==7))return;Select(StandClip);paused=false;}
         public float CoatDisplacement => coatClearance?.MaxDisplacement??0;
         public AdultRabbitFootTransition FootTransition => footTransition;
         public float Speed => MovingReview&&footTransition!=null?footTransition.Speed:0;
@@ -106,14 +107,18 @@ namespace TinyDays.Review
         PlayableGraph graph; AnimationClipPlayable playable; int active=-1; Font font;
         static readonly string[] Labels={"두 발 대기","두 발 총총걸음","네 발 대기 (보류)","깡충 (보류)","두 발 달리기","앉기","일어서기","앉은 자세"};
         void OnEnable(){if(!Application.isPlaying)return;panelButton=panelLabel=panelHeading=null;font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",13);if(resident&&clips!=null&&clips.Length>=10)StartBreathing(false);else Sample(0);}
-        void OnDisable(){idleProfile.RestoreFidget();panelButton=panelLabel=panelHeading=null;panelScroll=Vector2.zero;PanelItems.Clear();Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;drag=-1;active=-1;MovingReview=false;MoveWeight=0;WantsToWalk=false;footTransition?.RestoreSourcePose();footTransition=null;if(resident)resident.transform.localPosition=Vector3.zero;selected=0;elapsed=0;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
+        void OnDisable(){ResetLying();idleProfile.RestoreFidget();panelButton=panelLabel=panelHeading=null;panelScroll=Vector2.zero;PanelItems.Clear();Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;drag=-1;active=-1;MovingReview=false;MoveWeight=0;WantsToWalk=false;footTransition?.RestoreSourcePose();footTransition=null;if(resident)resident.transform.localPosition=Vector3.zero;selected=0;elapsed=0;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
         void OnApplicationFocus(bool focus){if(!focus)drag=-1;}
         void Update(){HandleCamera();Advance(Time.unscaledDeltaTime);}
         public void Advance(float seconds){
             float dt=paused?0:Mathf.Max(0,seconds)*(slow?.5f:1);
             elapsed+=dt;
+            AdvanceRestBreath(dt);
             if(Idle!=null){AdvanceIdle(dt);return;}
-            if(!MovingReview){Sample(elapsed);if(followBreathing&&!SitTransition&&(IsSitDown(selected)||IsStandUp(selected)))StartBreathing(IsSitDown(selected));return;}
+            if(IsSideClip(selected)){AdvanceSide();return;}
+            if(IsSleepClip(selected)){AdvanceSleep();return;}
+            if(IsLyingClip(selected)){if(sleepBlend)ApplySleepFrame(elapsed);else Sample(elapsed);AdvanceLying();return;}
+            if(!MovingReview){Sample(elapsed);if(AdvanceLying())return;if(followBreathing&&!SitTransition&&(IsSitDown(selected)||IsStandUp(selected)))StartBreathing(IsSitDown(selected));return;}
             // Small deterministic integration steps keep speed, phase and travel synchronized.
             movementRemainder+=dt;
             while(movementRemainder+1e-6>=1.0/240){float step=1f/240f;movementRemainder-=1.0/240;
@@ -124,6 +129,7 @@ namespace TinyDays.Review
                 EvaluateMovement();
             }
             if(paused||seconds<=0)EvaluateMovement();coatClearance?.Apply(dt);ApplyCamera();
+            if(AdvanceLying())return;
             if(pendingSit&&footTransition.State==AdultRabbitFootTransition.Stage.Idle){var position=resident.transform.position;bool follow=followBreathing;Select(SitClip);followBreathing=follow;resident.transform.position=position;Home();paused=false;}
         }
         void EvaluateMovement(){
@@ -142,8 +148,8 @@ namespace TinyDays.Review
             var animator=resident.GetComponent<Animator>();animator.enabled=true;animator.applyRootMotion=false;animator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
             var output=AnimationPlayableOutput.Create(graph,"Locomotion",animator);output.SetSourcePlayable(mixer);graph.Play();footTransition=null;EvaluateMovement();coatClearance=new AdultRabbitCoatClearance(resident);footTransition=new AdultRabbitFootTransition(resident);Advance(0);
         }
-        public void RequestWalk(bool walk){if(Idle!=null){if(walk)Idle.Request(CommonIdleDirector.Departure.Walk);else Idle.Cancel();return;}if(walk&&(IsBreathing(selected)||IsVariation(selected)||IsSitDown(selected)||selected==7)){RequestRun(false);return;}if(!MovingReview)BeginMovement();WantsToWalk=walk;footTransition.Request(walk);}
-        public void RequestRun(bool run){if(SitTransition)return;if(Idle!=null){Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview&&IsVariation(selected)){var d=AdultIdleVariations.Find(selected);float phase=(float)Math.Min(elapsed,clips[selected].length);StartBreathing(d.Seated);Idle.Play(d.Label);AdvanceIdle(CommonIdleDirector.BlendSeconds+phase);Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview&&IsBreathing(selected)){bool seated=selected==9;float phase=(float)elapsed;StartBreathing(seated);AdvanceIdle(phase);Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview&&(selected==7||IsSitDown(selected))){StartBreathing(true);Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview)BeginMovement();WantsToWalk=true;footTransition.RequestRun(run);}
+        public void RequestWalk(bool walk){if(HandleLyingMovement(walk,false))return;if(Idle!=null){if(walk)Idle.Request(CommonIdleDirector.Departure.Walk);else Idle.Cancel();return;}if(walk&&(IsBreathing(selected)||IsVariation(selected)||IsSitDown(selected)||selected==7)){RequestRun(false);return;}if(!MovingReview)BeginMovement();WantsToWalk=walk;footTransition.Request(walk);}
+        public void RequestRun(bool run){if(HandleLyingMovement(true,run))return;if(SitTransition)return;if(Idle!=null){Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview&&IsVariation(selected)){var d=AdultIdleVariations.Find(selected);float phase=(float)Math.Min(elapsed,clips[selected].length);StartBreathing(d.Seated);Idle.Play(d.Label);AdvanceIdle(CommonIdleDirector.BlendSeconds+phase);Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview&&IsBreathing(selected)){bool seated=selected==9;float phase=(float)elapsed;StartBreathing(seated);AdvanceIdle(phase);Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview&&(selected==7||IsSitDown(selected))){StartBreathing(true);Idle.Request(run?CommonIdleDirector.Departure.Run:CommonIdleDirector.Departure.Walk);return;}if(!MovingReview)BeginMovement();WantsToWalk=true;footTransition.RequestRun(run);}
         public void Home(){pivot=resident.transform.position+new Vector3(0,1,0);yaw=32.4f;pitch=7.4f;distance=6.21f;drag=-1;ApplyCamera();}
         public void View(float angle){Home();yaw=angle;pitch=4;ApplyCamera();}
         void ApplyCamera(){reviewCamera.transform.rotation=Quaternion.Euler(pitch,180+yaw,0);reviewCamera.transform.position=pivot-reviewCamera.transform.forward*distance;}
@@ -174,12 +180,12 @@ namespace TinyDays.Review
         }
         bool ShowingRun => selected==4||(MovingReview&&footTransition.RunWeight>.5f);
         static readonly float[] SitPhases={0,.125f,.32f,.52f,.6875f,.75f,.90f,1},StandPhases={0,.14f,.22f,.36f,.55f,.75f,.90f,1};
-        public void Pose(int index){int clip=Idle!=null&&Idle.IsVariation?DisplayClip:selected>=5?selected:ShowingRun?4:1;Select(clip);paused=true;int phase=Mathf.Clamp(index,0,7);elapsed=IsVariation(clip)?AdultIdleVariations.Find(clip).Times[phase]:clips[clip].length*(IsSitDown(clip)?SitPhases[phase]:IsStandUp(clip)?StandPhases[phase]:clip==7?0:clip==4?AdultRunTiming.Phase(phase):phase/8.0);Sample(elapsed);}
+        public void Pose(int index){int clip=Idle!=null&&Idle.IsVariation?DisplayClip:selected>=5?selected:ShowingRun?4:1;Select(clip);paused=true;int phase=Mathf.Clamp(index,0,7);elapsed=IsVariation(clip)?AdultIdleVariations.Find(clip).Times[phase]:clips[clip].length*(IsSleepClip(clip)?SleepPosePhases[phase]:IsLyingClip(clip)?LyingPosePhases[phase]:IsSitDown(clip)?SitPhases[phase]:IsStandUp(clip)?StandPhases[phase]:clip==7?0:clip==4?AdultRunTiming.Phase(phase):phase/8.0);Sample(elapsed);}
         void Rebuild(){if(graph.IsValid())graph.Destroy();graph=PlayableGraph.Create("Adult rabbit motion");graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
             var animator=resident.GetComponent<Animator>();animator.enabled=true;animator.applyRootMotion=false;animator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
             playable=AnimationClipPlayable.Create(graph,clips[selected]);var output=AnimationPlayableOutput.Create(graph,"Adult",animator);output.SetSourcePlayable(playable);graph.Play();active=selected;}
-        public void Select(int index){Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;footTransition?.RestoreSourcePose();footTransition=null;if(MovingReview){MovingReview=false;MoveWeight=0;WantsToWalk=false;Travel=0;resident.transform.localPosition=Vector3.zero;active=-1;Home();}selected=Mathf.Clamp(index,0,clips.Length-1);elapsed=0;if(selected==4){clips[0].SampleAnimation(resident,0);coatClearance=new AdultRabbitCoatClearance(resident);}if(selected>=5)sitCoat=new AdultRabbitSitCoat(resident);Sample(0);}
-        public void Sample(double time){idleProfile.RestoreFidget();if(active!=selected||!graph.IsValid())Rebuild();playable.SetTime(IsOneShot(selected)?Math.Min(time,clips[selected].length):time%clips[selected].length);graph.Evaluate(0);if(IsSigh(selected))idleProfile.ApplySigh(Math.Min(time,5));if(selected>=14&&IsVariation(selected))AdultIdleVariations.Secondary(idleProfile,Math.Min(time,clips[selected].length),clips[selected].length);if(selected==4)coatClearance?.Apply(1f/60);sitCoat?.Apply(selected,time,clips[selected].length);}
+        public void Select(int index){ResetLying();Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;footTransition?.RestoreSourcePose();footTransition=null;if(MovingReview){MovingReview=false;MoveWeight=0;WantsToWalk=false;Travel=0;resident.transform.localPosition=Vector3.zero;active=-1;Home();}selected=Mathf.Clamp(index,0,clips.Length-1);elapsed=0;if(selected==4){clips[0].SampleAnimation(resident,0);coatClearance=new AdultRabbitCoatClearance(resident);}if(selected>=5)sitCoat=new AdultRabbitSitCoat(resident);if(IsLyingClip(selected))HideBackpack();Sample(0);}
+        public void Sample(double time){idleProfile.RestoreFidget();if(active!=selected||!graph.IsValid())Rebuild();playable.SetTime(IsOneShot(selected)?Math.Min(time,clips[selected].length):time%clips[selected].length);graph.Evaluate(0);if(IsSigh(selected))idleProfile.ApplySigh(Math.Min(time,5));if(selected>=14&&IsVariation(selected))AdultIdleVariations.Secondary(idleProfile,Math.Min(time,clips[selected].length),clips[selected].length);if(selected==4)coatClearance?.Apply(1f/60);SampleRestBreath(time);sitCoat?.Apply(selected,time,clips[selected].length);SampleSleep(time);}
         void PanelRow(){if(panelX>0){panelX=0;panelY+=28;}}
         void PanelText(string text,bool heading=false){
             PanelRow();var style=heading?panelHeading:panelLabel;float h=style.CalcHeight(new GUIContent(text),panelWidth);
@@ -197,20 +203,23 @@ namespace TinyDays.Review
         void PanelContents(bool draw){
             panelDraw=draw;panelX=panelY=0;
             if(!draw)PanelItems.Clear();
-            PanelText("Tiny Days · 동작 검토 v0.105",true);
-            PanelText(Idle!=null?(Idle.Seated?"앉음 · ":"서기 · ")+Idle.State:SitState);
+            PanelText("Tiny Days · 동작 검토 v0.112",true);
+            PanelText(LyingReview?LyingStatus:Idle!=null?(Idle.Seated?"앉음 · ":"서기 · ")+Idle.State:SitState);
             PanelText("동작 선택",true);
             PanelAction((SupportedSitting?"● ":"")+"한 손 지지",()=>SetSitStyle(true),CanChangeSitStyle);
             PanelAction((!SupportedSitting?"● ":"")+"양손 지지",()=>SetSitStyle(false),CanChangeSitStyle);PanelRow();
             for(int i=0;i<Math.Min(8,clips.Length);i++){
                 if(i==2||i==3)continue;int index=i;
-                bool enabled=!SitTransition&&(i!=6||IsSitDown(selected)||selected==7||selected==9||Idle!=null&&Idle.Seated);
+                bool enabled=!SitTransition&&!LyingTransition&&(i!=6||IsSitDown(selected)||selected==7||selected==9||Posture==RestPosture.Supine||Idle!=null&&Idle.Seated);
                 PanelAction((selected==(i==5?SitClip:i==6?StandClip:i)?"● ":"")+Labels[i],()=>{
                     if(index==5){RequestSit();followBreathing=true;}
-                    else if(index==6){if(Idle==null)StartBreathing(true);RequestStand();followBreathing=true;}
+                    else if(index==6){if(Idle==null&&!IsLyingClip(selected))StartBreathing(true);RequestStand();followBreathing=true;}
                     else Select(index);
                 },enabled);
             }
+            LyingPanel();
+            SleepPanel();
+            SidePanel();
             PanelText("재생 · 배속",true);
             PanelAction(paused?"재생":"일시정지",()=>paused=!paused);
             PanelAction((slow?"● ":"")+"0.5×",()=>slow=true);PanelAction((!slow?"● ":"")+"1×",()=>slow=false);
@@ -221,7 +230,7 @@ namespace TinyDays.Review
             PanelText($"현재 {(slow?"0.5":"1")}× · {(paused?"일시정지":"재생 중")}");
             PanelText("구도 · 주요 8포즈",true);
             PanelAction("정면",()=>View(0));PanelAction("측면",()=>View(90));PanelAction("비스듬히 / Home",Home);PanelRow();
-            string[] phases=IsVariation(DisplayClip)?AdultIdleVariations.Find(DisplayClip).Poses:
+            string[] phases=IsDirectSideEntry(selected)?SideDownLabels:IsDirectSideReturn(selected)?DirectSideLabels:IsSideClip(selected)?SideLabels:IsSleepClip(selected)?SleepPoseLabels:IsLyingClip(selected)?LyingPoseLabels:IsVariation(DisplayClip)?AdultIdleVariations.Find(DisplayClip).Poses:
                 IsBreathing(selected)?new[]{"호흡 0","0.5초","1초","1.5초","2초","2.5초","3초","3.5초"}:
                 selected>=5?(IsStandUp(selected)?new[]{"앉음","준비","손 지지","들기","올라가기","펴기","안정","서기"}:new[]{"서기","준비","굽힘","내려가기","접촉","손 짚기","안정","앉음"}):
                 new[]{"L Contact","L Recoil","L Passing","L High","R Contact","R Recoil","R Passing","R High"};
@@ -231,7 +240,7 @@ namespace TinyDays.Review
             PanelAction("이동 검토 / 처음 위치",BeginMovement);
             PanelAction("걷기 / 출발",()=>RequestRun(false),!SitTransition||Idle!=null);
             PanelAction("달리기",()=>RequestRun(true),!SitTransition||Idle!=null);
-            PanelAction("정지 / 예약 취소",()=>RequestWalk(false),MovingReview||Idle!=null);
+            PanelAction("정지 / 예약 취소",()=>RequestWalk(false),MovingReview||Idle!=null||LyingReview);
             PanelText(MovingReview?$"{footTransition.StatusLabel} · 지지발 {(footTransition.LeftPlanted?"왼쪽 ":"")}{(footTransition.RightPlanted?"오른쪽":"")}\n{(paused?0:Speed*(slow?.5f:1)):F2}m/s · {Travel:F2}m / 약 6m":"제자리 검토 · 이동 검토에서 출발/정지 확인");
             PanelText("기본 호흡 · 변형",true);
             PanelAction("서기 기본 호흡",()=>StartBreathing(false));PanelAction("앉기 기본 호흡",()=>StartBreathing(true));

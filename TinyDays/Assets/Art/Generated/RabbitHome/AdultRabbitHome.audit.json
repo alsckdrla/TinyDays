@@ -1,0 +1,7 @@
+{
+  "family": "AdultStandard_v2",
+  "preservedActions": 36,
+  "newAction": "Adult_Door_Interact",
+  "duration": 1.2,
+  "source": "ArtSource/AdultRabbitHome.blend"
+}

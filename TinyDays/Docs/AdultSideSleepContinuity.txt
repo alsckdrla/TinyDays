@@ -1,0 +1,1 @@
+240Hz eight initial phases: max joint step 0.1152mm; finite-difference acceleration 3.6050m/s2. Breath phase strictly advances. Automated curve check, not visual quality approval.

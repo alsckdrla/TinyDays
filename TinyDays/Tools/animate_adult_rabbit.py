@@ -293,6 +293,26 @@ for name,seconds in [('Adult_Fidget_Ankles',4),('Adult_Fidget_Weight',13)]:
 from adult_common_sandplay import build as build_sandplay
 build_sandplay(rig,assign,limb,key)
 report['clips'].append({'name':'Adult_Fidget_Sandplay','frames':240,'duration':8,'loop':False,'family':'AdultStandard_v2'})
+from adult_rabbit_lying import build as build_lying, CLIPS as lying_clips
+build_lying(rig,base,assign,limb,key)
+for name,seconds in lying_clips:
+    report['clips'].append({'name':name,'frames':round(seconds*30),'duration':seconds,'loop':False,'family':'AdultStandard_v2'})
+from adult_rabbit_sleep import build as build_sleep, CLIPS as sleep_clips, install_preview_driver
+build_sleep(rig,base,assign,limb,key)
+for name,seconds,loop in sleep_clips:
+    report['clips'].append({'name':name,'frames':round(seconds*30),'duration':seconds,'loop':loop,'family':'AdultStandard_v2'})
+from adult_rabbit_side import build as build_side, CLIPS as side_clips
+build_side(rig,base,assign,limb,key)
+for name,seconds,loop in side_clips:
+    report['clips'].append({'name':name,'frames':round(seconds*30),'duration':seconds,'loop':loop,'family':'AdultStandard_v2'})
+from adult_rabbit_side_rise import build as build_side_rise, CLIPS as side_rise_clips
+build_side_rise(rig,base,assign,limb,key)
+for name,seconds,loop in side_rise_clips:
+    report['clips'].append({'name':name,'frames':round(seconds*30),'duration':seconds,'loop':loop,'family':'AdultStandard_v2'})
+from adult_rabbit_side_down import build as build_side_down, CLIPS as side_down_clips
+build_side_down(rig,base,assign,limb,key)
+for name,seconds,loop in side_down_clips:
+    report['clips'].append({'name':name,'frames':round(seconds*30),'duration':seconds,'loop':loop,'family':'AdultStandard_v2'})
 rig.animation_data.action=bpy.data.actions['Adult_Walk_Biped'];scene.frame_set(2);scene.frame_set(1);bpy.context.view_layer.update()
 bpy.ops.object.select_all(action='DESELECT');rig.select_set(True)
 for o in objects:o.select_set(True)
@@ -300,7 +320,8 @@ bpy.context.view_layer.objects.active=rig
 out=ROOT/'Assets/Art/Generated/AdultRabbit';out.mkdir(parents=True,exist_ok=True)
 bpy.ops.export_scene.fbx(filepath=str(out/'AdultRabbitMotion.fbx'),use_selection=True,object_types={'MESH','ARMATURE'},
     apply_unit_scale=True,axis_forward='-Z',axis_up='Y',add_leaf_bones=False,bake_anim=True,
-    bake_anim_use_all_actions=True,bake_anim_use_nla_strips=False,bake_anim_step=.25,bake_anim_simplify_factor=0,mesh_smooth_type='FACE')
+    bake_anim_use_all_actions=True,bake_anim_use_nla_strips=False,bake_anim_step=.125,bake_anim_simplify_factor=0,mesh_smooth_type='FACE')
+install_preview_driver()
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbitMotion.blend'))
 (out/'AdultRabbitMotion.audit.json').write_text(json.dumps(report,indent=2),encoding='utf8')
 print('ADULT_RABBIT_MOTION_ART_OK')
