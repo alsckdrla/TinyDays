@@ -1,0 +1,37 @@
+{
+  "target": "D:\\mc da kim\\Codex\\TinyDays\\TinyDays\\ArtSource\\AdultRabbit - 01.blend",
+  "backup": "D:\\mc da kim\\Codex\\TinyDays\\TinyDays\\ArtSource\\Backups\\AdultRabbit - 01.before-round-eyes-20261002.blend",
+  "eyes": [
+    {
+      "center": [
+        0.1899999976158142,
+        -0.2622948884963989,
+        1.4511513710021973
+      ],
+      "beforeWidth": 0.07799423433607444,
+      "heightUnchanged": 0.10199993841530386,
+      "afterWidth": 0.10199994138019974,
+      "horizontalScale": 1.3077881882369622,
+      "highlightVertices": 25,
+      "eyeVertices": 74
+    },
+    {
+      "center": [
+        -0.1899999976158142,
+        -0.2620530128479004,
+        1.4511513710021973
+      ],
+      "beforeWidth": 0.07799424702534452,
+      "heightUnchanged": 0.10200011428241851,
+      "afterWidth": 0.10200011980487034,
+      "horizontalScale": 1.3077902303393376,
+      "highlightVertices": 25,
+      "eyeVertices": 74
+    }
+  ],
+  "nonEyeGeometry": "identical in mesh and both shape keys",
+  "topologyWeightsMaterialsRigObjects": "identical",
+  "newVertices": 0,
+  "newMaterials": 0,
+  "animationsInUserFile": 0
+}

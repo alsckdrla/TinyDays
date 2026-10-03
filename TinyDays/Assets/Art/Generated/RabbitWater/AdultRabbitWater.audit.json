@@ -16,6 +16,16 @@
       "Adult_Water_Pour",
       6,
       false
+    ],
+    [
+      "Adult_Water_Pickup",
+      1.8,
+      false
+    ],
+    [
+      "Adult_Water_Putdown",
+      1.8,
+      false
     ]
   ],
   "canTriangles": 512,

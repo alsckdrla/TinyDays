@@ -22,6 +22,8 @@ public static class RabbitWaterBuilder {
         var clips=AssetDatabase.LoadAllAssetsAtPath(fbx).OfType<AnimationClip>().Where(c=>!c.name.StartsWith("__preview__")).ToArray();
         var task=home.gameObject.AddComponent<RabbitWaterReview>();home.watering=task;task.home=home;
         task.carryIdle=clips.Single(c=>c.name.EndsWith("Adult_Water_Carry_Idle"));task.carryWalk=clips.Single(c=>c.name.EndsWith("Adult_Water_Carry_Walk"));task.pour=clips.Single(c=>c.name.EndsWith("Adult_Water_Pour"));
+        task.pickup=clips.SingleOrDefault(c=>c.name.EndsWith("Adult_Water_Pickup"));task.putdown=clips.SingleOrDefault(c=>c.name.EndsWith("Adult_Water_Putdown"));
+        task.standingRest=clips.Single(c=>c.name.EndsWith("Adult_Breathe_Stand"));
         var blue=Mat("WaterBlue",new Color(.13f,.40f,.65f));var dark=Mat("WaterDark",new Color(.045f,.15f,.26f));
         var ci=(ModelImporter)AssetImporter.GetAtPath(Folder+"/WateringCan.fbx");ci.isReadable=true;
         ci.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material),"WaterBlue"),blue);ci.AddRemap(new AssetImporter.SourceAssetIdentifier(typeof(Material),"WaterDark"),dark);ci.SaveAndReimport();
@@ -45,6 +47,15 @@ public static class RabbitWaterBuilder {
             var part=new GameObject(pair.Key);part.transform.SetParent(bed.transform,false);part.AddComponent<MeshFilter>().sharedMesh=mesh;part.AddComponent<MeshRenderer>().sharedMaterial=pair.Value;
         }
         can.SetActive(false);
+        if(task.pickup&&task.putdown){
+            var flow=home.gameObject.AddComponent<RabbitWaterLifeFlow>();flow.home=home;home.lifeFlow=flow;
+            Func<string,Vector3,Transform> anchor=(name,position)=>{var t=new GameObject(name).transform;t.SetParent(home.transform,false);t.position=position;return t;};
+            float lowest=visual.GetComponentsInChildren<MeshFilter>().SelectMany(f=>f.sharedMesh.vertices.Select(v=>can.transform.InverseTransformPoint(f.transform.TransformPoint(v)).y)).Min();
+            float x=Mathf.Max(.70f,home.insideWait.x+home.BodyClearanceRadius+.32f);
+            flow.storage=anchor("Can floor storage",new Vector3(x,home.groundHeight-lowest+.0025f,-3.7f));
+            flow.approach=anchor("Can pickup approach",new Vector3(x,home.groundHeight,-4.06f));
+            flow.work=anchor("Flower work position",task.destination);flow.work.rotation=Quaternion.Euler(0,90,0);
+        }
     }
     public static void Build(){RabbitHomeLifeBuilder.Build();Debug.Log("WATER_SCENE_OK");}
 }

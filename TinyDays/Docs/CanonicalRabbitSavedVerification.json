@@ -1,0 +1,32 @@
+[
+  {
+    "file": "AdultRabbit",
+    "savedGeometryAndShapes": "canonical exact",
+    "actions": 0,
+    "bind": "PASS"
+  },
+  {
+    "file": "AdultRabbitMotion",
+    "savedGeometryAndShapes": "canonical exact",
+    "actions": 36,
+    "bind": "PASS"
+  },
+  {
+    "file": "AdultRabbitHome",
+    "savedGeometryAndShapes": "canonical exact",
+    "actions": 37,
+    "bind": "PASS"
+  },
+  {
+    "file": "AdultRabbitWater",
+    "savedGeometryAndShapes": "canonical exact",
+    "actions": 39,
+    "bind": "PASS"
+  },
+  {
+    "file": "AdultRabbitBench",
+    "savedGeometryAndShapes": "canonical exact",
+    "actions": 39,
+    "bind": "PASS"
+  }
+]

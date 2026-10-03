@@ -13,6 +13,7 @@
 - 재사용을 검토할 때는 ../TinyDaysPrototype/Docs/MasterPlan.md, PrototypePlan.md, Decisions.md, Progress.md 및 해당 프로젝트 AGENTS.md를 확인한다. 프로토타입 수정은 해당 범위의 사용자 요청 없이 수행하지 않는다.
 - 시각 기준은 마스터 플랜과 `Docs/References/Tiny Days 참고이미지_01.png`를 따른다. 1.0은 저기술 농경세계이며 이미지의 현대 시설·대형 UI를 자동 채택하지 않는다.
 - Unity 2022.3.20f1 / Blender 5.2.1을 유지한다. 기존 수동 자산·사용자 변경을 보존하고 원본 .blend·생성 스크립트·Unity 소스를 남긴다. 재사용하는 생성 도구의 덮어쓰기 범위를 먼저 확인한다.
+- 성인 토끼 기본 원본은 `ArtSource/AdultRabbit - 01.blend`이며 생성 도구는 이 파일에 저장하지 않는다. 외형/36동작/출입/물 주기/벤치 파생 모델 반영은 `Tools/RebuildCanonicalRabbit.ps1`을 사용한다(아트 반영 후 검사/Windows 빌드만은 `-SkipArt`). 기존 액션을 보존하는 메시 반영과 애니메이션 재생성을 구분한다. 구형 `generate_adult_rabbit.py`는 명시적 `-- --legacy-restore`에서만 허용하며 신규 기본 모델로 사용하지 않는다. 옛 농가와 RabbitStudy/RabbitMotion은 비교용으로 보존한다.
 - Blender 자동화를 사용할 때는 --background --factory-startup --python-exit-code 1을 사용하고 사용자 애드온·환경설정을 수정하지 않는다.
 - 실제 게임 창 검증과 별도 테스트 창·직접 함수 호출을 구분한다. 프로토타입 16× 성능 미달과 추가 최적화 보류를 완료로 처리하거나 임의로 배속을 제한하지 않는다.
 - 유료 자산 구매·외부 연결·업로드·원격 저장소 생성은 별도 사용자 요청 없이 하지 않는다. 문서와 이미지를 Git 관리 대상으로 유지하고 다른 PC로 이전할 때 최신 코드·문서·필요 자산의 실제 커밋·푸시 여부를 확인한다.

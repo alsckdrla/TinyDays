@@ -1,0 +1,1 @@
+PASS: four intervals/no consecutive repeats; 30/60/120fps x 0.5/1; pause; sleep suppression and fresh wake wait; curve endpoints; actual imported shape application during walking and sleep; clip/life-mode clock preservation. Body/FBX untouched. OS input and visual quality not verified.

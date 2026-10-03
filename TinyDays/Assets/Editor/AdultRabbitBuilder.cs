@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 
 public static class AdultRabbitBuilder
 {
+    [Serializable] class CanonicalBounds { public float maximumHeight; }
     const string Folder="Assets/Art/Generated/AdultRabbit";
     const string ScenePath="Assets/Scenes/AdultRabbitStudy.unity";
     const string CaptureFolder="Docs/Captures/AdultRabbit";
@@ -132,7 +133,8 @@ public static class AdultRabbitBuilder
         UnityEngine.Object.DestroyImmediate(clone);
         var skins=actor.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.enabled).ToArray();
         var verts=skins.SelectMany(WorldVertices).ToArray();Check(verts.All(v=>!float.IsNaN(v.x)&&!float.IsInfinity(v.y)),"Invalid deformation");
-        Check(verts.Max(v=>v.y)>2.18f&&verts.Max(v=>v.y)<2.23f,"Short-ear scale/axis regression");
+        var canonical=JsonUtility.FromJson<CanonicalBounds>(File.ReadAllText(Folder+"/CanonicalSource.audit.json"));
+        Check(canonical.maximumHeight>0&&Mathf.Abs(verts.Max(v=>v.y)-canonical.maximumHeight)<.005f,"Canonical source height/axis regression: "+verts.Max(v=>v.y));
         Check(verts.Min(v=>v.y)>-.02f,"Feet below floor");
         var materials=skins.SelectMany(s=>s.sharedMaterials).Distinct().ToArray();Check(materials.Length<=6,"Material budget");
         lines.Add("All modules triangles: "+triangles+"; Unity imported vertices: "+allMeshes.Sum(m=>m.vertexCount));
@@ -189,7 +191,15 @@ public static class AdultRabbitBuilder
         }
         var rt=new RenderTexture(width,height,24);rt.antiAliasing=4;rt.Create();var old=c.targetTexture;var active=RenderTexture.active;
         c.targetTexture=rt;c.Render();c.Render();RenderTexture.active=rt;
-        var image=new Texture2D(width,height,TextureFormat.RGB24,false);image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();File.WriteAllBytes(CaptureFolder+"/"+name+".png",image.EncodeToPNG());
+        var image=new Texture2D(width,height,TextureFormat.RGB24,false);image.ReadPixels(new Rect(0,0,width,height),0,0);image.Apply();
+        var captureBytes=image.EncodeToPNG();var capturePath=CaptureFolder+"/"+name+".png";
+        try{File.WriteAllBytes(capturePath,captureBytes);}
+        catch(IOException){
+            // An image preview may memory-map the previous PNG on Windows.
+            // Preserve it and write a unique capture instead of failing the build.
+            capturePath=CaptureFolder+"/"+name+"-"+Guid.NewGuid().ToString("N")+".png";
+            File.WriteAllBytes(capturePath,captureBytes);Debug.LogWarning("Previous capture locked; new render saved to "+capturePath);
+        }
         RenderTexture.active=active;c.targetTexture=old;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(image);
         foreach(var go in snapshots)UnityEngine.Object.DestroyImmediate(go);foreach(var mesh in meshes)UnityEngine.Object.DestroyImmediate(mesh);foreach(var skin in skins)skin.enabled=true;
     }

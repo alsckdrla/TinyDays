@@ -1,0 +1,12 @@
+v0.121 2026-10-02 preservation against uploaded HEAD 3dca1e4.
+Git blob hashes of current file contents match HEAD exactly:
+ArtSource/AdultRabbitMotion.blend 4c01726c4228a3e9b107fbeec8e76bfddc585ce3 MATCH
+Assets/Art/Generated/AdultRabbit/AdultRabbitMotion.fbx 9796cc59ab2f3486b91143c08ddad01d2f069822 MATCH
+Assets/Scenes/AdultRabbitMotionStudy.unity dc5974b8a1593e32b9cce6c5bb6181efff5fc112 MATCH
+Assets/Scenes/FarmStudy.unity ebf7d729222a12ca151c109e2b370453e54206e3 MATCH
+Assets/Scenes/HouseVillageStudy.unity 497be80466165a066fdf6f2070a5bdddd8f16450 MATCH
+ArtSource/AdultRabbitWater.blend 568da5307aba5c6c479c0d4fea7cde38d2502be1 MATCH
+ArtSource/AdultRabbitHome.blend 21d3bcd3debb6662886d53294fb88faf30127f5b MATCH
+RabbitHomeLifeStudy additions and captures reflecting the new bench are intentional.
+AdultRabbitSitCoat retains existing Apply behavior; gentle sway is an additive method for the new task.
+Original model/bind/weights and 36 established clips are not regenerated or overwritten.

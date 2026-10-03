@@ -5,7 +5,7 @@ $taskRunning=Get-CimInstance Win32_Process -Filter "Name='Unity.exe'" | Where-Ob
 if($taskRunning){throw 'Close this project in Unity before batch building; no editor was closed.'}
 New-Item -ItemType Directory -Force -Path (Join-Path $taskProject 'Logs') | Out-Null
 if(!$SkipArt){
-    $taskArtArgs=@('--background','--factory-startup','--python-exit-code','1','--python',('"'+(Join-Path $PSScriptRoot 'generate_adult_rabbit.py')+'"'))
+    $taskArtArgs=@('--background','--factory-startup','--python-exit-code','1','--python',('"'+(Join-Path $PSScriptRoot 'sync_adult_rabbit_model.py')+'"'),'--','--base-only')
     $taskArtProcess=Start-Process -FilePath 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -ArgumentList $taskArtArgs -WindowStyle Hidden -RedirectStandardOutput (Join-Path $taskProject 'Logs/adult-rabbit-art.log') -RedirectStandardError (Join-Path $taskProject 'Logs/adult-rabbit-art-errors.log') -Wait -PassThru
     if($taskArtProcess.ExitCode -ne 0){throw 'Blender failed; see Logs/adult-rabbit-art-errors.log'}
 }

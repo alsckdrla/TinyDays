@@ -6,10 +6,11 @@ using UnityEngine.Playables;
 
 namespace TinyDays.Review {
     // One-owner, flat-ground authored task; not autonomous gardening AI.
-    public sealed class RabbitWaterReview : MonoBehaviour {
-        public enum TaskState { Ready, Walking, Stopping, Pouring, Returning }
+    public sealed partial class RabbitWaterReview : MonoBehaviour {
+        public enum TaskState { Ready, Walking, Stopping, Pouring, Returning, Turning, Picking, Putting, Repositioning }
         public RabbitHomeLifeReview home;
         public AnimationClip carryIdle,carryWalk,pour;
+        public AnimationClip standingRest;
         public Transform can;
         public Transform[] grips;
         public Transform spout;
@@ -29,6 +30,7 @@ namespace TinyDays.Review {
         public int DropletsLanded {get;private set;}
         public int DropletsOutsideBed {get;private set;}
         public bool Active {get;private set;}
+        public string WalkingDetail=>feet==null?"none":$"{feet.State} phase={feet.WalkTime:F4} reach={feet.MaxReachError:F6} yaw={home.resident.transform.eulerAngles.y:F2} drop={feet.ReachDrop:F5}/{feet.SafetyDrop:F5} {feet.ContactDetail}";
         public string Label=>State==TaskState.Ready?"운반 대기":State==TaskState.Walking?"화단으로 걷기":State==TaskState.Stopping?"감속 · 발 모으기":State==TaskState.Pouring?"물 주는 중":"물뿌리개 세우기";
         PlayableGraph graph;AnimationMixerPlayable mix;
         AnimationClipPlayable idlePlay,walkPlay,pourPlay;
@@ -56,20 +58,30 @@ namespace TinyDays.Review {
             Debug.Log($"WATER_PLAYER_SMOKE_{(pass?"OK":"FAILED")} grip={MaxGripError:F6} sole={MinSole:F6} drift={MaxDrift:F6} drops={DropletsLanded} outside={DropletsOutsideBed}. Automated callbacks, not OS input.");
             home.SelectWaterMode(false);Application.Quit(pass?0:1);
         }
-        public void ResetTask(){
+        public void ResetTask(){EnterCurrent(true,true);}
+        public void EnterCurrent(bool carrying,bool resetPosition=false){
+            handoffPositions=null;
+            bool keepMetrics=Active&&!resetPosition;
+            int oldLanded=DropletsLanded,oldOutside=DropletsOutsideBed;
+            float oldGrip=MaxGripError,oldDrift=MaxDrift,oldReach=MaxReach,oldGap=MaxSupportGap,oldSole=MinSole;
+            var currentCanPosition=can.position;var currentCanRotation=can.rotation;
+            propBlendOffset=Vector3.zero;propBlendTime=1;
             Shutdown();home.SuspendPose();Active=true;State=TaskState.Ready;TimeInState=0;clock=remainder=0;
+            carryingCan=carrying;navigation=false;
+            walkingRoute=null;
             followPour=stopRequested=false;recoveryTime=1;recoveryOffset=Vector3.zero;PourAmount=0;DistanceTravelled=0;
             dropCount=dropSerial=DropletsLanded=DropletsOutsideBed=0;emissionClock=0;
-            var actor=home.resident;actor.transform.SetPositionAndRotation(start,Quaternion.Euler(0,90,0));
-            carryIdle.SampleAnimation(actor,0);bones=actor.GetComponentsInChildren<Transform>().Where(t=>t!=actor.transform).ToArray();
+            var actor=home.resident;if(resetPosition)actor.transform.SetPositionAndRotation(start,Quaternion.Euler(0,90,0));
+            var idle=carrying?carryIdle:(standingRest?standingRest:home.idleClip);var walking=carrying?carryWalk:home.walkClip;
+            idle.SampleAnimation(actor,0);bones=actor.GetComponentsInChildren<Transform>().Where(t=>t!=actor.transform).ToArray();
             spine=bones.First(t=>t.name=="Spine");pelvis=bones.First(t=>t.name=="Pelvis");
             restPositions=bones.Select(t=>t.localPosition).ToArray();restRotations=bones.Select(t=>t.localRotation).ToArray();
             graph=PlayableGraph.Create("Water task pose");graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-            idlePlay=AnimationClipPlayable.Create(graph,carryIdle);walkPlay=AnimationClipPlayable.Create(graph,carryWalk);pourPlay=AnimationClipPlayable.Create(graph,pour);
-            mix=AnimationMixerPlayable.Create(graph,3);graph.Connect(idlePlay,0,mix,0);graph.Connect(walkPlay,0,mix,1);graph.Connect(pourPlay,0,mix,2);
+            idlePlay=AnimationClipPlayable.Create(graph,idle);walkPlay=AnimationClipPlayable.Create(graph,walking);pourPlay=AnimationClipPlayable.Create(graph,pour);
+            mix=AnimationMixerPlayable.Create(graph,5);graph.Connect(idlePlay,0,mix,0);graph.Connect(walkPlay,0,mix,1);graph.Connect(pourPlay,0,mix,2);InitWorkPlayables();
             var animator=actor.GetComponent<Animator>();animator.enabled=true;
             AnimationPlayableOutput.Create(graph,"Water pose",animator).SetSourcePlayable(mix);graph.Play();
-            Sample(0);support=new RabbitHomeFootwork(actor,home.groundHeight);support.Hold();support.Capture();feet=new AdultRabbitFootTransition(actor,home.groundHeight){SmoothStopBalance=true};
+            Sample(0);support=new RabbitHomeFootwork(actor,home.groundHeight){FitStandingReach=true};support.Hold();support.Capture();feet=new AdultRabbitFootTransition(actor,home.groundHeight){SmoothStopBalance=true};
             arms=new IdleSupportLeg[2];handRotations=new Quaternion[2];
             for(int i=0;i<2;i++){
                 string s=i==0?"L":"R";arms[i]=new IdleSupportLeg{Upper=bones.First(t=>t.name=="UpperArm_"+s),Lower=bones.First(t=>t.name=="Forearm_"+s),End=bones.First(t=>t.name=="Hand_"+s)};
@@ -80,17 +92,22 @@ namespace TinyDays.Review {
                 var grip=grips[i].localPosition;grip.x=side*Mathf.Abs(grip.x);grips[i].localPosition=grip;
             }
             can.gameObject.SetActive(true);MaxGripError=MaxDrift=MaxReach=MaxSupportGap=0;MinSole=float.PositiveInfinity;Array.Clear(wasPlanted,0,2);
-            ApplyProp(0);Measure();
+            if(carryingCan)ApplyProp(0);else can.SetPositionAndRotation(currentCanPosition,currentCanRotation);Measure();
+            if(keepMetrics){DropletsLanded=oldLanded;DropletsOutsideBed=oldOutside;MaxGripError=Mathf.Max(MaxGripError,oldGrip);MaxDrift=Mathf.Max(MaxDrift,oldDrift);MaxReach=Mathf.Max(MaxReach,oldReach);MaxSupportGap=Mathf.Max(MaxSupportGap,oldGap);MinSole=Mathf.Min(MinSole,oldSole);}
+            propBlendOffset=keepMetrics&&carryingCan?currentCanPosition-can.position:Vector3.zero;propBlendTime=0;
+            if(carryingCan)ApplyProp(0);
         }
         void Sample(float walkWeight,float walkTime=0,bool pouring=false){
             for(int i=0;i<bones.Length;i++){bones[i].localPosition=restPositions[i];bones[i].localRotation=restRotations[i];}
-            idlePlay.SetTime(clock%4);walkPlay.SetTime(walkTime%.8f);pourPlay.SetTime(Mathf.Clamp(TimeInState,0,6));
+            idlePlay.SetTime(clock%idlePlay.GetAnimationClip().length);walkPlay.SetTime(walkTime%walkPlay.GetAnimationClip().length);pourPlay.SetTime(Mathf.Clamp(TimeInState,0,6));mix.SetInputWeight(3,0);mix.SetInputWeight(4,0);
             mix.SetInputWeight(0,pouring?0:1-walkWeight);mix.SetInputWeight(1,pouring?0:walkWeight);mix.SetInputWeight(2,pouring?1:0);graph.Evaluate(0);
             pelvis.position+=recoveryOffset*(1-Ease(recoveryTime/.15f));
+            if(handoffPositions!=null){float u=Ease(handoffTime/.25f);for(int i=0;i<bones.Length;i++){bones[i].localPosition=Vector3.Lerp(handoffPositions[i],bones[i].localPosition,u);bones[i].localRotation=Quaternion.Slerp(handoffRotations[i],bones[i].localRotation,u);}if(u>=1)handoffPositions=null;}
         }
         public void StartWalk(bool completeTask){
             if(!Active||State!=TaskState.Ready)return;
             followPour=completeTask;
+            walkingRoute=null;
             if(Vector3.Dot(destination-home.resident.transform.position,home.resident.transform.forward)<.3f){if(completeTask)StartPour();return;}
             feet=new AdultRabbitFootTransition(home.resident,home.groundHeight){SmoothStopBalance=true};feet.Request(true);stopRequested=false;State=TaskState.Walking;TimeInState=0;
         }
@@ -101,7 +118,8 @@ namespace TinyDays.Review {
         }
         public void StopTask(){
             if(!Active)return;followPour=false;
-            if(State==TaskState.Walking){feet.Request(false);stopRequested=true;State=TaskState.Stopping;}
+            navigation=walkAfterTurn=false;
+            if(State==TaskState.Walking){walkingRoute?.StopTurning();feet.WalkingPoseAhead=null;feet.Request(false);stopRequested=true;State=TaskState.Stopping;}
             else if(State==TaskState.Pouring)BeginReturn();
         }
         void BeginReturn(){
@@ -113,14 +131,24 @@ namespace TinyDays.Review {
             while(remainder>=1f/240){remainder-=1f/240;Tick(1f/240);}
         }
         void Tick(float dt){
-            clock+=dt;TimeInState+=dt;recoveryTime+=dt;
+            clock+=dt;TimeInState+=dt;recoveryTime+=dt;propBlendTime+=dt;handoffTime+=dt;
+            if(State==TaskState.Picking||State==TaskState.Putting){TickWork();Measure();UpdateDrops(dt);return;}
+            if(State==TaskState.Repositioning){TickReposition();if(carryingCan)ApplyProp(0);Measure();UpdateDrops(dt);return;}
+            if(State==TaskState.Turning){TickTurn();if(carryingCan)ApplyProp(0);Measure();UpdateDrops(dt);return;}
             if(State==TaskState.Walking||State==TaskState.Stopping){
-                if(!stopRequested&&Vector3.Dot(destination-home.resident.transform.position,home.resident.transform.forward)<.27f){stopRequested=true;feet.Request(false);State=TaskState.Stopping;}
-                float moved=feet.Step(dt);home.resident.transform.position+=home.resident.transform.forward*moved;DistanceTravelled+=moved;
+                if(!stopRequested&&(walkingRoute!=null?walkingRoute.Remaining<feet.EstimatedStopTravel+.14f:Vector3.Dot(destination-home.resident.transform.position,home.resident.transform.forward)<.27f)){stopRequested=true;feet.WalkingPoseAhead=null;feet.Request(false);State=TaskState.Stopping;}
+                if(walkingRoute!=null)feet.WalkingSpeedScale=walkingRoute.SpeedScale;
+                float moved=feet.Step(dt);
+                if(walkingRoute!=null){var pose=walkingRoute.Advance(moved,dt);home.resident.transform.SetPositionAndRotation(pose.position,pose.rotation);}
+                else home.resident.transform.position+=home.resident.transform.forward*moved;
+                DistanceTravelled+=moved;
                 feet.RestoreSourcePose();Sample(feet.Weight,(float)feet.WalkTime);Vector3 source=pelvis.position;feet.Apply();
+                if(feet.State==AdultRabbitFootTransition.Stage.Closing||feet.State==AdultRabbitFootTransition.Stage.Settling)walkingRoute?.StopTurning();
                 if(stopRequested&&feet.State==AdultRabbitFootTransition.Stage.Idle){
                     recoveryOffset=pelvis.position-source+Vector3.up*support.RestingPelvisDrop;recoveryTime=0;support.Capture();State=TaskState.Ready;TimeInState=0;
                     if(followPour)StartPour();
+                    else if(navigation)FinishNavigation();
+                    else walkingRoute=null;
                 }
             }else if(State==TaskState.Pouring){
                 Sample(0,0,true);
@@ -138,12 +166,12 @@ namespace TinyDays.Review {
                 }
                 support.Hold();
             }
-            ApplyProp(PourAmount);Measure();
+            if(carryingCan)ApplyProp(PourAmount);Measure();
             UpdateDrops(dt);
         }
         void ApplyProp(float amount){
             var actor=home.resident.transform;
-            can.SetPositionAndRotation(spine.position+actor.rotation*(canOffset+new Vector3(0,.05f*amount,0)),actor.rotation*Quaternion.Euler(25*amount,0,0));
+            can.SetPositionAndRotation(spine.position+actor.rotation*(canOffset+new Vector3(0,.05f*amount,0))+propBlendOffset*(1-Ease(propBlendTime/.25f)),actor.rotation*Quaternion.Euler(25*amount,0,0));
             for(int i=0;i<2;i++){
                 float length=Vector3.Distance(arms[i].Upper.position,arms[i].Lower.position)+Vector3.Distance(arms[i].Lower.position,arms[i].End.position);
                 MaxReach=Mathf.Max(MaxReach,Vector3.Distance(arms[i].Upper.position,grips[i].position)-length);
@@ -175,7 +203,7 @@ namespace TinyDays.Review {
         }
         void Measure(){
             for(int i=0;i<2;i++){
-                bool planted=(State==TaskState.Walking||State==TaskState.Stopping)?(i==0?feet.LeftPlanted:feet.RightPlanted):true;
+                bool planted=(State==TaskState.Turning||State==TaskState.Repositioning)?support.Planted[i]:(State==TaskState.Walking||State==TaskState.Stopping)?(i==0?feet.LeftPlanted:feet.RightPlanted):true;
                 float h=support.SoleHeight(i);MinSole=Mathf.Min(MinSole,h);if(planted)MaxSupportGap=Mathf.Max(MaxSupportGap,h);
                 Vector3 p=support.FootPosition(i);if(planted&&wasPlanted[i])MaxDrift=Mathf.Max(MaxDrift,Vector3.Distance(p,anchors[i]));else if(planted)anchors[i]=p;
                 wasPlanted[i]=planted;

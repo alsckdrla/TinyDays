@@ -1,0 +1,28 @@
+{
+  "family": "AdultStandard_v2",
+  "originalActions": 36,
+  "clips": [
+    [
+      "Adult_Bench_Sit",
+      1.8,
+      false
+    ],
+    [
+      "Adult_Bench_Breathe",
+      4,
+      true
+    ],
+    [
+      "Adult_Bench_Stand",
+      1.8,
+      false
+    ]
+  ],
+  "seatHeight": 0.3,
+  "width": 1.5,
+  "depth": 0.36,
+  "pelvisHeight": 0.3936,
+  "seatBackOffset": 0.2,
+  "soleLift": 0.0536,
+  "benchTriangles": 120
+}

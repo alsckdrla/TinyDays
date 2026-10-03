@@ -14,15 +14,21 @@ namespace TinyDays.Review
         Vector3 pivot=new Vector3(0,1.06f,0),previous;
         bool pan,rotate;
         Font font;
+        AdultFaceMotion faceMotion;
+        Transform breathSpine;
+        Vector3 breathOffset;
+        float breathClock;
+        int currentPose;
         readonly Dictionary<Transform,Quaternion> rest=new Dictionary<Transform,Quaternion>();
         readonly Dictionary<Transform,Vector3> positions=new Dictionary<Transform,Vector3>();
         void OnEnable(){font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",16);}
-        void OnDisable(){pan=rotate=false;if(font)Destroy(font);}
+        void OnDisable(){faceMotion?.Clear();faceMotion=null;if(breathSpine)breathSpine.position-=breathOffset;breathOffset=Vector3.zero;breathClock=0;pan=rotate=false;if(font)Destroy(font);}
         void OnApplicationFocus(bool focused){if(!focused)pan=rotate=false;}
         void Start(){CachePose();Home();}
         void CachePose(){if(rest.Count>0)return;foreach(var t in character.bodyParts.SelectMany(s=>s.bones).Distinct()){rest[t]=t.localRotation;positions[t]=t.localPosition;}}
         public void SetPose(int pose)
         {
+            currentPose=pose;breathOffset=Vector3.zero;
             CachePose();foreach(var kv in rest){kv.Key.localRotation=kv.Value;kv.Key.localPosition=positions[kv.Key];}
             if(pose==0)return;
             if(pose==2){QuadrupedProbe();return;}
@@ -61,6 +67,12 @@ namespace TinyDays.Review
         public void Home(){yaw=25;pitch=8;distance=5.6f;pivot=new Vector3(0,1.06f,0);pan=rotate=false;Apply();}
         void Update()
         {
+            if(character){
+                if(faceMotion==null)faceMotion=new AdultFaceMotion(character.gameObject,3701);
+                faceMotion.Advance(Time.unscaledDeltaTime,false);faceMotion.Apply();
+                CachePose();if(!breathSpine)breathSpine=rest.Keys.FirstOrDefault(t=>t.name=="Spine");
+                if(breathSpine&&currentPose==0){breathSpine.position-=breathOffset;breathClock+=Time.unscaledDeltaTime;breathOffset=Vector3.up*(.007f*Mathf.Sin(breathClock*Mathf.PI/2));breathSpine.position+=breathOffset;}
+            }
             bool ui=Input.mousePosition.y<145||Input.mousePosition.y>Screen.height-75;
             if(Input.GetMouseButtonDown(0)){pan=!ui;previous=Input.mousePosition;}
             if(Input.GetMouseButtonDown(1))rotate=!ui;
@@ -76,7 +88,7 @@ namespace TinyDays.Review
         {
             if(font)GUI.skin.font=font;GUI.skin.label.normal.textColor=new Color(.2f,.22f,.25f);
             GUI.Label(new Rect(18,12,Screen.width-30,30),"Tiny Days · 성인 토끼 / 공용 의상 디자인 검토");
-            GUI.Label(new Rect(18,40,Screen.width-30,26),"왼쪽 패닝 · 오른쪽 회전 · 휠 줌 · Home 기본 구도");
+            GUI.Label(new Rect(18,40,Screen.width-30,26),"왼쪽 패닝 · 오른쪽 회전 · 휠 줌 · Home 기본 구도 · 기본 호흡/깜빡임 자동");
             GUILayout.BeginArea(new Rect(12,Screen.height-140,Screen.width-24,138));GUILayout.BeginHorizontal();
             string[] labels={"상의","바지","신발","목수건","배낭"};
             for(int i=0;i<character.wardrobe.Length;i++){

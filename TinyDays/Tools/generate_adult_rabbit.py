@@ -2,7 +2,9 @@
 No subdivision; explicit low-poly rings, imported smooth normals, modular skins.
 Blender --background --factory-startup --python-exit-code 1 --python this_file
 """
-import bpy, math, json
+import bpy, math, json, sys
+if '--legacy-restore' not in sys.argv:
+    raise RuntimeError('Legacy generator disabled. Use sync_adult_rabbit_model.py; --legacy-restore explicitly restores old derived art, never the canonical source.')
 from pathlib import Path
 from mathutils import Vector
 from mathutils.geometry import intersect_ray_tri

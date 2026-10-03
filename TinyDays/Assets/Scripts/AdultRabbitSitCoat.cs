@@ -27,6 +27,10 @@ public sealed class AdultRabbitSitCoat : IDisposable {
         if(AdultRabbitMotionReview.IsSleepClip(clip)){p=(float)(time%duration)/duration;envelope=.05f*Mathf.Pow(Mathf.Sin(Mathf.PI*p),2);}
         if(clip==28){p=(float)(time%4)/4;envelope=.05f*Mathf.Pow(Mathf.Sin(Mathf.PI*p),2);}
         float sway=.010f*envelope*Mathf.Sin(2*Mathf.PI*p-.35f);
+        WriteSway(sway,envelope);
+    }
+    public void ApplyGentleSway(double time){WriteSway(.0015f*Mathf.Sin(2*Mathf.PI*(float)(time%4)/4-.35f),.15f);}
+    void WriteSway(float sway,float envelope){
         MaxDisplacement=0;
         float height=source.bounds.size.y;
         for(int i=0;i<rest.Length;i++){

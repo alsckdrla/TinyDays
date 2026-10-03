@@ -5,7 +5,7 @@ from pathlib import Path
 from mathutils import Vector, Matrix, Euler
 
 ROOT=Path(__file__).resolve().parents[1]
-bpy.ops.wm.open_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbit.blend'))
+bpy.ops.wm.open_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbit - 01.blend'))
 scene=bpy.context.scene;scene.render.fps=30
 rig=bpy.data.objects['AdultRig'];rig.hide_set(False);rig.hide_render=False
 objects=[o for o in bpy.data.objects if o.type=='MESH']

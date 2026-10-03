@@ -1,0 +1,1 @@
+rested=True, state=Standing, sole=0.002447, gap=0.002554, drift=0.000163, reach=0.000000, turnSteps=2, boundary=0.001719

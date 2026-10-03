@@ -16,6 +16,10 @@ SHAPE='SleepEyesClosed'
 def export_base():
     """Refresh the base FBX from its existing source without rebuilding geometry."""
     bpy.ops.wm.open_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbit.blend'))
+    import sys
+    sys.path.insert(0,str(ROOT/'Tools'))
+    from adult_rabbit_source import apply_source
+    apply_source()
     add_eyes()
     bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbit.blend'))
     bpy.ops.object.select_all(action='DESELECT')

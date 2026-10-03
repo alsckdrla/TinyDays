@@ -15,6 +15,9 @@ OUT = ROOT / 'Assets/Art/Generated/RabbitHome'
 OUT.mkdir(parents=True, exist_ok=True)
 bpy.app.driver_namespace['tiny_sleep_eye'] = lambda frame: 0.0
 bpy.ops.wm.open_mainfile(filepath=str(ROOT / 'ArtSource/AdultRabbitMotion.blend'))
+sys.path.insert(0,str(ROOT/'Tools'))
+from adult_rabbit_source import apply_source
+apply_source()
 rig = bpy.data.objects['AdultRig']
 original = {action.name for action in bpy.data.actions}
 assert len([name for name in original if name.startswith('Adult_')]) == 36, original
@@ -25,6 +28,7 @@ for node in tree.body:
         exec(compile(ast.Module(body=[node], type_ignores=[]), '<pose helpers>', 'exec'))
 
 rig.animation_data.action = bpy.data.actions['Adult_Breathe_Stand']
+bpy.data.actions['Adult_Door_Interact'].use_fake_user = True
 bpy.context.scene.frame_set(1)
 bpy.context.view_layer.update()
 standing = {bone.name: bone.matrix.copy() for bone in rig.pose.bones}

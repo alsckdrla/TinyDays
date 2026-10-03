@@ -5,6 +5,10 @@ from mathutils import Matrix, Vector
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'Assets/Art/Generated/RabbitWater';OUT.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbitMotion.blend'))
+import sys
+sys.path.insert(0,str(ROOT/'Tools'))
+from adult_rabbit_source import apply_source
+apply_source()
 for o in bpy.data.objects:
  if o.type=='MESH' and o.data.shape_keys:
   o.data.shape_keys.animation_data_clear()
@@ -28,7 +32,7 @@ for name,seconds,loop in clips:
  frames=round(seconds*30)
  poses=[sample('Adult_Walk_Biped' if 'Walk' in name else 'Adult_Breathe_Stand',(i/30)%(.8 if 'Walk' in name else 4)) for i in range(frames+1)]
  if 'Pour' in name:poses=[sample('Adult_Breathe_Stand',0) for i in range(frames+1)]
- action=bpy.data.actions.new(name);rig.animation_data.action=action
+ action=bpy.data.actions.new(name);action.use_fake_user=True;rig.animation_data.action=action
  for i,p in enumerate(poses):
   t=i/30;a=amount(t) if 'Pour' in name else 0
   rotate(p,'Spine',-5+13*a);rotate(p,'Head',7*a)
@@ -104,3 +108,6 @@ water_preview(bpy.context.scene)
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbitWater.blend'))
 (OUT/'AdultRabbitWater.audit.json').write_text(json.dumps({'family':'AdultStandard_v2','preservedSourceActions':36,'clips':clips,'canTriangles':triangles,'canMaterials':2,'grips':[[.12,.08,.305],[-.12,.08,.305]],'spout':[0,-.455,.16]},indent=2))
 print('WATER_ART_OK',triangles,flush=True)
+from append_water_pickup import build as append_pickup, install_preview
+append_pickup()
+install_preview()

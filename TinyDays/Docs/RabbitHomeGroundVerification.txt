@@ -1,5 +1,5 @@
 v0.119 stop-close-resume direct-call 240Hz / actual floor .275m; not OS input or aesthetic approval.
-2 trips in 16.425s; minimum sole above actual floor 0.002484m; maximum support gap 0.002500m; maximum planted drift 0.000001m; step reach error 0.000000m
-Unsafe door samples 0; maximum turn footfalls 3; reverse travel 0.000000m; lateral deviation 0.000000m; manual hand contact removed.
-Maximum pelvis/head height delta at a stage boundary 0.001768m per 1/240s; full limb speed series in RabbitHomeMotion240.csv
+2 trips in 16.525s; minimum sole above actual floor 0.002499m; maximum support gap 0.002500m; maximum planted drift 0.000001m; step reach error 0.000000m
+Unsafe door samples 0; maximum turn footfalls 0; reverse travel 0.000000m; lateral deviation 0.119995m; manual hand contact removed.
+Maximum pelvis/head height delta at a stage boundary 0.001965m per 1/240s; full limb speed series in RabbitHomeMotion240.csv
 Original floor=0 walking/running: 96 stop combinations; drift 0.000001m; minimum sole 0.002486m; final foot forward gap 0.002248m.

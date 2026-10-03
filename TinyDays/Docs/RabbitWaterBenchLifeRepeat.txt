@@ -1,0 +1,1 @@
+20 outdoor +20 indoor: resident terminal variation=0.000000m facing=0.000000deg can=0.000000m; terminal=(-2.400000, 0.275000, -4.820000). Automatic, not OS input.

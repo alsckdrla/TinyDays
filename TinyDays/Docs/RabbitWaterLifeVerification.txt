@@ -1,0 +1,10 @@
+v0.126 water routine: editor deterministic tests, not OS input or quality approval
+fps=30 slow=False completed=1 grip=0.000326 rootStep=0.038334
+fps=30 slow=True completed=1 grip=0.000326 rootStep=0.019167
+fps=60 slow=False completed=1 grip=0.000326 rootStep=0.019167
+fps=60 slow=True completed=1 grip=0.000326 rootStep=0.009584
+fps=120 slow=False completed=1 grip=0.000326 rootStep=0.009584
+fps=120 slow=True completed=1 grip=0.000326 rootStep=0.004792
+20 routines: completed=20
+20 full routines from explicit indoor reset: exit, close wait, water, storage completed
+all sampled stages: grip=0.000327 reach=0.000000 sole=0.002218 gap=0.002640 drift=0.000317 storage=0.000000 propBoundary=0.000000

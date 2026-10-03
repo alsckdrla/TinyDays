@@ -104,7 +104,7 @@ public sealed partial class AdultRabbitMotionReview {
         }
         if(sleepCurves==null&&sleepTiming){sleepCurves=JsonUtility.FromJson<SleepCurves>(sleepTiming.text);if(sleepCurves.breathing!=null)restBreathing=sleepCurves.breathing;}
     }
-    void Eyes(float value){InitEyes();SleepEyeWeight=Mathf.Clamp01(value);if(eyeSkin&&eyeShape>=0)eyeSkin.SetBlendShapeWeight(eyeShape,100*SleepEyeWeight);}
+    void Eyes(float value){InitEyes();SleepEyeWeight=Mathf.Clamp01(value);FaceMotion.Apply(SleepEyeWeight);}
     void ResetSleep(){Eyes(0);sleepFollow=sleepBlend=false;wakeEyeStart=1;SleepPending=WakeDestination.Awake;sleepJoints=null;sleepLastSample=-1;sleepLastPosition=null;sleepLastRotation=null;sleepFromVelocity=sleepEntryVelocity=null;sleepAngularVelocity=sleepEntryAngularVelocity=null;restBreathPhase=0;restSleepWeight=restSleepVelocity=0;liveRestBreath=false;restBreathJoints=null;}
     double SleepTime(double time)=>Math.Max(0,time-(sleepBlend?.25:0));
     void SampleSleep(double time){

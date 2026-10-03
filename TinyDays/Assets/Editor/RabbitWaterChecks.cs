@@ -13,7 +13,7 @@ public static class RabbitWaterChecks {
     static void Capture(Camera c,string name){
         Directory.CreateDirectory(Out);string path=(name.StartsWith("Sequence")?"Logs/RabbitWaterV0120":Out)+"/"+name+".png";Directory.CreateDirectory(Path.GetDirectoryName(path));
         var rt=new RenderTexture(960,720,24);var old=c.targetTexture;var active=RenderTexture.active;var tex=new Texture2D(960,720,TextureFormat.RGB24,false);
-        try{c.targetTexture=rt;c.aspect=4f/3;c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,960,720),0,0);tex.Apply();File.WriteAllBytes(path,tex.EncodeToPNG());}
+        try{c.targetTexture=rt;c.aspect=4f/3;c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,960,720),0,0);tex.Apply();ReviewCaptureFile.Write(path,tex.EncodeToPNG());}
         finally{c.targetTexture=old;RenderTexture.active=active;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(tex);}
     }
     static void Contacts(RabbitWaterReview w){Check(w.MaxGripError<=.01f&&w.MaxReach<=.001f&&w.MinSole>=-.0005f&&w.MaxDrift<=.0035f&&w.MaxSupportGap<=.005f,$"contacts grip={w.MaxGripError} reach={w.MaxReach} sole={w.MinSole} drift={w.MaxDrift} gap={w.MaxSupportGap}");}

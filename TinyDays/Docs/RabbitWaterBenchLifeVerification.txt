@@ -1,0 +1,24 @@
+v0.128 water-to-bench routine; automated functions, not OS input or user quality approval.
+240Hz complete=41.6375s rootStep=0.004792 handoffBoneStep=0.015281
+fps=30 slow=False complete=41.6667 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=30 slow=True complete=83.3000 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=60 slow=False complete=41.6500 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=60 slow=True complete=83.2833 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=120 slow=False complete=41.6417 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=120 slow=True complete=83.2750 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+20 outdoor routines: PASS, no actor/can reset between runs
+20 indoor-to-end routines: PASS
+stop/pause/repeat/resume Exiting: PASS
+stop/pause/repeat/resume ToCan: PASS
+stop/pause/repeat/resume Picking: PASS
+stop/pause/repeat/resume ToFlowers: PASS
+stop/pause/repeat/resume Watering: PASS
+reach peak ToBench/ClearingCan t=0.0042 segment 0/2 foot 1 actor (0.700, 0.275, -4.210) hip (0.839, 0.844, -4.201) target (0.882, 0.404, -4.190) len 0.442
+stop/pause/repeat/resume ToStorage: PASS
+stop/pause/repeat/resume Putting: PASS
+stop/pause/repeat/resume ToBench: PASS
+stop/pause/repeat/resume BenchSitting: PASS
+stop/pause/repeat/resume BenchResting: PASS
+stop/pause/repeat/resume BenchRising: PASS
+stop/pause/repeat/resume BenchDeparting: PASS
+contacts sole=0.002399 gap=0.002883 drift=0.000385 reach=0.000384; rootStep=0.038334; handoffFrameStep=0.015281 (includes intentional movement); exactOwnerJump=0.000000; ownership/can/face/reset: PASS

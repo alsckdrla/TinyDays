@@ -167,7 +167,7 @@ public static class AdultSleepChecks {
                 for(int i=0;i<normals.Length;i++){var n=normals[i];var w=weights[i];normals[i]=(matrices[w.boneIndex0].MultiplyVector(n)*w.weight0+matrices[w.boneIndex1].MultiplyVector(n)*w.weight1+matrices[w.boneIndex2].MultiplyVector(n)*w.weight2+matrices[w.boneIndex3].MultiplyVector(n)*w.weight3).normalized;}
                 mesh.normals=normals;mesh.RecalculateBounds();var go=new GameObject("__SleepCapture");go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterials=skin.sharedMaterials;objects.Add(go);skin.enabled=false;
             }
-            rt.Create();camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;texture=new Texture2D(640,640,TextureFormat.RGB24,false);texture.ReadPixels(new Rect(0,0,640,640),0,0);texture.Apply();File.WriteAllBytes(path,texture.EncodeToPNG());
+            rt.Create();camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;texture=new Texture2D(640,640,TextureFormat.RGB24,false);texture.ReadPixels(new Rect(0,0,640,640),0,0);texture.Apply();ReviewCaptureFile.Write(path,texture.EncodeToPNG());
         }finally{camera.targetTexture=old;RenderTexture.active=oldActive;if(texture)UnityEngine.Object.DestroyImmediate(texture);rt.Release();UnityEngine.Object.DestroyImmediate(rt);foreach(var go in objects){UnityEngine.Object.DestroyImmediate(go.GetComponent<MeshFilter>().sharedMesh);UnityEngine.Object.DestroyImmediate(go);}foreach(var s in skins)s.enabled=true;}
     }
 }

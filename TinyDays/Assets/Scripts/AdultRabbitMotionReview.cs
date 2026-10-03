@@ -106,11 +106,23 @@ namespace TinyDays.Review
         public float PanelScrollY {get=>panelScroll.y;set=>panelScroll.y=value;}
         PlayableGraph graph; AnimationClipPlayable playable; int active=-1; Font font;
         static readonly string[] Labels={"두 발 대기","두 발 총총걸음","네 발 대기 (보류)","깡충 (보류)","두 발 달리기","앉기","일어서기","앉은 자세"};
-        void OnEnable(){if(!Application.isPlaying)return;panelButton=panelLabel=panelHeading=null;font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",13);if(resident&&clips!=null&&clips.Length>=10)StartBreathing(false);else Sample(0);}
-        void OnDisable(){ResetLying();idleProfile.RestoreFidget();panelButton=panelLabel=panelHeading=null;panelScroll=Vector2.zero;PanelItems.Clear();Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;drag=-1;active=-1;MovingReview=false;MoveWeight=0;WantsToWalk=false;footTransition?.RestoreSourcePose();footTransition=null;if(resident)resident.transform.localPosition=Vector3.zero;selected=0;elapsed=0;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
+        void OnEnable(){faceMotion=null;if(!Application.isPlaying)return;panelButton=panelLabel=panelHeading=null;font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",13);if(resident&&clips!=null&&clips.Length>=10)StartBreathing(false);else Sample(0);}
+        void OnDisable(){faceMotion?.Clear();faceMotion=null;ResetLying();idleProfile.RestoreFidget();panelButton=panelLabel=panelHeading=null;panelScroll=Vector2.zero;PanelItems.Clear();Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;drag=-1;active=-1;MovingReview=false;MoveWeight=0;WantsToWalk=false;footTransition?.RestoreSourcePose();footTransition=null;if(resident)resident.transform.localPosition=Vector3.zero;selected=0;elapsed=0;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
         void OnApplicationFocus(bool focus){if(!focus)drag=-1;}
         void Update(){HandleCamera();Advance(Time.unscaledDeltaTime);}
+        AdultFaceMotion faceMotion;
+        public int blinkSeed=1701;
+        int faceAdvanceDepth;
+        AdultFaceMotion FaceMotion=>faceMotion??(faceMotion=new AdultFaceMotion(resident,blinkSeed));
+        public double AutomaticBlinkClock=>FaceMotion.Clock;
+        public float AutomaticBlinkWeight=>FaceMotion.Blink;
+        void LateUpdate(){FaceMotion.Apply(SleepEyeWeight);}
         public void Advance(float seconds){
+            bool outer=faceAdvanceDepth++==0;
+            if(outer)FaceMotion.Advance(paused?0:Math.Max(0,seconds)*(slow?.5:1),FallingAsleep(selected)||Asleep(selected)||Waking(selected));
+            try{AdvanceBody(seconds);}finally{faceAdvanceDepth--;if(outer)FaceMotion.Apply(SleepEyeWeight);}
+        }
+        void AdvanceBody(float seconds){
             float dt=paused?0:Mathf.Max(0,seconds)*(slow?.5f:1);
             elapsed+=dt;
             AdvanceRestBreath(dt);
@@ -205,6 +217,7 @@ namespace TinyDays.Review
             if(!draw)PanelItems.Clear();
             PanelText("Tiny Days · 동작 검토 v0.112",true);
             PanelText(LyingReview?LyingStatus:Idle!=null?(Idle.Seated?"앉음 · ":"서기 · ")+Idle.State:SitState);
+            PanelText("기본 호흡 자동 · 눈 깜빡임 자동 (수면 중 억제)");
             PanelText("동작 선택",true);
             PanelAction((SupportedSitting?"● ":"")+"한 손 지지",()=>SetSitStyle(true),CanChangeSitStyle);
             PanelAction((!SupportedSitting?"● ":"")+"양손 지지",()=>SetSitStyle(false),CanChangeSitStyle);PanelRow();

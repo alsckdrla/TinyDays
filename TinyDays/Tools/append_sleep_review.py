@@ -6,6 +6,8 @@ from mathutils import Vector, Matrix
 from adult_rabbit_sleep import add_eyes, build, CLIPS, install_preview_driver
 ROOT=Path(__file__).resolve().parents[1]
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbit.blend'))
+from adult_rabbit_source import apply_source
+apply_source()
 add_eyes()
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'ArtSource/AdultRabbit.blend'))
 bpy.ops.object.select_all(action='DESELECT')

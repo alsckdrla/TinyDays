@@ -155,6 +155,7 @@ public static class RabbitHomeLifeBuilder
         camera.fieldOfView=40;camera.nearClipPlane=.03f;camera.farClipPlane=120;camera.clearFlags=CameraClearFlags.SolidColor;
         camera.backgroundColor=new Color(.89f,.93f,.92f);camera.GetUniversalAdditionalCameraData().renderPostProcessing=false;review.reviewCamera=camera;
         RabbitWaterBuilder.Attach(review);
+        RabbitBenchBuilder.Attach(review);
         review.Home();EditorSceneManager.SaveScene(scene,ScenePath);AssetDatabase.SaveAssets();
     }
     static void Verify()
@@ -210,7 +211,7 @@ public static class RabbitHomeLifeBuilder
         var image=new Texture2D(960,720,TextureFormat.RGB24,false);
         try{camera.targetTexture=rt;camera.aspect=960f/720f;camera.Render();RenderTexture.active=rt;
             image.ReadPixels(new Rect(0,0,960,720),0,0);image.Apply();
-            File.WriteAllBytes(directory+"/"+name+".png",image.EncodeToPNG());}
+            ReviewCaptureFile.Write(directory+"/"+name+".png",image.EncodeToPNG());}
         finally{RenderTexture.active=previous;camera.targetTexture=old;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(image);}
     }
     public static void BuildPlayer()

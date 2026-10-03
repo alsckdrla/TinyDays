@@ -22,11 +22,22 @@ namespace TinyDays.Review
         public float groundHeight=.275f;
         public bool automatic, paused, slow;
         public RabbitWaterReview watering;
+        public RabbitBenchReview benchRest;
+        public RabbitWaterLifeFlow lifeFlow;
+        public bool FlowMode {get;private set;}
+        public void SelectLifeFlow(){var face=faceMotion;ResetLifeFlow();faceMotion=face;}
+        public void ResetLifeFlow(){ResetStudy();FlowMode=true;automatic=false;lifeFlow.ResetTask();ViewLifeFlow(45);}
+        public void ViewLifeFlow(float angle){pivot=new Vector3(-.6f,1.05f,-3.8f);yaw=180+angle;pitch=15;distance=10;reviewCamera.fieldOfView=40;ApplyCamera();}
+        public void AdvanceDoorTick(float dt){Tick(dt);}
+        public bool BenchMode {get;private set;}
+        int benchPoseAction;
+        public void SelectBenchMode(){var face=faceMotion;ResetStudy();faceMotion=face;BenchMode=true;automatic=false;benchRest.ResetTask();ViewBench(140);}
+        public void ViewBench(float angle){pivot=new Vector3(-2.5f,.95f,-3.6f);yaw=angle;pitch=14;distance=4.8f;reviewCamera.fieldOfView=40;ApplyCamera();}
         public bool WaterMode {get;private set;}
         int waterPoseAction;
         public void SuspendPose(){feet?.RestoreSourcePose();if(graph.IsValid())graph.Destroy();}
         public void SelectWaterMode(bool enabled){
-            if(watering)watering.Shutdown();WaterMode=false;ResetStudy();
+            var face=faceMotion;if(watering)watering.Shutdown();WaterMode=false;ResetStudy();faceMotion=face;
             if(enabled&&watering){WaterMode=true;automatic=false;watering.ResetTask();ViewWater(130);}
         }
         public void ViewWater(float angle){pivot=new Vector3(1,.95f,-3.7f);yaw=angle;pitch=12;distance=4.8f;reviewCamera.fieldOfView=40;ApplyCamera();}
@@ -78,8 +89,8 @@ namespace TinyDays.Review
         void OnEnable(){if(Application.isPlaying){font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",13);ResetStudy();}}
         bool smoke;
         System.Collections.IEnumerator Start(){
-            smoke=Environment.GetCommandLineArgs().Contains("-homeLifeSmoke")||Environment.GetCommandLineArgs().Contains("-waterSmoke");
-            if(Environment.GetCommandLineArgs().Contains("-waterSmoke"))yield break;
+            smoke=Environment.GetCommandLineArgs().Any(a=>new[]{"-homeLifeSmoke","-waterSmoke","-benchSmoke","-waterLifeSmoke","-waterBenchLifeSmoke"}.Contains(a));
+            if(!Environment.GetCommandLineArgs().Contains("-homeLifeSmoke"))yield break;
             if(!smoke)yield break;
             ResetStudy();
             foreach(bool exit in new[]{true,false}){
@@ -93,13 +104,16 @@ namespace TinyDays.Review
             Debug.Log($"HOME_PLAYER_SMOKE_{(pass?"OK":"FAILED")} trips={Trips} sole={MinimumSole:F6} drift={MaximumSupportDrift:F6} turnSteps={MaxTurnSteps}. Automated callbacks, not OS input.");
             Application.Quit(pass?0:1);
         }
-        void OnDisable(){drag=-1;pending=null;feet?.RestoreSourcePose();feet=null;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
+        void OnDisable(){faceMotion?.Clear();faceMotion=null;drag=-1;pending=null;feet?.RestoreSourcePose();feet=null;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
         void OnApplicationFocus(bool focus){if(!focus)drag=-1;}
         static float Ease(float u){u=Mathf.Clamp01(u);return u*u*(3-2*u);}
         static float Yaw(Vector3 direction)=>Mathf.Atan2(direction.x,direction.z)*Mathf.Rad2Deg;
         void SetYaw(float degrees){resident.transform.rotation=Quaternion.Euler(0,degrees,0);}
         void SetDoor(float angle){DoorAngle=angle;hinge.localRotation=Quaternion.Euler(0,angle,0);}
         public void ResetStudy(){
+            faceMotion=null;
+            if(lifeFlow)lifeFlow.Shutdown();FlowMode=false;
+            if(benchRest)benchRest.Shutdown();BenchMode=false;
             if(watering)watering.Shutdown();WaterMode=false;
             if(graph.IsValid())graph.Destroy();
             pending=null;automatic=paused=slow=false;waitClock=remainder=Clock=TotalTravel=0;Trips=0;
@@ -114,7 +128,7 @@ namespace TinyDays.Review
             var animator=resident.GetComponent<Animator>();animator.enabled=true;animator.applyRootMotion=false;animator.cullingMode=AnimatorCullingMode.AlwaysAnimate;
             AnimationPlayableOutput.Create(graph,"Home pose",animator).SetSourcePlayable(mixer);graph.Play();
             idleTime=0;SampleBase(0,0);feet=new AdultRabbitFootTransition(resident,groundHeight);
-            footwork=new RabbitHomeFootwork(resident,groundHeight);
+            footwork=new RabbitHomeFootwork(resident,groundHeight){FitStandingReach=true};
             // Initialize the resting clearance now, not on the first moving frame.
             footwork.Hold();footwork.Capture();
             MinimumSole=float.PositiveInfinity;MaximumSupportDrift=MaximumSupportGap=0;
@@ -161,6 +175,7 @@ namespace TinyDays.Review
         Quaternion closingRotation;
         bool exiting;
         Vector3 travelDirection;
+        RabbitWalkingRoute walkingRoute;
         float doorClock;
         public string DoorLabel=>Door==DoorState.Closed?"닫힘":Door==DoorState.Waiting?"열기 대기":Door==DoorState.Opening?"열리는 중":Door==DoorState.Open?"열림":Door==DoorState.ClosingDelay?"닫기 대기":"닫히는 중";
         public string MovementLabel=>Current==Step.Inside?"실내 대기":Current==Step.Outside?"앞마당 대기":Current==Step.PassDeceleration?"통과 후 감속":Current==Step.WaitForClosing?"문 닫힘 대기":Current==Step.WalkToDestination?"목적지로 이동":Current==Step.ApproachInside||Current==Step.ApproachOutside?"방향 맞추기":Current==Step.WalkToRoom?"문 앞 접근":Current==Step.OpenInside||Current==Step.OpenOutside?"문 열림 대기":Current==Step.CrossOut?"외출 중":"귀가 중";
@@ -212,16 +227,24 @@ namespace TinyDays.Review
         }
         bool Walk(Vector3 target,float dt){
             if(navPhase==0){
-                feet=new AdultRabbitFootTransition(resident,groundHeight);feet.Request(true);
+                feet=new AdultRabbitFootTransition(resident,groundHeight){FollowWalkingHeading=true};
+                var direction=target-resident.transform.position;direction.y=0;
+                walkingRoute=new RabbitWalkingRoute(resident.transform,target,Yaw(direction));
+                feet.WalkingPoseAhead=distance=>walkingRoute.Predict(distance,feet.Speed>.1f?feet.Speed:.6f);
+                feet.WalkingSpeedScale=walkingRoute.SpeedScale;
+                feet.WalkingGoal=walkingRoute.Goal;
+                feet.Request(true);
                 travelDirection=resident.transform.forward;navPhase=1;stopping=false;
             }
             usingWalk=true;
-            float remaining=Vector3.Dot(target-resident.transform.position,travelDirection);
-            if(!stopping&&remaining<.27f){stopping=true;feet.Request(false);}
-            float moved=feet.Step(dt);resident.transform.position+=travelDirection*moved;TotalTravel+=Mathf.Abs(moved);
+            float remaining=walkingRoute.Remaining;
+            if(!stopping&&remaining<feet.EstimatedStopTravel+.14f){stopping=true;feet.WalkingPoseAhead=null;feet.Request(false);}
+            feet.WalkingSpeedScale=walkingRoute.SpeedScale;
+            float moved=feet.Step(dt);var pose=walkingRoute.Advance(moved,dt);resident.transform.SetPositionAndRotation(pose.position,pose.rotation);TotalTravel+=Mathf.Abs(moved);
             if(moved<0)ReverseTravel-=moved;
             feet.RestoreSourcePose();SampleBase(feet.Weight,(float)(feet.WalkTime%walkClip.length));
             Vector3 sourcePelvis=pelvis.position;feet.Apply();
+            if(feet.State==AdultRabbitFootTransition.Stage.Closing||feet.State==AdultRabbitFootTransition.Stage.Settling)walkingRoute.StopTurning();
             if(stopping&&feet.State==AdultRabbitFootTransition.Stage.Idle){
                 // Keep the landed balance offset continuous while switching to
                 // the planted idle solver; release it over the closing wait.
@@ -263,7 +286,18 @@ namespace TinyDays.Review
             mixer.SetInputWeight(0,1-weight);mixer.SetInputWeight(1,weight);graph.Evaluate(0);
             pelvis.position+=restRecoveryOffset*(1-Ease(restRecoveryTime/.15f));
         }
+        AdultFaceMotion faceMotion;
+        public int blinkSeed=2701;
+        AdultFaceMotion FaceMotion=>faceMotion??(faceMotion=new AdultFaceMotion(resident,blinkSeed));
+        public double AutomaticBlinkClock=>FaceMotion.Clock;
+        void LateUpdate(){FaceMotion.Apply();}
         public void Advance(float seconds){
+            FaceMotion.Advance(paused?0:Math.Max(0,seconds)*(slow?.5:1),false);
+            try{AdvanceBody(seconds);}finally{FaceMotion.Apply();}
+        }
+        void AdvanceBody(float seconds){
+            if(FlowMode){lifeFlow.Advance(seconds);return;}
+            if(BenchMode){benchRest.Advance(seconds);return;}
             if(WaterMode){watering.Advance(seconds);return;}
             if(paused||seconds<=0)return;
             float elapsed=seconds*(slow?.5f:1);
@@ -278,7 +312,7 @@ namespace TinyDays.Review
                 case Step.ApproachInside:
                     if(Rotate(180,dt))StartOpening();break;
                 case Step.ApproachOutside:
-                    if(Rotate(0,dt)){Begin(Step.WalkToRoom);}break;
+                    if(Walk(outsideDoor,dt))StartOpening();break;
                 case Step.WalkToRoom:
                     if(Walk(outsideDoor,dt))StartOpening();break;
                 case Step.OpenInside:case Step.OpenOutside:
@@ -295,7 +329,11 @@ namespace TinyDays.Review
                     Stand();
                     MaximumClosingDrift=Mathf.Max(MaximumClosingDrift,Vector3.Distance(closingPosition,resident.transform.position));
                     if(Quaternion.Angle(closingRotation,resident.transform.rotation)>.01f)PrematureDepartureSamples++;
-                    if(Door==DoorState.Closed)Begin(Step.WalkToDestination);
+                    if(Door==DoorState.Closed){
+                        // The connected routine's next destination is the can,
+                        // not an extra outside waypoint followed by another stop.
+                        if(FlowMode&&exiting)Finish(Step.Outside);else Begin(Step.WalkToDestination);
+                    }
                     break;
                 case Step.WalkToDestination:
                     if(Walk(exiting?outsideWait:insideWait,dt))Finish(exiting?Step.Outside:Step.Inside);
@@ -338,12 +376,36 @@ namespace TinyDays.Review
             if(buttonStyle==null){buttonStyle=new GUIStyle(GUI.skin.button){font=font,fontSize=13,fixedHeight=24};labelStyle=new GUIStyle(GUI.skin.label){font=font,fontSize=13,wordWrap=true};}
             var panel=Panel;GUI.Box(panel,GUIContent.none);
             var viewport=new Rect(panel.x+8,panel.y+8,panel.width-16,panel.height-16);
-            panelScroll=GUI.BeginScrollView(viewport,panelScroll,new Rect(0,0,viewport.width-18,WaterMode?650:460),false,false);
+            panelScroll=GUI.BeginScrollView(viewport,panelScroll,new Rect(0,0,viewport.width-18,FlowMode?800:WaterMode||BenchMode?710:560),false,false);
             float y=0,w=viewport.width-20;
+            GUI.Label(new Rect(0,y,w,24),"기본 호흡 · 눈 깜빡임 자동",labelStyle);y+=26;
             GUI.Label(new Rect(0,y,w,38),"토끼 집 · 외출/귀가 검토",labelStyle);y+=35;
             if(watering){
                 if(GUI.Button(new Rect(0,y,w/2-3,24),"출입 검토",buttonStyle))SelectWaterMode(false);
                 if(GUI.Button(new Rect(w/2+3,y,w/2-3,24),"물 주기 검토",buttonStyle))SelectWaterMode(true);y+=29;
+            }
+            if(benchRest){if(GUI.Button(new Rect(0,y,w,24),"벤치 휴식 검토",buttonStyle))SelectBenchMode();y+=29;}
+            if(lifeFlow){if(GUI.Button(new Rect(0,y,w,24),"생활 흐름 · 외출해서 물 주기",buttonStyle))SelectLifeFlow();y+=29;}
+            if(FlowMode){lifeFlow.DrawPanel(ref y,w,buttonStyle,labelStyle);GUI.EndScrollView();return;}
+            if(BenchMode){
+                GUI.Label(new Rect(0,y,w,48),$"{benchRest.Label} · {benchRest.TimeInState:F1}초\n{(paused?"일시정지":"재생")} · {(slow?"0.5×":"1×")} · 이동 예약 {(benchRest.PendingWalk?"있음":"없음")}",labelStyle);y+=48;
+                if(GUI.Button(new Rect(0,y,w,24),"전체 흐름 · 벤치 휴식",buttonStyle)){benchRest.StartFlow();paused=false;}y+=29;
+                if(GUI.Button(new Rect(0,y,w/2-3,24),"앉기",buttonStyle)){benchRest.RequestSit();paused=false;}
+                if(GUI.Button(new Rect(w/2+3,y,w/2-3,24),"일어서기",buttonStyle)){benchRest.RequestRise();paused=false;}y+=29;
+                if(GUI.Button(new Rect(0,y,w/2-3,24),"걷기 재개",buttonStyle)){benchRest.RequestWalk();paused=false;}
+                if(GUI.Button(new Rect(w/2+3,y,w/2-3,24),"정지 / 예약 취소",buttonStyle))benchRest.StopTask();y+=29;
+                if(GUI.Button(new Rect(0,y,w,24),"처음 위치",buttonStyle)){benchRest.ResetTask();paused=false;}y+=29;
+                if(GUI.Button(new Rect(0,y,w/3-3,24),paused?"재개":"일시정지",buttonStyle))paused=!paused;
+                if(GUI.Button(new Rect(w/3,y,w/3-3,24),"0.5×",buttonStyle))slow=true;
+                if(GUI.Button(new Rect(2*w/3,y,w/3-3,24),"1×",buttonStyle))slow=false;y+=29;
+                if(GUI.Button(new Rect(0,y,w/3-3,24),"정면",buttonStyle))ViewBench(180);
+                if(GUI.Button(new Rect(w/3,y,w/3-3,24),"측면",buttonStyle))ViewBench(90);
+                if(GUI.Button(new Rect(2*w/3,y,w/3-3,24),"비스듬",buttonStyle))ViewBench(140);y+=29;
+                GUI.Label(new Rect(0,y,w,24),"주요 8포즈",labelStyle);y+=26;
+                for(int i=0;i<3;i++)if(GUI.Button(new Rect(i*w/3,y,w/3-3,24),(benchPoseAction==i?"● ":"")+new[]{"앉기","호흡","서기"}[i],buttonStyle))benchPoseAction=i;y+=29;
+                for(int i=0;i<8;i++)if(GUI.Button(new Rect((i%4)*w/4,y+(i/4)*29,w/4-3,24),(i+1).ToString(),buttonStyle))benchRest.Pose(benchPoseAction,i);y+=62;
+                GUI.Label(new Rect(0,y,w,80),"접근 → 앉기 → 6초 휴식 → 서기 → 걷기\n배낭 착용 · 호흡 자동 적용\n마우스 패닝/회전/줌 · Q/E 높이",labelStyle);
+                GUI.EndScrollView();return;
             }
             if(WaterMode){
                 GUI.Label(new Rect(0,y,w,48),$"{watering.Label} · {watering.TimeInState:F1}초\n{(paused?"일시정지":"재생")} · {(slow?"0.5×":"1×")}",labelStyle);y+=48;

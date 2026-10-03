@@ -1,0 +1,21 @@
+Selected historical diagnostics, 2026-10-03. Not a current full verification PASS.
+Logs/natural129-walk11.log:371
+NATURAL_WALK_DIAGNOSTIC state=Finished drop=0.008001 bend=10.213
+
+Logs/natural129-draft3.log:373
+NATURAL_WALK_DIAGNOSTIC state=Finished drop=0.008001 bend=17.040
+Logs/natural129-draft3.log:395
+Exception: Natural walk: putdown 0/180 grip=0.03528324 reach=0.03505632 drift=0.0002921392
+
+Logs/natural129-flow1.log:494
+Exception: Bench: connected route intersects stored watering can: Shoes at (0.85, 0.38, -3.80) state=Walking t=0.1958333
+
+Logs/natural129-posture3.log:293
+MOVING_TURN_ANGLES_OK cases=160
+Logs/natural129-posture3.log:314
+MOVING_TURN_STOPS_OK
+Logs/natural129-posture3.log:324
+MOVING_TURN_VERIFY_OK cases=160
+
+The posture3 checks predate subsequent landing prediction edits. Re-run on current source.
+The draft3 extra torso tilt experiment was removed after this failure.

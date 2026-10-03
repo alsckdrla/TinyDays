@@ -1,0 +1,120 @@
+{
+  "source": "D:\\mc da kim\\Codex\\TinyDays\\TinyDays\\ArtSource\\AdultRabbit - 01.blend",
+  "sourceSha256": "625909966788c99c8dc62e5160bca7fa9390e6b82e580d48596db6deec59c531",
+  "sourceUnchanged": true,
+  "exports": [
+    {
+      "file": "AdultRabbit",
+      "modules": [
+        "Backpack",
+        "BodyArms",
+        "BodyFeet",
+        "BodyHands",
+        "BodyLegs",
+        "BodyTail",
+        "BodyTorso",
+        "Bottom",
+        "Head",
+        "Neckwear",
+        "Shoes",
+        "Top"
+      ],
+      "actionCount": 0,
+      "actionHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "rigHash": "7869df06f8df360f6aaf97ebe71c193dd5ee7c5f0832c4fd5490ba9c5537ba60",
+      "repeatOverlay": "PASS"
+    },
+    {
+      "file": "AdultRabbitMotion",
+      "modules": [
+        "Backpack",
+        "BodyArms",
+        "BodyFeet",
+        "BodyHands",
+        "BodyLegs",
+        "BodyTail",
+        "BodyTorso",
+        "Bottom",
+        "Head",
+        "Neckwear",
+        "Shoes",
+        "Top"
+      ],
+      "actionCount": 36,
+      "actionHash": "cacb23e8d5083ce41b88195367fbaa68e98193565264e29e06dda0671bc45fda",
+      "rigHash": "7869df06f8df360f6aaf97ebe71c193dd5ee7c5f0832c4fd5490ba9c5537ba60",
+      "repeatOverlay": "PASS"
+    },
+    {
+      "file": "AdultRabbitHome",
+      "modules": [
+        "Backpack",
+        "BodyArms",
+        "BodyFeet",
+        "BodyHands",
+        "BodyLegs",
+        "BodyTail",
+        "BodyTorso",
+        "Bottom",
+        "Head",
+        "Neckwear",
+        "Shoes",
+        "Top"
+      ],
+      "actionCount": 37,
+      "actionHash": "58889bb994ed3e1b6a594c324f2e3a429a1feb880627024fb6c92d4547b3f351",
+      "rigHash": "7869df06f8df360f6aaf97ebe71c193dd5ee7c5f0832c4fd5490ba9c5537ba60",
+      "repeatOverlay": "PASS",
+      "unusedDoorGesture": "Recovered from original FBX; retained with fake user"
+    },
+    {
+      "file": "AdultRabbitWater",
+      "modules": [
+        "Backpack",
+        "BodyArms",
+        "BodyFeet",
+        "BodyHands",
+        "BodyLegs",
+        "BodyTail",
+        "BodyTorso",
+        "Bottom",
+        "Head",
+        "Neckwear",
+        "Shoes",
+        "Top"
+      ],
+      "actionCount": 39,
+      "actionHash": "5a34aca82196e7eed584e1e8f4e581451b0faf82accc16433af869aae6e6b4ea",
+      "rigHash": "7869df06f8df360f6aaf97ebe71c193dd5ee7c5f0832c4fd5490ba9c5537ba60",
+      "repeatOverlay": "PASS",
+      "recoveredClips": [
+        "Adult_Water_Pour"
+      ]
+    },
+    {
+      "file": "AdultRabbitBench",
+      "modules": [
+        "Backpack",
+        "BodyArms",
+        "BodyFeet",
+        "BodyHands",
+        "BodyLegs",
+        "BodyTail",
+        "BodyTorso",
+        "Bottom",
+        "Head",
+        "Neckwear",
+        "Shoes",
+        "Top"
+      ],
+      "actionCount": 39,
+      "actionHash": "ad963d2e7141a35de291d1048ce28ab8410dcf869065dffbb58b2e382bce210c",
+      "rigHash": "7869df06f8df360f6aaf97ebe71c193dd5ee7c5f0832c4fd5490ba9c5537ba60",
+      "repeatOverlay": "PASS",
+      "recoveredClips": [
+        "Adult_Bench_Sit",
+        "Adult_Bench_Stand"
+      ]
+    }
+  ]
+}

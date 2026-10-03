@@ -18,8 +18,8 @@ namespace TinyDays.Review
         readonly float neutralLowering;
         Func<float,Pose> route;
         int steps,segment=-1,swing;
-        float duration;
-        bool turnOnly;
+        float duration,turnLowering=.035f;
+        bool turnOnly,exactSteps;
         Vector3 from,to;
         Quaternion fromRotation,toRotation;
         public bool[] Planted {get;}={true,true};
@@ -27,8 +27,9 @@ namespace TinyDays.Review
         public string ReachDetail {get;private set;}
         public float Duration=>duration;
         public float RestingPelvisDrop=>neutralLowering;
+        public bool FitStandingReach {get;set;}
         static float Travel(float u){u=Mathf.Clamp01(u);const float a=.15f;if(u<a)return .5f*(u-a/Mathf.PI*Mathf.Sin(Mathf.PI*u/a))/(1-a);if(u>1-a)return 1-Travel(1-u);return (u-a*.5f)/(1-a);}
-        public float MotionFraction(float time)=>turnOnly?Ease(time/duration):Travel(Mathf.Clamp01(time/duration*(steps+2)/steps));
+        public float MotionFraction(float time)=>turnOnly?Ease(time/duration):Travel(Mathf.Clamp01(time/duration*(exactSteps?steps:steps+2)/steps));
         public RabbitHomeFootwork(GameObject resident,float floorHeight)
         {
             actor=resident.transform;floor=floorHeight;
@@ -57,10 +58,12 @@ namespace TinyDays.Review
         public void Capture(){for(int i=0;i<2;i++){target[i]=legs[i].End.position;rotation[i]=legs[i].End.rotation;Planted[i]=true;}}
         public void Begin(Func<float,Pose> path,int movingSteps,float secondsPerStep=.28f)
         {
-            turnOnly=false;Capture();route=path;steps=Mathf.Max(2,movingSteps);duration=(steps+2)*secondsPerStep;segment=-1;
+            turnOnly=false;exactSteps=false;Capture();route=path;steps=Mathf.Max(2,movingSteps);duration=(steps+2)*secondsPerStep;segment=-1;
         }
-        public void BeginTurn(float yaw,int footfalls,float secondsPerStep){
-            Capture();turnOnly=true;steps=footfalls;duration=steps*secondsPerStep;segment=-1;
+        public void BeginExactPair(Func<float,Pose> path){Begin(path,2,.4f);exactSteps=true;duration=.8f;}
+        public void BeginTurn(float yaw,int footfalls,float secondsPerStep,float pelvisLowering=.035f){
+            turnLowering=pelvisLowering;
+            Capture();turnOnly=true;exactSteps=false;steps=footfalls;duration=steps*secondsPerStep;segment=-1;
             var start=actor.rotation;var end=Quaternion.Euler(0,yaw,0);var position=actor.position;
             route=u=>new Pose(position,Quaternion.Slerp(start,end,u));
         }
@@ -71,7 +74,7 @@ namespace TinyDays.Review
         }
         public void Apply(float time)
         {
-            int total=turnOnly?steps:steps+2;
+            int total=turnOnly||exactSteps?steps:steps+2;
             float s=Mathf.Clamp(time/duration*total,0,total-.00001f);
             int index=Mathf.FloorToInt(s);float u=s-index;
             if(segment!=index){
@@ -79,7 +82,7 @@ namespace TinyDays.Review
                 segment=index;swing=index%2;
                 // Land ahead of the moving body so the planted interval spans
                 // either side of the hip, as it does in the normal walk.
-                var p=route(turnOnly?Mathf.Min((index+1f)/(steps-1),1):Travel(Mathf.Min((index+1.5f)/steps,1)));
+                var p=route(exactSteps?1:turnOnly?Mathf.Min((index+1f)/(steps-1),1):Travel(Mathf.Min((index+1.5f)/steps,1)));
                 from=target[swing];fromRotation=rotation[swing];
                 toRotation=p.rotation*restRotation[swing];to=Ground(swing,p.position+p.rotation*rest[swing],toRotation);
             }
@@ -89,14 +92,29 @@ namespace TinyDays.Review
             // Even during yaw, use the actual shoe bottom, not its ankle height.
             var level=Ground(swing,target[swing],rotation[swing]);
             target[swing].y=level.y+.022f*Mathf.Pow(Mathf.Sin(Mathf.PI*u),2);
-            pelvis.position-=Vector3.up*((turnOnly?.035f:.018f)*Ease(time/.25f)*Ease((duration-time)/.25f));
+            pelvis.position-=Vector3.up*((turnOnly?turnLowering:exactSteps?.035f:.018f)*Ease(time/.25f)*Ease((duration-time)/.25f));
             Solve();
         }
         public void Hold(){Planted[0]=Planted[1]=true;Solve();}
+        // Bench-only airborne feet: preserve ground targets and the authored leg length.
+        public void HoldLift(float height){
+            for(int i=0;i<2;i++){target[i].y+=height;Planted[i]=height<.0001f;}
+            Solve();
+            for(int i=0;i<2;i++)target[i].y-=height;
+        }
         void Solve(){
             // Match the source's resting shoe clearance to this floor once;
             // do not ask the knee solver to stretch a straight idle leg.
             pelvis.position-=Vector3.up*neutralLowering;
+            if(FitStandingReach&&Planted[0]&&Planted[1]){
+                float drop=0;
+                for(int i=0;i<2;i++){
+                    float length=Vector3.Distance(legs[i].Upper.position,legs[i].Lower.position)+Vector3.Distance(legs[i].Lower.position,legs[i].End.position)-.0002f;
+                    var d=legs[i].Upper.position-target[i];
+                    drop=Mathf.Max(drop,d.y-Mathf.Sqrt(Mathf.Max(.0001f,length*length-d.x*d.x-d.z*d.z)));
+                }
+                pelvis.position-=Vector3.up*drop;
+            }
             for(int i=0;i<2;i++){
                 float length=Vector3.Distance(legs[i].Upper.position,legs[i].Lower.position)+Vector3.Distance(legs[i].Lower.position,legs[i].End.position);
                 float error=Vector3.Distance(legs[i].Upper.position,target[i])-length;

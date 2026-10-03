@@ -1,0 +1,1 @@
+Five imported Head meshes agree within 0.1mm; SleepEyesClosed preserved. Existing asset paths retained. Not OS input or user quality approval.

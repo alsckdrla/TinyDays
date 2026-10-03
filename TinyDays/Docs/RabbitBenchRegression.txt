@@ -1,0 +1,11 @@
+v0.122 bench task checks; automatic, not OS input or quality approval.
+240Hz walking/turning clearance=0.073955m; both airborne soles=0.056100..0.056100m; actual bench solid vertices and seat footprint: PASS
+30fps 1x complete=15.1333s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+60fps 1x complete=15.1333s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+120fps 1x complete=15.1333s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+30fps 0.5x complete=30.2667s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+60fps 0.5x complete=30.2667s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+120fps 0.5x complete=30.2750s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+seated chest vertical width=0.014000m; physical butt/seat gap=0.002509..0.002509
+re-seating through safe route and geometry-derived anchors after bench translation: PASS
+phase movement/repeated requests, cancellation, pause, mode restore: PASS
