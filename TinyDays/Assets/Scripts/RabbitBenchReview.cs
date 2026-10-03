@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using UnityEngine;
 
@@ -27,9 +27,10 @@ namespace TinyDays.Review {
         public string ReachDetail=>support.ReachDetail;
         public int TurnSteps {get;private set;}
         public bool PendingWalk=>pendingWalk;
-        public string Label=>new[]{"서서 대기","벤치로 걷기","감속 · 발 모으기","방향 정리","앉는 중","벤치 휴식","일어나는 중","걷기 재개","두 걸음 착석 준비","보관 소품에서 낮은 뒤걸음"}[(int)State];
+        public string Label=>new[]{"서서 대기","벤치로 걷기","감속 · 발 모으기","방향 정리","앉는 중","벤치 휴식","일어나는 중","걷기 재개","발 디딤 착석 준비","보관 소품에서 낮은 뒤걸음"}[(int)State];
         AdultRabbitFootTransition feet;RabbitHomeFootwork support;
         RabbitWalkingRoute walkingRoute;
+        Vector3? canWaypoint;Vector3 canClearingTarget;Quaternion canClearingRotation;bool canClearPending;
         AdultRabbitSitCoat coat;
         Transform[] bones;Transform pelvis;
         Vector3[] basePositions,fromPositions;
@@ -38,7 +39,7 @@ namespace TinyDays.Review {
         bool fullFlow,pendingWalk,pendingRise,pendingSit,stopRequested,turnToApproach,continuousBreathing;
         float remainder,blendTime;bool seatBlend;double clock;Vector3 destination,recoveryOffset;float recoveryTime=1;
         static float Ease(float x){x=Mathf.Clamp01(x);return x*x*x*(x*(x*6-15)+10);}
-        public void Shutdown(){Active=false;pendingWalk=pendingRise=pendingSit=fullFlow=false;if(coat!=null){coat.Dispose();coat=null;}}
+        public void Shutdown(){canClearPending=false;canWaypoint=null;Active=false;pendingWalk=pendingRise=pendingSit=fullFlow=false;if(coat!=null){coat.Dispose();coat=null;}}
         void OnDisable(){Shutdown();}
         System.Collections.IEnumerator Start(){
             if(!Environment.GetCommandLineArgs().Contains("-benchSmoke"))yield break;
@@ -70,7 +71,7 @@ namespace TinyDays.Review {
             var incomingP=incoming.Select(t=>t.localPosition).ToArray();var incomingQ=incoming.Select(t=>t.localRotation).ToArray();
             var renderers=bench.GetComponentsInChildren<Renderer>();BenchBounds=renderers[0].bounds;foreach(var r in renderers)BenchBounds.Encapsulate(r.bounds);
             seatHeight=BenchBounds.max.y-home.groundHeight;var center=BenchBounds.center;center.y=home.groundHeight;
-            seatedYaw=bench.eulerAngles.y;approach=center+bench.forward*(BenchBounds.extents.z+.34f);
+            seatedYaw=bench.eulerAngles.y;approach=center+bench.forward*(BenchBounds.extents.z+.44f);
             SeatPreparation=center+bench.forward*(BenchBounds.extents.z+.14f);
             start=approach+bench.right*1.7f;
             Shutdown();home.SuspendPose();Active=true;home.resident.GetComponent<Animator>().enabled=false;
@@ -106,23 +107,74 @@ namespace TinyDays.Review {
         public void StartFlow(){if(!Active||State!=TaskState.Standing)return;fullFlow=true;RequestSit(true);}
         public void StartConnectedFlow(Transform storedCan){
             if(!Active||State!=TaskState.Standing)return;
-            fullFlow=true;pendingSit=true;
+            fullFlow=true;pendingSit=true;var benchCenter=BenchBounds.center;benchCenter.y=home.groundHeight;approach=benchCenter+bench.forward*(BenchBounds.extents.z+.44f);
             var origin=home.resident.transform.position;var rotation=home.resident.transform.rotation;
             var away=origin-storedCan.position;away.y=0;away.Normalize();
             var bounds=storedCan.GetComponentsInChildren<Renderer>().Where(r=>r.enabled).Select(r=>r.bounds).ToArray();
             float canExtent=bounds.SelectMany(box=>new[]{box.min,box.max,new Vector3(box.min.x,0,box.max.z),new Vector3(box.max.x,0,box.min.z)}).Max(p=>Vector3.Dot(p-storedCan.position,away));
-            float shoeReach=home.resident.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.name=="Shoes").SelectMany(AdultRabbitSitCoat.World).Max(p=>Vector3.Dot(origin-p,away));
+            float shoeReach=home.resident.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.name=="Shoes").SelectMany(AdultRabbitSitCoat.World).Max(p=>new Vector2(p.x-origin.x,p.z-origin.z).magnitude)+.07f;
             float current=Vector3.Dot(origin-storedCan.position,away);
-            // Clearance includes swing toes during the coming yaw, not just standing shoes.
             float retreat=Mathf.Max(0,canExtent+Mathf.Max(.24f,shoeReach)+.07f-current);
-            if(retreat<.01f){RequestSit(true);return;}
-            var target=origin+away*retreat;support.Capture();support.BeginExactPair(u=>new Pose(Vector3.Lerp(origin,target,u),rotation));Begin(TaskState.ClearingCan);
+            var canBounds=new Bounds(storedCan.position,Vector3.zero);foreach(var box in bounds)canBounds.Encapsulate(box);
+            // A short lifting step must itself clear the can, not merely its root path.
+            var shoeVertices=home.resident.GetComponentsInChildren<SkinnedMeshRenderer>().Where(s=>s.name=="Shoes").SelectMany(AdultRabbitSitCoat.World).ToArray();
+            foreach(var filter in storedCan.GetComponentsInChildren<MeshFilter>()){
+                if(!filter.sharedMesh||!filter.sharedMesh.isReadable)continue;
+                var meshBounds=new Bounds(filter.transform.TransformPoint(filter.sharedMesh.vertices[0]),Vector3.zero);foreach(var v in filter.sharedMesh.vertices)meshBounds.Encapsulate(filter.transform.TransformPoint(v));
+                for(int k=0;k<=16;k++){float u=k/16f;var shift=away*.09f*Ease(u)+Vector3.up*(.022f*Mathf.Pow(Mathf.Sin(Mathf.PI*u),2));
+                    if(shoeVertices.Any(v=>meshBounds.Contains(v+shift))){Debug.Log("BENCH_PATH_HELD shoe lift near can");pendingSit=false;fullFlow=false;return;}
+                }
+            }
+            bool clear=false;Vector3 target=origin;string blocked="can route";
+            canWaypoint=storedCan.position+Vector3.back*(canBounds.extents.z+shoeReach+.35f);
+            canWaypoint=new Vector3(canWaypoint.Value.x,origin.y,canWaypoint.Value.z);
+            for(int attempt=0;attempt<21&&!clear;attempt++,retreat+=.1f){
+                target=origin+away*retreat;
+                // Evaluate the actual curved departure, including its first forward handle.
+                var probe=new GameObject("Temporary bench path probe");
+                try{
+                    probe.transform.SetPositionAndRotation(target,rotation);
+                    var d=canWaypoint.Value-target;var route=new RabbitWalkingRoute(probe.transform,canWaypoint.Value,Mathf.Atan2(d.x,d.z)*Mathf.Rad2Deg);
+                    clear=true;
+                    for(int i=0;i<=64&&clear;i++){
+                        var p=route.At(route.Length*i/64).position;
+                        var closest=canBounds.ClosestPoint(new Vector3(p.x,canBounds.center.y,p.z));
+                        clear=Vector2.Distance(new Vector2(p.x,p.z),new Vector2(closest.x,closest.z))>shoeReach+.07f;
+                        var beside=BenchBounds.ClosestPoint(new Vector3(p.x,BenchBounds.center.y,p.z));var clearing=Vector3.Lerp(origin,target,i/64f);var clearingBeside=BenchBounds.ClosestPoint(new Vector3(clearing.x,BenchBounds.center.y,clearing.z));
+                        clear&=Vector2.Distance(new Vector2(p.x,p.z),new Vector2(beside.x,beside.z))>shoeReach+.05f&&Vector2.Distance(new Vector2(clearing.x,clearing.z),new Vector2(clearingBeside.x,clearingBeside.z))>shoeReach+.05f;
+                    }
+                    // Keep the outward clearing steps and initial route away from wall/props.
+                    foreach(var filter in home.GetComponentsInChildren<MeshFilter>()){
+                        if(!clear||filter.transform.IsChildOf(home.resident.transform)||filter.transform.IsChildOf(storedCan)||filter.transform.IsChildOf(bench)||!filter.sharedMesh||!filter.sharedMesh.isReadable)continue;
+                        var vertices=filter.sharedMesh.vertices;var triangles=filter.sharedMesh.triangles;
+                        for(int j=0;j<triangles.Length&&clear;j+=3){
+                            var box=new Bounds(filter.transform.TransformPoint(vertices[triangles[j]]),Vector3.zero);box.Encapsulate(filter.transform.TransformPoint(vertices[triangles[j+1]]));box.Encapsulate(filter.transform.TransformPoint(vertices[triangles[j+2]]));
+                            if((new[]{"Soil","Stone","Pink","Grass","Green"}.Contains(filter.name)||filter.name.StartsWith("Flower",StringComparison.Ordinal)||filter.name.StartsWith("Leaf",StringComparison.Ordinal))||box.max.y<=home.groundHeight+.20f||box.min.y>=home.groundHeight+1.5f)continue;
+                            for(int k=1;k<=16&&clear;k++){
+                                var p=Vector3.Lerp(origin,target,k/16f);var q=box.ClosestPoint(new Vector3(p.x,box.center.y,p.z));
+                                clear=Vector2.Distance(new Vector2(p.x,p.z),new Vector2(q.x,q.z))>.27f;
+                                if(!clear)blocked=filter.name;
+                                if(clear){var rp=route.At(route.Length*k/16f).position;var rq=box.ClosestPoint(new Vector3(rp.x,box.center.y,rp.z));clear=Vector2.Distance(new Vector2(rp.x,rp.z),new Vector2(rq.x,rq.z))>.27f;if(!clear)blocked=filter.name+" route";}
+                            }
+                        }
+                    }
+                }finally{if(Application.isPlaying)Destroy(probe);else DestroyImmediate(probe);}
+            }
+            if(!clear){Debug.Log("BENCH_PATH_HELD "+blocked+" origin="+origin+" target="+target+" shoe="+shoeReach+" can="+canBounds);pendingSit=false;fullFlow=false;return;} // Remain standing, without clipping through an obstacle.
+            float travel=Vector3.Distance(origin,target);
+            if(travel<.01f){RequestSit(true);return;}
+            canClearPending=true;canClearingTarget=target;canClearingRotation=rotation;BeginCanClearingStep();
+        }
+        void BeginCanClearingStep(){
+            var origin=home.resident.transform.position;
+            var target=Vector3.MoveTowards(origin,canClearingTarget,.09f);
+            support.ExactStepLowering=0;support.Capture();support.BeginExactPair(u=>new Pose(Vector3.Lerp(origin,target,u),canClearingRotation));Begin(TaskState.ClearingCan);
         }
         public void ResumeFlow(bool departure=false){
             if(!Active)return;
             fullFlow=true;
             if(State==TaskState.Resting)return; // Preserve elapsed seated breath/rest.
-            if(State==TaskState.Standing){if(departure){pendingWalk=true;Depart();}else RequestSit(true);}
+            if(State==TaskState.Standing){if(departure){pendingWalk=true;Depart();}else if(canClearPending){pendingSit=true;BeginCanClearingStep();}else RequestSit(true);}
         }
         // Parent routine supplies already scaled 240Hz time; never scale twice.
         public void AdvanceFlow(float dt){if(Active)Tick(dt);}
@@ -135,15 +187,16 @@ namespace TinyDays.Review {
             pendingSit=true;
             if(Vector3.Distance(home.resident.transform.position,approach)>.35f){
                 var delta=approach-home.resident.transform.position;float yaw=Mathf.Atan2(delta.x,delta.z)*Mathf.Rad2Deg;
-                BeginWalk(approach,TaskState.Walking);
+                BeginWalk(canWaypoint??approach,TaskState.Walking);
             }else BeginTurn();
         }
         void BeginWalk(Vector3 target,TaskState state){
             CaptureBlend(.2f);destination=target;
             var delta=target-home.resident.transform.position;
             float arrival=state==TaskState.Walking?Mathf.Atan2(delta.x,delta.z)*Mathf.Rad2Deg:home.resident.transform.eulerAngles.y;
-            walkingRoute=new RabbitWalkingRoute(home.resident.transform,target,arrival);
-            feet=new AdultRabbitFootTransition(home.resident,home.groundHeight){SmoothStopBalance=true,FollowWalkingHeading=true};
+            if(state==TaskState.Walking&&!canWaypoint.HasValue){var tangent=bench.right*(Vector3.Dot(delta,bench.right)>=0?1:-1);arrival=Mathf.Atan2(tangent.x,tangent.z)*Mathf.Rad2Deg;}
+            walkingRoute=new RabbitWalkingRoute(home.resident.transform,target,arrival,state==TaskState.Walking&&!canWaypoint.HasValue);
+            feet=new AdultRabbitFootTransition(home.resident,home.groundHeight){SmoothStopBalance=true,FollowWalkingHeading=true};feet.ConfigureWalkingReference(home.walkClip);
             feet.WalkingPoseAhead=distance=>walkingRoute.Predict(distance,feet.Speed>.1f?feet.Speed:.6f);
             feet.WalkingSpeedScale=walkingRoute.SpeedScale;
             feet.WalkingGoal=walkingRoute.Goal;
@@ -156,8 +209,8 @@ namespace TinyDays.Review {
             support.Capture();TurnSteps=delta<=90.1f?2:3;support.BeginTurn(targetYaw,TurnSteps,.4f,.04f);Begin(TaskState.Turning);
         }
         void BeginBackstep(){
-            support.Capture();var origin=home.resident.transform.position;var rotation=home.resident.transform.rotation;
-            support.BeginExactPair(u=>new Pose(Vector3.Lerp(origin,SeatPreparation,u),rotation));Begin(TaskState.Backstepping);
+            support.ExactStepLowering=.035f;support.Capture();var origin=home.resident.transform.position;var rotation=home.resident.transform.rotation;
+            var next=Vector3.MoveTowards(origin,SeatPreparation,.09f);support.BeginExactPair(u=>new Pose(Vector3.Lerp(origin,next,u),rotation));Begin(TaskState.Backstepping);
         }
         void BeginSit(){pendingSit=false;support.Capture();CaptureBlend(.2f,true);Begin(TaskState.Sitting);}
         public void RequestRise(){
@@ -194,17 +247,17 @@ namespace TinyDays.Review {
                 if(feet.State==AdultRabbitFootTransition.Stage.Closing||feet.State==AdultRabbitFootTransition.Stage.Settling)walkingRoute?.StopTurning();
                 if(stopRequested&&feet.State==AdultRabbitFootTransition.Stage.Idle){
                     recoveryOffset=pelvis.position-source+Vector3.up*support.RestingPelvisDrop;recoveryTime=0;support.Capture();
-                    if(approaching&&pendingSit){BeginTurn();}else{Begin(TaskState.Standing);if(pendingWalk)Depart();else if(pendingSit)RequestSit();}
+                    if(approaching&&pendingSit){if(canWaypoint.HasValue){canWaypoint=null;BeginWalk(approach,TaskState.Walking);}else BeginTurn();}else{Begin(TaskState.Standing);if(pendingWalk)Depart();else if(pendingSit)RequestSit();}
                 }
             }else if(State==TaskState.Turning){
                 support.PlaceRoot(TimeInState);Sample(home.walkClip,TimeInState%.8f);Blend();support.Apply(TimeInState);
                 if(TimeInState>=support.Duration){support.Capture();if(pendingWalk)Depart();else if(pendingSit){if(turnToApproach)BeginWalk(approach,TaskState.Walking);else BeginBackstep();}else{CaptureBlend(.2f);Begin(TaskState.Standing);}}
             }else if(State==TaskState.Backstepping){
                 support.PlaceRoot(TimeInState);Sample(home.walkClip,(.8f-TimeInState%.8f)%.8f);support.Apply(TimeInState);
-                if(TimeInState>=support.Duration){support.Capture();if(pendingWalk)Depart();else if(pendingSit)BeginSit();else Begin(TaskState.Standing);}
+                if(TimeInState>=support.Duration){support.Capture();if(pendingWalk)Depart();else if(pendingSit){if(Vector3.Distance(home.resident.transform.position,SeatPreparation)>.001f)BeginBackstep();else BeginSit();}else Begin(TaskState.Standing);}
             }else if(State==TaskState.ClearingCan){
                 support.PlaceRoot(TimeInState);Sample(home.idleClip,(float)(clock%home.idleClip.length));Blend();support.Apply(TimeInState);
-                if(TimeInState>=support.Duration){support.Capture();Begin(TaskState.Standing);if(fullFlow&&pendingSit)RequestSit(true);}
+                if(TimeInState>=support.Duration){support.Capture();if(fullFlow&&pendingSit&&Vector3.Distance(home.resident.transform.position,canClearingTarget)>.001f)BeginCanClearingStep();else{if(Vector3.Distance(home.resident.transform.position,canClearingTarget)<=.001f)canClearPending=false;Begin(TaskState.Standing);if(fullFlow&&pendingSit)RequestSit(true);}}
             }else if(State==TaskState.Sitting){
                 Sample(sitClip,Mathf.Min(TimeInState,1.8f));Blend();support.HoldLift(.0536f*Ease((TimeInState-1.45f)/.35f));
                 if(TimeInState>=1.8f){Begin(TaskState.Resting);if(continuousBreathing)CaptureBlend(.25f,true);if(pendingWalk||pendingRise){CaptureBlend(.25f,true);pendingRise=false;Begin(TaskState.Rising);}}
@@ -225,7 +278,7 @@ namespace TinyDays.Review {
             }
         }
         public void Pose(int action,int index){
-            ResetTask();home.resident.transform.SetPositionAndRotation(SeatPreparation,Quaternion.Euler(0,seatedYaw,0));Sample(home.idleClip,0);support=new RabbitHomeFootwork(home.resident,home.groundHeight);support.Hold();support.Capture();
+            ResetTask();home.resident.transform.SetPositionAndRotation(SeatPreparation,Quaternion.Euler(0,seatedYaw,0));Sample(home.idleClip,0);support=new RabbitHomeFootwork(home.resident,home.groundHeight){FitStandingReach=true};support.Hold();support.Capture();
             var clip=action==0?sitClip:action==1?breatheClip:standClip;TimeInState=clip.length*index/7f;Sample(clip,TimeInState);support.HoldLift(.0536f*(action==1?1:action==0?Ease((TimeInState-1.45f)/.35f):1-Ease(TimeInState/.35f)));
             State=action==0?TaskState.Sitting:action==1?TaskState.Resting:TaskState.Rising;home.paused=true;fromPositions=null;
             // Explicit pose preview establishes a new contact frame; it is not a walking frame.

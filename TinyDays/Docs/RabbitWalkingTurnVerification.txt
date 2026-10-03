@@ -1,161 +1,161 @@
-v0.129 natural moving turn; automatic evaluated poses, not OS input or quality approval
-carry=False yaw=-30 fps=240 slow=False duration=2.5083 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-30 fps=240 slow=True duration=5.0167 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=2.2998 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-30 fps=30 slow=False duration=2.5333 drift=0.000001 sole=0.002399 yawSpeed=57.014 minMovingSpeed=1.1500 extraDrop=0.008000 extraBend=9.053
-carry=False yaw=-30 fps=30 slow=True duration=5.0333 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-30 fps=60 slow=False duration=2.5167 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-30 fps=60 slow=True duration=5.0167 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-30 fps=120 slow=False duration=2.5083 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-30 fps=120 slow=True duration=5.0167 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=30 fps=240 slow=False duration=2.5250 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.007764 extraBend=9.233
-carry=False yaw=30 fps=240 slow=True duration=5.0500 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=2.2998 extraDrop=0.007764 extraBend=9.233
-carry=False yaw=30 fps=30 slow=False duration=2.5333 drift=0.000001 sole=0.002399 yawSpeed=57.014 minMovingSpeed=1.1500 extraDrop=0.007531 extraBend=9.053
-carry=False yaw=30 fps=30 slow=True duration=5.0667 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.007531 extraBend=9.053
-carry=False yaw=30 fps=60 slow=False duration=2.5333 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.007531 extraBend=9.053
-carry=False yaw=30 fps=60 slow=True duration=5.0500 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.007762 extraBend=9.053
-carry=False yaw=30 fps=120 slow=False duration=2.5250 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.007762 extraBend=9.053
-carry=False yaw=30 fps=120 slow=True duration=5.0500 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.007764 extraBend=9.233
-carry=False yaw=-60 fps=240 slow=False duration=2.5958 drift=0.000001 sole=0.002399 yawSpeed=111.709 minMovingSpeed=1.1043 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=240 slow=True duration=5.1917 drift=0.000001 sole=0.002399 yawSpeed=111.709 minMovingSpeed=2.2087 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=30 slow=False duration=2.6000 drift=0.000001 sole=0.002399 yawSpeed=111.329 minMovingSpeed=1.1125 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=30 slow=True duration=5.2000 drift=0.000001 sole=0.002399 yawSpeed=111.588 minMovingSpeed=1.1074 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=60 slow=False duration=2.6000 drift=0.000001 sole=0.002399 yawSpeed=111.588 minMovingSpeed=1.1074 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=60 slow=True duration=5.2000 drift=0.000001 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=120 slow=False duration=2.6000 drift=0.000001 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-60 fps=120 slow=True duration=5.1917 drift=0.000001 sole=0.002399 yawSpeed=111.709 minMovingSpeed=1.1043 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=240 slow=False duration=2.6167 drift=0.000001 sole=0.002399 yawSpeed=111.706 minMovingSpeed=1.1043 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=240 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.706 minMovingSpeed=2.2087 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=30 slow=False duration=2.6333 drift=0.000001 sole=0.002399 yawSpeed=111.329 minMovingSpeed=1.1125 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=30 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.589 minMovingSpeed=1.1074 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=60 slow=False duration=2.6167 drift=0.000001 sole=0.002399 yawSpeed=111.589 minMovingSpeed=1.1074 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=60 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=120 slow=False duration=2.6167 drift=0.000001 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=60 fps=120 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.706 minMovingSpeed=1.1043 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=240 slow=False duration=2.7125 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.8836 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=240 slow=True duration=5.4250 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=1.7672 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=30 slow=False duration=2.7333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8997 extraDrop=0.005949 extraBend=9.053
-carry=False yaw=-90 fps=30 slow=True duration=5.4333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8904 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=60 slow=False duration=2.7167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8904 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=60 slow=True duration=5.4333 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.8858 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=120 slow=False duration=2.7167 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.8858 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-90 fps=120 slow=True duration=5.4250 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.8836 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=90 fps=240 slow=False duration=2.6750 drift=0.000001 sole=0.002399 yawSpeed=146.700 minMovingSpeed=0.8836 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=90 fps=240 slow=True duration=5.3500 drift=0.000001 sole=0.002399 yawSpeed=146.700 minMovingSpeed=1.7672 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=90 fps=30 slow=False duration=2.7000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8997 extraDrop=0.008001 extraBend=9.558
-carry=False yaw=90 fps=30 slow=True duration=5.3667 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8904 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=90 fps=60 slow=False duration=2.6833 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8904 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=90 fps=60 slow=True duration=5.3500 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8858 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=90 fps=120 slow=False duration=2.6750 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8858 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=90 fps=120 slow=True duration=5.3500 drift=0.000001 sole=0.002399 yawSpeed=146.700 minMovingSpeed=0.8836 extraDrop=0.008001 extraBend=10.042
-carry=False yaw=-135 fps=240 slow=False duration=3.1167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6184 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=240 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=1.2367 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=30 slow=False duration=3.1333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6328 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=30 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6246 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=60 slow=False duration=3.1167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6246 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=60 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6196 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=120 slow=False duration=3.1167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6196 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-135 fps=120 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6184 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=135 fps=240 slow=False duration=3.3917 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3449 extraDrop=0.008001 extraBend=9.563
-carry=False yaw=135 fps=240 slow=True duration=6.7833 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.6898 extraDrop=0.008001 extraBend=9.563
-carry=False yaw=135 fps=30 slow=False duration=3.4000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3449 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=135 fps=30 slow=True duration=6.8000 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008001 extraBend=9.108
-carry=False yaw=135 fps=60 slow=False duration=3.4000 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008001 extraBend=9.108
-carry=False yaw=135 fps=60 slow=True duration=6.7833 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008001 extraBend=9.436
-carry=False yaw=135 fps=120 slow=False duration=3.3917 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008001 extraBend=9.436
-carry=False yaw=135 fps=120 slow=True duration=6.7833 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3449 extraDrop=0.008001 extraBend=9.563
-carry=False yaw=-180 fps=240 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.3449 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=240 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.6897 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=30 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3444 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=30 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3447 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=60 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3447 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=60 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3448 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=120 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3448 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=-180 fps=120 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.3449 extraDrop=0.008001 extraBend=9.053
-carry=False yaw=180 fps=240 slow=False duration=3.4750 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3449 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=240 slow=True duration=6.9500 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.6897 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=30 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3444 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=30 slow=True duration=6.9667 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3447 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=60 slow=False duration=3.4833 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3447 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=60 slow=True duration=6.9500 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=120 slow=False duration=3.4750 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=9.053
-carry=False yaw=180 fps=120 slow=True duration=6.9500 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3449 extraDrop=0.006068 extraBend=9.053
-carry=True yaw=-30 fps=240 slow=False duration=2.5083 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.008001 extraBend=9.053
-carry=True yaw=-30 fps=240 slow=True duration=5.0167 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=2.2998 extraDrop=0.008001 extraBend=9.053
-carry=True yaw=-30 fps=30 slow=False duration=2.5333 drift=0.000001 sole=0.002399 yawSpeed=57.014 minMovingSpeed=1.1500 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-30 fps=30 slow=True duration=5.0333 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-30 fps=60 slow=False duration=2.5167 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-30 fps=60 slow=True duration=5.0167 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-30 fps=120 slow=False duration=2.5083 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-30 fps=120 slow=True duration=5.0167 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.008001 extraBend=9.053
-carry=True yaw=30 fps=240 slow=False duration=2.5250 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.007764 extraBend=9.233
-carry=True yaw=30 fps=240 slow=True duration=5.0500 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=2.2998 extraDrop=0.007764 extraBend=9.233
-carry=True yaw=30 fps=30 slow=False duration=2.5333 drift=0.000001 sole=0.002399 yawSpeed=57.014 minMovingSpeed=1.1500 extraDrop=0.007531 extraBend=9.053
-carry=True yaw=30 fps=30 slow=True duration=5.0667 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.007531 extraBend=9.053
-carry=True yaw=30 fps=60 slow=False duration=2.5333 drift=0.000001 sole=0.002399 yawSpeed=61.358 minMovingSpeed=1.1500 extraDrop=0.007531 extraBend=9.053
-carry=True yaw=30 fps=60 slow=True duration=5.0500 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.007762 extraBend=9.053
-carry=True yaw=30 fps=120 slow=False duration=2.5250 drift=0.000001 sole=0.002399 yawSpeed=61.600 minMovingSpeed=1.1499 extraDrop=0.007762 extraBend=9.053
-carry=True yaw=30 fps=120 slow=True duration=5.0500 drift=0.000001 sole=0.002399 yawSpeed=61.874 minMovingSpeed=1.1499 extraDrop=0.007764 extraBend=9.233
-carry=True yaw=-60 fps=240 slow=False duration=2.5958 drift=0.000000 sole=0.002399 yawSpeed=111.709 minMovingSpeed=1.1043 extraDrop=0.008001 extraBend=9.053
-carry=True yaw=-60 fps=240 slow=True duration=5.1917 drift=0.000000 sole=0.002399 yawSpeed=111.709 minMovingSpeed=2.2087 extraDrop=0.008001 extraBend=9.053
-carry=True yaw=-60 fps=30 slow=False duration=2.6000 drift=0.000000 sole=0.002399 yawSpeed=111.329 minMovingSpeed=1.1125 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-60 fps=30 slow=True duration=5.2000 drift=0.000000 sole=0.002399 yawSpeed=111.588 minMovingSpeed=1.1074 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-60 fps=60 slow=False duration=2.6000 drift=0.000000 sole=0.002399 yawSpeed=111.588 minMovingSpeed=1.1074 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-60 fps=60 slow=True duration=5.2000 drift=0.000000 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-60 fps=120 slow=False duration=2.6000 drift=0.000000 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-60 fps=120 slow=True duration=5.1917 drift=0.000000 sole=0.002399 yawSpeed=111.709 minMovingSpeed=1.1043 extraDrop=0.008001 extraBend=9.053
-carry=True yaw=60 fps=240 slow=False duration=2.6167 drift=0.000001 sole=0.002399 yawSpeed=111.706 minMovingSpeed=1.1043 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=240 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.706 minMovingSpeed=2.2087 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=30 slow=False duration=2.6333 drift=0.000001 sole=0.002399 yawSpeed=111.329 minMovingSpeed=1.1125 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=30 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.589 minMovingSpeed=1.1074 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=60 slow=False duration=2.6167 drift=0.000001 sole=0.002399 yawSpeed=111.589 minMovingSpeed=1.1074 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=60 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=120 slow=False duration=2.6167 drift=0.000001 sole=0.002399 yawSpeed=111.676 minMovingSpeed=1.1058 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=60 fps=120 slow=True duration=5.2333 drift=0.000001 sole=0.002399 yawSpeed=111.706 minMovingSpeed=1.1043 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=240 slow=False duration=2.7125 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.8836 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=240 slow=True duration=5.4250 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=1.7672 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=30 slow=False duration=2.7333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8997 extraDrop=0.005948 extraBend=9.053
-carry=True yaw=-90 fps=30 slow=True duration=5.4333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8904 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=60 slow=False duration=2.7167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8904 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=60 slow=True duration=5.4333 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.8858 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=120 slow=False duration=2.7167 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.8858 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-90 fps=120 slow=True duration=5.4250 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.8836 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=90 fps=240 slow=False duration=2.6750 drift=0.000001 sole=0.002399 yawSpeed=146.700 minMovingSpeed=0.8836 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=90 fps=240 slow=True duration=5.3500 drift=0.000001 sole=0.002399 yawSpeed=146.700 minMovingSpeed=1.7672 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=90 fps=30 slow=False duration=2.7000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.8997 extraDrop=0.008000 extraBend=9.558
-carry=True yaw=90 fps=30 slow=True duration=5.3667 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8904 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=90 fps=60 slow=False duration=2.6833 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8904 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=90 fps=60 slow=True duration=5.3500 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8858 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=90 fps=120 slow=False duration=2.6750 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.8858 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=90 fps=120 slow=True duration=5.3500 drift=0.000001 sole=0.002399 yawSpeed=146.700 minMovingSpeed=0.8836 extraDrop=0.008000 extraBend=10.042
-carry=True yaw=-135 fps=240 slow=False duration=3.1167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6184 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=240 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=1.2367 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=30 slow=False duration=3.1333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6328 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=30 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6246 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=60 slow=False duration=3.1167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6246 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=60 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6196 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=120 slow=False duration=3.1167 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6196 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-135 fps=120 slow=True duration=6.2333 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.6184 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=135 fps=240 slow=False duration=3.3917 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3449 extraDrop=0.008000 extraBend=9.562
-carry=True yaw=135 fps=240 slow=True duration=6.7833 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.6898 extraDrop=0.008000 extraBend=9.562
-carry=True yaw=135 fps=30 slow=False duration=3.4000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3449 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=135 fps=30 slow=True duration=6.8000 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008000 extraBend=9.107
-carry=True yaw=135 fps=60 slow=False duration=3.4000 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008000 extraBend=9.107
-carry=True yaw=135 fps=60 slow=True duration=6.7833 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008000 extraBend=9.435
-carry=True yaw=135 fps=120 slow=False duration=3.3917 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3450 extraDrop=0.008000 extraBend=9.435
-carry=True yaw=135 fps=120 slow=True duration=6.7833 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3449 extraDrop=0.008000 extraBend=9.562
-carry=True yaw=-180 fps=240 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.3449 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=240 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.6897 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=30 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3444 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=30 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3447 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=60 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3447 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=60 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3448 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=120 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.701 minMovingSpeed=0.3448 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=-180 fps=120 slow=True duration=7.0000 drift=0.000001 sole=0.002399 yawSpeed=146.704 minMovingSpeed=0.3449 extraDrop=0.008000 extraBend=9.053
-carry=True yaw=180 fps=240 slow=False duration=3.4750 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3449 extraDrop=0.006068 extraBend=9.053
-carry=True yaw=180 fps=240 slow=True duration=6.9500 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.6897 extraDrop=0.006068 extraBend=9.053
-carry=True yaw=180 fps=30 slow=False duration=3.5000 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3444 extraDrop=0.006067 extraBend=9.053
-carry=True yaw=180 fps=30 slow=True duration=6.9667 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=9.053
-carry=True yaw=180 fps=60 slow=False duration=3.4833 drift=0.000001 sole=0.002399 yawSpeed=146.697 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=9.053
-carry=True yaw=180 fps=60 slow=True duration=6.9500 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3448 extraDrop=0.006067 extraBend=9.053
-carry=True yaw=180 fps=120 slow=False duration=3.4750 drift=0.000001 sole=0.002399 yawSpeed=146.698 minMovingSpeed=0.3448 extraDrop=0.006067 extraBend=9.053
-carry=True yaw=180 fps=120 slow=True duration=6.9500 drift=0.000001 sole=0.002399 yawSpeed=146.699 minMovingSpeed=0.3449 extraDrop=0.006068 extraBend=9.053
+v0.131 natural moving turn; automatic evaluated poses, not OS input or quality approval
+carry=False yaw=-30 fps=240 slow=False duration=3.2375 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006067 extraBend=3.304 max240HzCorrectionStep=0.0016853
+carry=False yaw=-30 fps=240 slow=True duration=6.4750 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=1.7242 extraDrop=0.006067 extraBend=3.304 max240HzCorrectionStep=0.0016853
+carry=False yaw=-30 fps=30 slow=False duration=3.2667 drift=0.000001 sole=0.002399 yawSpeed=59.954 minMovingSpeed=1.0648 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-30 fps=30 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-30 fps=60 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-30 fps=60 slow=True duration=6.4833 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-30 fps=120 slow=False duration=3.2417 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-30 fps=120 slow=True duration=6.4750 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006067 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=30 fps=240 slow=False duration=3.2167 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0017099
+carry=False yaw=30 fps=240 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=1.7242 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0017099
+carry=False yaw=30 fps=30 slow=False duration=3.2333 drift=0.000001 sole=0.002399 yawSpeed=59.964 minMovingSpeed=1.0648 extraDrop=0.006060 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=30 fps=30 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=30 fps=60 slow=False duration=3.2167 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=30 fps=60 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=30 fps=120 slow=False duration=3.2167 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=30 fps=120 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006065 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-60 fps=240 slow=False duration=3.1833 drift=0.000001 sole=0.002399 yawSpeed=93.158 minMovingSpeed=0.8621 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0018229
+carry=False yaw=-60 fps=240 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=93.158 minMovingSpeed=1.7241 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0018229
+carry=False yaw=-60 fps=30 slow=False duration=3.2000 drift=0.000001 sole=0.002399 yawSpeed=91.238 minMovingSpeed=1.0423 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-60 fps=30 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=92.457 minMovingSpeed=1.0059 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-60 fps=60 slow=False duration=3.1833 drift=0.000001 sole=0.002399 yawSpeed=92.457 minMovingSpeed=1.0059 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-60 fps=60 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=92.766 minMovingSpeed=0.9100 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-60 fps=120 slow=False duration=3.1833 drift=0.000001 sole=0.002399 yawSpeed=92.766 minMovingSpeed=0.9100 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-60 fps=120 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=93.158 minMovingSpeed=0.8621 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=60 fps=240 slow=False duration=3.1625 drift=0.000001 sole=0.002399 yawSpeed=93.165 minMovingSpeed=0.8621 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0019798
+carry=False yaw=60 fps=240 slow=True duration=6.3250 drift=0.000001 sole=0.002399 yawSpeed=93.165 minMovingSpeed=1.7241 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0019798
+carry=False yaw=60 fps=30 slow=False duration=3.1667 drift=0.000001 sole=0.002399 yawSpeed=91.238 minMovingSpeed=1.0423 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=60 fps=30 slow=True duration=6.3333 drift=0.000001 sole=0.002399 yawSpeed=92.488 minMovingSpeed=1.0059 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=60 fps=60 slow=False duration=3.1667 drift=0.000001 sole=0.002399 yawSpeed=92.488 minMovingSpeed=1.0059 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=60 fps=60 slow=True duration=6.3333 drift=0.000001 sole=0.002399 yawSpeed=92.770 minMovingSpeed=0.9100 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=60 fps=120 slow=False duration=3.1667 drift=0.000001 sole=0.002399 yawSpeed=92.770 minMovingSpeed=0.9100 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=60 fps=120 slow=True duration=6.3250 drift=0.000001 sole=0.002399 yawSpeed=93.165 minMovingSpeed=0.8621 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=-90 fps=240 slow=False duration=3.2250 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.7763 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0016814
+carry=False yaw=-90 fps=240 slow=True duration=6.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=1.5527 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0016814
+carry=False yaw=-90 fps=30 slow=False duration=3.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7838 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-90 fps=30 slow=True duration=6.4667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-90 fps=60 slow=False duration=3.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-90 fps=60 slow=True duration=6.4500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7772 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-90 fps=120 slow=False duration=3.2250 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7772 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-90 fps=120 slow=True duration=6.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.7763 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=90 fps=240 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7763 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0019799
+carry=False yaw=90 fps=240 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=1.5527 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0019799
+carry=False yaw=90 fps=30 slow=False duration=3.2667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7838 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=90 fps=30 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=90 fps=60 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=90 fps=60 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7772 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=90 fps=120 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7772 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=90 fps=120 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7763 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=-135 fps=240 slow=False duration=3.9583 drift=0.000001 sole=0.002399 yawSpeed=97.808 minMovingSpeed=0.5054 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0016665
+carry=False yaw=-135 fps=240 slow=True duration=7.9167 drift=0.000001 sole=0.002399 yawSpeed=97.808 minMovingSpeed=1.0108 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0016665
+carry=False yaw=-135 fps=30 slow=False duration=3.9667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.5196 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-135 fps=30 slow=True duration=7.9333 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5117 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-135 fps=60 slow=False duration=3.9667 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5117 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-135 fps=60 slow=True duration=7.9167 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5079 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-135 fps=120 slow=False duration=3.9583 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5079 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-135 fps=120 slow=True duration=7.9167 drift=0.000001 sole=0.002399 yawSpeed=97.808 minMovingSpeed=0.5054 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=135 fps=240 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3447 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0019788
+carry=False yaw=135 fps=240 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.6895 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0019788
+carry=False yaw=135 fps=30 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3445 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=135 fps=30 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=135 fps=60 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=135 fps=60 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=135 fps=120 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=135 fps=120 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3447 extraDrop=0.006068 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=-180 fps=240 slow=False duration=4.2250 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=6.709 max240HzCorrectionStep=0.0019786
+carry=False yaw=-180 fps=240 slow=True duration=8.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.6896 extraDrop=0.006068 extraBend=6.709 max240HzCorrectionStep=0.0019786
+carry=False yaw=-180 fps=30 slow=False duration=4.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3440 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=False yaw=-180 fps=30 slow=True duration=8.4667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=4.078 max240HzCorrectionStep=0.0000000
+carry=False yaw=-180 fps=60 slow=False duration=4.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=4.078 max240HzCorrectionStep=0.0000000
+carry=False yaw=-180 fps=60 slow=True duration=8.4500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.078 max240HzCorrectionStep=0.0000000
+carry=False yaw=-180 fps=120 slow=False duration=4.2250 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.078 max240HzCorrectionStep=0.0000000
+carry=False yaw=-180 fps=120 slow=True duration=8.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=6.709 max240HzCorrectionStep=0.0000000
+carry=False yaw=180 fps=240 slow=False duration=4.2458 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.637 max240HzCorrectionStep=0.0019788
+carry=False yaw=180 fps=240 slow=True duration=8.4917 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.6896 extraDrop=0.006068 extraBend=4.637 max240HzCorrectionStep=0.0019788
+carry=False yaw=180 fps=30 slow=False duration=4.2667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3440 extraDrop=0.006067 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=180 fps=30 slow=True duration=8.5000 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=180 fps=60 slow=False duration=4.2500 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=3.304 max240HzCorrectionStep=0.0000000
+carry=False yaw=180 fps=60 slow=True duration=8.5000 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.637 max240HzCorrectionStep=0.0000000
+carry=False yaw=180 fps=120 slow=False duration=4.2500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.637 max240HzCorrectionStep=0.0000000
+carry=False yaw=180 fps=120 slow=True duration=8.4917 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.637 max240HzCorrectionStep=0.0000000
+carry=True yaw=-30 fps=240 slow=False duration=3.2375 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0016853
+carry=True yaw=-30 fps=240 slow=True duration=6.4750 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=1.7242 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0016853
+carry=True yaw=-30 fps=30 slow=False duration=3.2667 drift=0.000001 sole=0.002399 yawSpeed=59.954 minMovingSpeed=1.0648 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-30 fps=30 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-30 fps=60 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-30 fps=60 slow=True duration=6.4833 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-30 fps=120 slow=False duration=3.2417 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-30 fps=120 slow=True duration=6.4750 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=30 fps=240 slow=False duration=3.2167 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0017099
+carry=True yaw=30 fps=240 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=1.7242 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0017099
+carry=True yaw=30 fps=30 slow=False duration=3.2333 drift=0.000001 sole=0.002399 yawSpeed=59.964 minMovingSpeed=1.0648 extraDrop=0.006059 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=30 fps=30 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=30 fps=60 slow=False duration=3.2167 drift=0.000001 sole=0.002399 yawSpeed=60.034 minMovingSpeed=1.0059 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=30 fps=60 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=30 fps=120 slow=False duration=3.2167 drift=0.000001 sole=0.002399 yawSpeed=61.779 minMovingSpeed=0.9101 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=30 fps=120 slow=True duration=6.4333 drift=0.000001 sole=0.002399 yawSpeed=62.028 minMovingSpeed=0.8621 extraDrop=0.006064 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-60 fps=240 slow=False duration=3.1833 drift=0.000001 sole=0.002399 yawSpeed=93.158 minMovingSpeed=0.8621 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0018229
+carry=True yaw=-60 fps=240 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=93.158 minMovingSpeed=1.7241 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0018229
+carry=True yaw=-60 fps=30 slow=False duration=3.2000 drift=0.000001 sole=0.002399 yawSpeed=91.238 minMovingSpeed=1.0423 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-60 fps=30 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=92.457 minMovingSpeed=1.0059 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-60 fps=60 slow=False duration=3.1833 drift=0.000001 sole=0.002399 yawSpeed=92.457 minMovingSpeed=1.0059 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-60 fps=60 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=92.766 minMovingSpeed=0.9100 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-60 fps=120 slow=False duration=3.1833 drift=0.000001 sole=0.002399 yawSpeed=92.766 minMovingSpeed=0.9100 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-60 fps=120 slow=True duration=6.3667 drift=0.000001 sole=0.002399 yawSpeed=93.158 minMovingSpeed=0.8621 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=60 fps=240 slow=False duration=3.1625 drift=0.000001 sole=0.002399 yawSpeed=93.165 minMovingSpeed=0.8621 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0019796
+carry=True yaw=60 fps=240 slow=True duration=6.3250 drift=0.000001 sole=0.002399 yawSpeed=93.165 minMovingSpeed=1.7241 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0019796
+carry=True yaw=60 fps=30 slow=False duration=3.1667 drift=0.000001 sole=0.002399 yawSpeed=91.238 minMovingSpeed=1.0423 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=60 fps=30 slow=True duration=6.3333 drift=0.000001 sole=0.002399 yawSpeed=92.488 minMovingSpeed=1.0059 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=60 fps=60 slow=False duration=3.1667 drift=0.000001 sole=0.002399 yawSpeed=92.488 minMovingSpeed=1.0059 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=60 fps=60 slow=True duration=6.3333 drift=0.000001 sole=0.002399 yawSpeed=92.770 minMovingSpeed=0.9100 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=60 fps=120 slow=False duration=3.1667 drift=0.000001 sole=0.002399 yawSpeed=92.770 minMovingSpeed=0.9100 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=60 fps=120 slow=True duration=6.3250 drift=0.000001 sole=0.002399 yawSpeed=93.165 minMovingSpeed=0.8621 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-90 fps=240 slow=False duration=3.2250 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.7763 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0016813
+carry=True yaw=-90 fps=240 slow=True duration=6.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=1.5527 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0016813
+carry=True yaw=-90 fps=30 slow=False duration=3.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7838 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-90 fps=30 slow=True duration=6.4667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-90 fps=60 slow=False duration=3.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-90 fps=60 slow=True duration=6.4500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7772 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-90 fps=120 slow=False duration=3.2250 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7772 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-90 fps=120 slow=True duration=6.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.7763 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=90 fps=240 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7763 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0019796
+carry=True yaw=90 fps=240 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=1.5527 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0019796
+carry=True yaw=90 fps=30 slow=False duration=3.2667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7838 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=90 fps=30 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=90 fps=60 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7790 extraDrop=0.006066 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=90 fps=60 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7772 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=90 fps=120 slow=False duration=3.2500 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.7772 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=90 fps=120 slow=True duration=6.5000 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.7763 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-135 fps=240 slow=False duration=3.9583 drift=0.000001 sole=0.002399 yawSpeed=97.808 minMovingSpeed=0.5054 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0016667
+carry=True yaw=-135 fps=240 slow=True duration=7.9167 drift=0.000001 sole=0.002399 yawSpeed=97.808 minMovingSpeed=1.0108 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0016667
+carry=True yaw=-135 fps=30 slow=False duration=3.9667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.5196 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-135 fps=30 slow=True duration=7.9333 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5117 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-135 fps=60 slow=False duration=3.9667 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5117 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-135 fps=60 slow=True duration=7.9167 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5079 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-135 fps=120 slow=False duration=3.9583 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.5079 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-135 fps=120 slow=True duration=7.9167 drift=0.000001 sole=0.002399 yawSpeed=97.808 minMovingSpeed=0.5054 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=135 fps=240 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3447 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0019789
+carry=True yaw=135 fps=240 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.6895 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0019789
+carry=True yaw=135 fps=30 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3445 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=135 fps=30 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3448 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=135 fps=60 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3448 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=135 fps=60 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=135 fps=120 slow=False duration=4.3333 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=135 fps=120 slow=True duration=8.6667 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3447 extraDrop=0.006068 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-180 fps=240 slow=False duration=4.2250 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=6.709 max240HzCorrectionStep=0.0019789
+carry=True yaw=-180 fps=240 slow=True duration=8.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.6896 extraDrop=0.006068 extraBend=6.709 max240HzCorrectionStep=0.0019789
+carry=True yaw=-180 fps=30 slow=False duration=4.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3440 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=-180 fps=30 slow=True duration=8.4667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=4.080 max240HzCorrectionStep=0.0000000
+carry=True yaw=-180 fps=60 slow=False duration=4.2333 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=4.080 max240HzCorrectionStep=0.0000000
+carry=True yaw=-180 fps=60 slow=True duration=8.4500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006067 extraBend=4.080 max240HzCorrectionStep=0.0000000
+carry=True yaw=-180 fps=120 slow=False duration=4.2250 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006067 extraBend=4.080 max240HzCorrectionStep=0.0000000
+carry=True yaw=-180 fps=120 slow=True duration=8.4500 drift=0.000001 sole=0.002399 yawSpeed=97.806 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=6.709 max240HzCorrectionStep=0.0000000
+carry=True yaw=180 fps=240 slow=False duration=4.2458 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.634 max240HzCorrectionStep=0.0019789
+carry=True yaw=180 fps=240 slow=True duration=8.4917 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.6896 extraDrop=0.006068 extraBend=4.634 max240HzCorrectionStep=0.0019789
+carry=True yaw=180 fps=30 slow=False duration=4.2667 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3440 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=180 fps=30 slow=True duration=8.5000 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=180 fps=60 slow=False duration=4.2500 drift=0.000001 sole=0.002399 yawSpeed=97.799 minMovingSpeed=0.3447 extraDrop=0.006067 extraBend=3.303 max240HzCorrectionStep=0.0000000
+carry=True yaw=180 fps=60 slow=True duration=8.5000 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.634 max240HzCorrectionStep=0.0000000
+carry=True yaw=180 fps=120 slow=False duration=4.2500 drift=0.000001 sole=0.002399 yawSpeed=97.800 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.634 max240HzCorrectionStep=0.0000000
+carry=True yaw=180 fps=120 slow=True duration=8.4917 drift=0.000001 sole=0.002399 yawSpeed=97.801 minMovingSpeed=0.3448 extraDrop=0.006068 extraBend=4.634 max240HzCorrectionStep=0.0000000

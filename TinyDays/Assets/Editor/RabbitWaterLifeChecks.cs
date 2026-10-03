@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -42,14 +42,14 @@ public static class RabbitWaterLifeChecks {
             h.ResetLifeFlow();flow.StartFlow();for(int i=0;i<60*80&&flow.State!=RabbitWaterLifeFlow.Phase.Finished;i++)h.Advance(1f/60);
             Check(flow.State==RabbitWaterLifeFlow.Phase.Finished&&h.Trips==1&&h.DoorClosed,"full exit/water repeat failed "+cycle);
         }
-        rows.Add("20 full routines from explicit indoor reset: exit, close wait, water, storage completed");
+        rows.Add("20 full routines from explicit indoor reset: exit with independent automatic closing, water, storage completed");
         foreach(var phase in new[]{RabbitWaterLifeFlow.Phase.Exiting,RabbitWaterLifeFlow.Phase.ToCan,RabbitWaterLifeFlow.Phase.Picking,RabbitWaterLifeFlow.Phase.ToFlowers,RabbitWaterLifeFlow.Phase.Watering,RabbitWaterLifeFlow.Phase.ToStorage,RabbitWaterLifeFlow.Phase.Putting}){
-            h.SelectLifeFlow();flow.StartFlow();
+            h.SelectLifeFlow();if(phase==RabbitWaterLifeFlow.Phase.ToCan){flow.StartFlow();h.Advance(120);Check(flow.State==RabbitWaterLifeFlow.Phase.Finished,"outside setup for ToCan");}flow.StartFlow();
             for(int i=0;i<60*80&&flow.State!=phase;i++)h.Advance(1f/60);
             Check(flow.State==phase,"phase unavailable "+phase);
-            h.Advance(.12f);double blink=h.AutomaticBlinkClock;var p=h.resident.transform.position;var can=w.can.position;
+            h.Advance(.12f);var activePhase=flow.State;Check(activePhase!=RabbitWaterLifeFlow.Phase.Finished&&activePhase!=RabbitWaterLifeFlow.Phase.Held,"repeat check needs active routine");double blink=h.AutomaticBlinkClock;var p=h.resident.transform.position;var can=w.can.position;
             h.paused=true;h.Advance(1);Check(h.resident.transform.position==p&&w.can.position==can&&h.AutomaticBlinkClock==blink,"pause changed routine");h.paused=false;
-            flow.StartFlow();Check(flow.State==phase,"repeat restarted routine");flow.Stop();flow.Stop();
+            flow.StartFlow();Check(flow.State==activePhase&&h.resident.transform.position==p&&w.can.position==can,"repeat restarted routine "+phase+"/"+activePhase);flow.Stop();flow.Stop();
             for(int i=0;i<60*60&&flow.State!=RabbitWaterLifeFlow.Phase.Held;i++)h.Advance(1f/60);
             Check(flow.State==RabbitWaterLifeFlow.Phase.Held,"stop not settled "+phase);p=h.resident.transform.position;h.Advance(1);Check(Vector3.Distance(p,h.resident.transform.position)<.001f,"held routine moved");
             flow.StartFlow();for(int i=0;i<60*80&&flow.State!=RabbitWaterLifeFlow.Phase.Finished;i++)h.Advance(1f/60);

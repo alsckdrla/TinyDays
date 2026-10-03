@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace TinyDays.Review {
     // A distance-parameterized, small curved route. Locomotion retains its own
@@ -18,7 +18,8 @@ namespace TinyDays.Review {
         public float Distance {get;private set;}
         public float Length=>lengths[Samples];
         public float Remaining=>Mathf.Max(0,Length-Distance);
-        public RabbitWalkingRoute(Transform actor,Vector3 target,float arrivalYaw){
+        public RabbitWalkingRoute(Transform actor,Vector3 target,float arrivalYaw):this(actor,target,arrivalYaw,false){}
+        internal RabbitWalkingRoute(Transform actor,Vector3 target,float arrivalYaw,bool stableApproach){
             var start=actor.position;target.y=start.y;
             startYaw=actor.eulerAngles.y;endYaw=arrivalYaw;
             Goal=new Pose(target,Quaternion.Euler(0,arrivalYaw,0));
@@ -32,7 +33,7 @@ namespace TinyDays.Review {
             var b=target-endForward*handle;
             var direction=(target-start).normalized;
             float travelYaw=Mathf.Atan2(direction.x,direction.z)*Mathf.Rad2Deg;
-            approachHeading=Mathf.Abs(Mathf.DeltaAngle(travelYaw,endYaw))>35;
+            approachHeading=stableApproach||Mathf.Abs(Mathf.DeltaAngle(travelYaw,endYaw))>35;
             if(approachHeading)b=entry-endForward*.28f;
             approachDelta=Mathf.DeltaAngle(startYaw,endYaw);
             if(Mathf.Abs(approachDelta)>179)approachDelta=Mathf.Sign(Mathf.DeltaAngle(startYaw,travelYaw))*180;
@@ -53,7 +54,7 @@ namespace TinyDays.Review {
         }
         public Pose Advance(float distance,float dt){
             Distance+=Mathf.Max(0,distance);var pose=At(Distance);
-            if(!stopped){float wanted=Mathf.SmoothDampAngle(heading,pose.rotation.eulerAngles.y,ref headingVelocity,Remaining<.4f?.045f:.10f,150,dt);heading=Mathf.MoveTowardsAngle(heading,wanted,170*dt);}
+            if(!stopped){float wanted=Mathf.SmoothDampAngle(heading,pose.rotation.eulerAngles.y,ref headingVelocity,Remaining<.4f?.045f:.10f,100,dt);heading=Mathf.MoveTowardsAngle(heading,wanted,110*dt);}
             return new Pose(pose.position,Quaternion.Euler(0,heading,0));
         }
         public Pose Predict(float distance,float speed){
@@ -61,7 +62,7 @@ namespace TinyDays.Review {
             float duration=distance/Mathf.Max(.25f,speed);int steps=Mathf.Max(1,Mathf.CeilToInt(duration/.02f));float dt=duration/steps;
             for(int i=1;i<=steps;i++){
                 progress=Distance+distance*i/steps;var pose=At(progress);
-                float wanted=Mathf.SmoothDampAngle(h,pose.rotation.eulerAngles.y,ref v,Length-progress<.4f?.045f:.10f,150,Mathf.Max(.00001f,dt));h=Mathf.MoveTowardsAngle(h,wanted,170*dt);
+                float wanted=Mathf.SmoothDampAngle(h,pose.rotation.eulerAngles.y,ref v,Length-progress<.4f?.045f:.10f,100,Mathf.Max(.00001f,dt));h=Mathf.MoveTowardsAngle(h,wanted,110*dt);
             }
             return new Pose(At(Distance+distance).position,Quaternion.Euler(0,h,0));
         }

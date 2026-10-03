@@ -1,0 +1,4 @@
+v0.131 same-controller pelvis correction at240Hz; direct checks, not OS input or quality approval.
+1x maximum correction step 0.0019799m; drop 0.0060740m; additional knee 4.0369deg; t=4.6083 Exiting/Walking safety=0.0000000 reach=0.0060186
+0.5x maximum correction step 0.0019799m; drop 0.0060796m; additional knee 4.0374deg; t=9.2208 Exiting/Walking safety=0.0000000 reach=0.0060186
+Blocked outward path remains standing: PASS (injected solid)

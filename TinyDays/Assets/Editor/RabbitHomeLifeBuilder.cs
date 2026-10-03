@@ -164,14 +164,14 @@ public static class RabbitHomeLifeBuilder
         Check(r&&r.resident&&r.hinge,"scene wiring");
         Directory.CreateDirectory("Docs/Captures/RabbitHomeLife");
         r.ResetStudy();r.ViewInside();Capture(r.reviewCamera,"InsideClosed");
-        var rows=new List<string>{"v0.119 stop, close, resume; direct-call verification, not OS input."};
+        var rows=new List<string>{"v0.130 continue walking, automatic close; direct-call verification, not OS input."};
         foreach(bool exit in new[]{true,false}){
             r.Request(exit);bool opening=false,crossing=false,closing=false,resumed=false;int frame=0;float wait=0;
             Vector3 waitPosition=Vector3.zero;
             for(;frame<120*60&&!(exit?r.Outside:r.Inside);frame++){
                 r.Advance(1f/60);
                 if(r.Current==RabbitHomeLifeReview.Step.WaitForClosing){wait+=1f/60;waitPosition=r.resident.transform.position;}
-                if(r.Current==RabbitHomeLifeReview.Step.WalkToDestination){Check(r.DoorClosed,"resumed before closed");resumed=true;}
+                if(r.Current==RabbitHomeLifeReview.Step.WalkToDestination){resumed=true;}
                 if(!opening&&r.Door==RabbitHomeLifeReview.DoorState.Opening&&Mathf.Abs(r.DoorAngle)>45){
                     r.View(155);Capture(r.reviewCamera,exit?"InsideOpening":"OutsideOpening");opening=true;
                 }
@@ -182,7 +182,7 @@ public static class RabbitHomeLifeBuilder
                 if(!closing&&r.Door==RabbitHomeLifeReview.DoorState.Closing){r.View(155);Capture(r.reviewCamera,exit?"ExitAutoClosing":"EntryAutoClosing");closing=true;}
             }
             Check(exit?r.Outside:r.Inside,$"trip did not finish: {r.Current} root {r.resident.transform.position} door {r.Door} {r.DoorAngle} radius {r.BodyClearanceRadius} feet {r.FootStatus}");
-            Check(r.DoorClosed&&opening&&crossing&&closing&&resumed&&wait>=.89f,"missing stop/close/resume phase");
+            Check(r.DoorClosed&&opening&&crossing&&closing&&resumed&&wait==0,"missing continuous/automatic close phase");
             Check(Vector3.Dot(r.resident.transform.forward,exit?Vector3.back:Vector3.forward)>.999f,"endpoint facing");
             rows.Add($"{(exit?"Exit":"Entry")}: {frame/60f:F3}s, root {r.resident.transform.position:F4}, forward {r.resident.transform.forward:F3}");
             rows.Add($"Closing wait {wait:F3}s at {waitPosition:F4}; resumed distance {Vector3.Distance(waitPosition,r.resident.transform.position):F3}m; target {r.ClosingWaitTarget(exit):F4}");
@@ -190,7 +190,7 @@ public static class RabbitHomeLifeBuilder
         rows.Add($"sole {r.MinimumSole:F6}m; support gap {r.MaximumSupportGap:F6}m; planted drift {r.MaximumSupportDrift:F6}m; step reach {r.MaxStepReach:F6}m; maximum turn footfalls {r.MaxTurnSteps}; reverse travel {r.ReverseTravel:F6}m; lateral {r.MaximumLateralDeviation:F6}m");
         rows.Add($"Unsafe closing samples {r.UnsafeDoorSamples}; horizontal body safety radius {r.BodyClearanceRadius:F3}m; hand contact/gesture removed.");
         rows.Add("Support detail: "+r.SupportDetail+"; reach detail: "+r.ReachDetail);
-        CheckClosing(r,2);rows.Add($"Closing stops {r.ClosingStops}; root drift {r.MaximumClosingDrift:F6}m; premature departures {r.PrematureDepartureSamples}");
+        CheckClosing(r,2);rows.Add($"Closing stops {r.ClosingStops}; legacy wait drift {r.MaximumClosingDrift:F6}m; legacy wait samples {r.PrematureDepartureSamples}");
         File.WriteAllLines("Docs/RabbitHomeLifeVerification.txt",rows);Debug.Log(string.Join("\n",rows));
         Check(r.MinimumSole>=-.0005f&&r.MaximumSupportGap<=.005f&&r.MaximumSupportDrift<=.0035f,"foot contacts; see verification");
         Check(r.MaxTurnSteps<=3&&r.UnsafeDoorSamples==0&&r.EarlyPassSamples==0&&r.ReverseTravel<.001f&&r.MaximumLateralDeviation<.01f,"automatic route criteria");
@@ -264,7 +264,7 @@ public static class RabbitHomeLifeBuilder
             r.ResetStudy();
             if(!exit){r.RequestExit();for(int i=0;i<60*120&&!r.Outside;i++)r.Advance(1f/60);}
             r.Request(exit);for(int i=0;i<240*120&&r.Door!=RabbitHomeLifeReview.DoorState.Closing;i++)r.Advance(1f/240);
-            Check(r.Current==RabbitHomeLifeReview.Step.WaitForClosing,"closing without waiting");
+            Check(r.Current==RabbitHomeLifeReview.Step.WalkToDestination,"closing must overlap destination walking");
             p=r.resident.transform.position;angle=r.DoorAngle;time=r.Clock;
             r.paused=true;r.Advance(2);Check(r.Clock==time&&r.DoorAngle==angle&&r.resident.transform.position==p,"closing pause changed pose/door");
             r.Request(exit);r.Request(!exit);r.paused=false;
@@ -274,7 +274,7 @@ public static class RabbitHomeLifeBuilder
             CheckClosing(r,expected);
             r.ResetStudy();Check(r.Inside&&r.ClosingStops==0&&r.DoorClosed,"closing state reset");
         }
-        lines.Add("Both closing waits: pause/resume, repeat/opposite request and reset: PASS");
+        lines.Add("Both moving close phases: pause/resume, repeat/opposite request and reset: PASS");
         r.ResetStudy();r.automatic=true;
         float firstAutoError=float.NaN;
         for(int i=0;i<30*3600&&r.Trips<40;i++){
@@ -287,12 +287,77 @@ public static class RabbitHomeLifeBuilder
         float finalError=Vector3.Distance(r.resident.transform.position,r.insideWait);
         Check(!float.IsNaN(firstAutoError)&&finalError<.15f&&Mathf.Abs(finalError-firstAutoError)<.15f,"round trip escaped 15cm stopping area: first "+firstAutoError+", final "+finalError);
         lines.Add($"20 automatic round trips: closed at inside, first/final position errors={firstAutoError:F4}/{finalError:F4}m, drift={Mathf.Abs(finalError-firstAutoError)*1000:F2}mm (15cm bounded stop area; no coordinate-chasing steps); PASS");
-        lines.Add($"40 closing stops: root drift {r.MaximumClosingDrift:F6}m; premature departures {r.PrematureDepartureSamples}; PASS");
+        lines.Add($"40 automatic closes: legacy wait drift {r.MaximumClosingDrift:F6}m; legacy wait samples {r.PrematureDepartureSamples}; PASS");
         File.WriteAllLines("Docs/RabbitHomeLifeStress.txt",lines);
         r.ResetStudy();Debug.Log("RABBIT_HOME_STRESS_OK");
     }
     static void CheckClosing(RabbitHomeLifeReview r,int stops){
-        Check(r.ClosingStops==stops&&r.MaximumClosingDrift<.00001f&&r.PrematureDepartureSamples==0,"closing wait/resume invariant");
+        Check(r.ClosingStops==0&&r.PrematureDepartureSamples==0&&r.UnsafeDoorSamples==0,"automatic close without waiting invariant");
+    }
+    // Focused v0.130 checks; known v0.129 gait quality remains a separate open issue.
+    public static void AutomaticClosingVerify(){
+        EditorSceneManager.OpenScene(ScenePath);
+        var r=UnityEngine.Object.FindObjectOfType<RabbitHomeLifeReview>();
+        var lines=new List<string>{"v0.130 automatic door checks; direct editor calls, not OS input."};
+        foreach(bool slow in new[]{false,true}){
+            r.ResetStudy();r.slow=slow;
+            foreach(bool exit in new[]{true,false}){
+                r.Request(exit);float moved=0;bool pausedOnce=false;int samples=0;
+                for(int i=0;i<240*120&&(!(exit?r.Outside:r.Inside)||!r.DoorClosed);i++){
+                    var before=r.resident.transform.position;
+                    r.Advance(1f/240);
+                    Check(r.Current!=RabbitHomeLifeReview.Step.WaitForClosing,"resident waited for closing");
+                    if(r.Door==RabbitHomeLifeReview.DoorState.Closing){
+                        moved+=Vector3.Distance(before,r.resident.transform.position);samples++;
+                        if(!pausedOnce){
+                            var p=r.resident.transform.position;var a=r.DoorAngle;
+                            r.paused=true;r.Advance(2);
+                            Check(r.resident.transform.position==p&&r.DoorAngle==a,"pause changed moving close");
+                            r.paused=false;pausedOnce=true;
+                            var safe=p;r.resident.transform.position=new Vector3(p.x,r.groundHeight,r.hinge.position.z);
+                            typeof(RabbitHomeLifeReview).GetMethod("UpdateDoor",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(r,new object[]{.1f});
+                            Check(r.DoorAngle==a,"unsafe closing did not hold");
+                            r.resident.transform.position=safe;
+                        }
+                    }
+                }
+                Check((exit?r.Outside:r.Inside)&&r.DoorClosed,"trip/close stalled: "+r.Current);
+                Check(samples>0&&moved>.05f,"no resident movement during closing: "+moved);
+                CheckClosing(r,0);
+                lines.Add($"{(exit?"exit":"entry")} {(slow?.5f:1)}x: movement during closing {moved:F4}m; pause and unsafe sweep hold PASS");
+            }
+        }
+        r.ResetStudy();r.RequestExit();
+        for(int i=0;i<240*120&&r.Door!=RabbitHomeLifeReview.DoorState.Closing;i++)r.Advance(1f/240);
+        r.RequestExit();r.RequestEnter();
+        for(int i=0;i<240*240&&(r.Trips<2||!r.DoorClosed);i++)r.Advance(1f/240);
+        Check(r.Trips==2&&r.Inside&&r.DoorClosed,"queued reverse request lost");
+        r.ResetStudy();Check(r.Inside&&r.DoorClosed&&r.Pending=="없음","reset failed");
+        lines.Add("Repeat/opposite request, reset: PASS");
+        r.SelectLifeFlow();r.lifeFlow.StartFlow(true);
+        bool handoff=false;float closedAt=-1;
+        for(int i=0;i<240*120&&r.lifeFlow.State!=RabbitWaterLifeFlow.Phase.Finished;i++){
+            r.Advance(1f/240);
+            if(r.lifeFlow.State!=RabbitWaterLifeFlow.Phase.Inside&&r.lifeFlow.State!=RabbitWaterLifeFlow.Phase.Exiting){
+                handoff=true;if(r.DoorClosed&&closedAt<0)closedAt=i/240f;
+            }
+        }
+        Check(handoff&&r.DoorClosed&&r.lifeFlow.State==RabbitWaterLifeFlow.Phase.Finished,"connected life door/routine incomplete: "+r.lifeFlow.State);
+        Check(r.UnsafeDoorSamples==0,"connected life unsafe close");
+        lines.Add($"Exit/water/bench routine finished; automatic door closed by {closedAt:F3}s. This does not approve v0.129 posture/bench collision quality.");
+        // Inject a safe closing leaf after the flow owns the resident, to exercise
+        // the independent door clock even when the normal trip closes earlier.
+        typeof(RabbitHomeLifeReview).GetField("<Door>k__BackingField",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).SetValue(r,RabbitHomeLifeReview.DoorState.Closing);
+        typeof(RabbitHomeLifeReview).GetField("doorClock",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).SetValue(r,0f);
+        typeof(RabbitHomeLifeReview).GetMethod("SetDoor",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic).Invoke(r,new object[]{r.doorOpenAngle});
+        r.paused=true;r.Advance(1);Check(Mathf.Abs(r.DoorAngle-r.doorOpenAngle)<.001f,"flow pause changed door");
+        r.paused=false;r.Advance(.35f);
+        Check(Mathf.Abs(r.DoorAngle-r.doorOpenAngle*.5f)<1.5f,"flow door clock missing or double advanced: "+r.DoorAngle);
+        r.Advance(.4f);Check(r.DoorClosed,"flow-owned automatic closing did not finish");
+        lines.Add("Flow-owned door: pause freezes;0.35s reaches half-close;0.75s closes (single simulation clock): PASS. Injected door state.");
+
+        File.WriteAllLines("Docs/RabbitAutomaticDoorVerification.txt",lines);
+        r.ResetStudy();Debug.Log(string.Join("\n",lines));Debug.Log("RABBIT_AUTOMATIC_DOOR_OK");
     }
     public static void CaptureSequence()
     {

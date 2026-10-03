@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,17 +34,18 @@ public static class RabbitWalkingTurnChecks {
     }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
     public static void Verify(){
         EditorSceneManager.OpenScene("Assets/Scenes/RabbitHomeLifeStudy.unity");var h=UnityEngine.Object.FindObjectOfType<RabbitHomeLifeReview>();var w=h.watering;
-        var rows=new List<string>{"v0.129 natural moving turn; automatic evaluated poses, not OS input or quality approval"};
+        var rows=new List<string>{"v0.131 natural moving turn; automatic evaluated poses, not OS input or quality approval"};
         foreach(bool carrying in new[]{false,true})foreach(float angle in new[]{30f,60f,90f,135f,180f})foreach(int side in new[]{-1,1})foreach(int fps in new[]{240,30,60,120})foreach(bool slow in new[]{false,true}){
             h.SelectWaterMode(true);var origin=new Vector3(0,h.groundHeight,-7);Relocate(h,origin);
             w.EnterCurrentFromPose(carrying);float yaw=angle*side;var target=origin+Quaternion.Euler(0,yaw,0)*Vector3.forward*2;
-            h.slow=slow;w.BeginTravel(target,yaw);float maxYawSpeed=0,minMovingSpeed=100,maxDrop=0,maxBend=0;var old=origin;var q=h.resident.transform.rotation;int n=0;
+            h.slow=slow;w.BeginTravel(target,yaw);float maxYawSpeed=0,minMovingSpeed=100,maxDrop=0,maxBend=0,maxCorrectionStep=0,previousCorrection=float.NaN;var old=origin;var q=h.resident.transform.rotation;int n=0;
             var feet=(AdultRabbitFootTransition)typeof(RabbitWaterReview).GetField("feet",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).GetValue(w);
             for(;n<fps*30&&w.State!=RabbitWaterReview.TaskState.Ready;n++){
-                float oldTime=w.TimeInState;h.Advance(1f/fps);float scale=slow?.5f:1;
+                float oldTime=w.TimeInState;var footStateBefore=feet.State;h.Advance(1f/fps);float scale=slow?.5f:1;
                 if(w.TimeInState>oldTime+.00001f)maxYawSpeed=Mathf.Max(maxYawSpeed,Mathf.Abs(Mathf.DeltaAngle(q.eulerAngles.y,h.resident.transform.eulerAngles.y))/(w.TimeInState-oldTime));
-                if(w.State==RabbitWaterReview.TaskState.Walking&&w.TimeInState>.6f&&w.TimeInState>oldTime+.00001f)minMovingSpeed=Mathf.Min(minMovingSpeed,Vector3.Distance(old,h.resident.transform.position)*fps/scale);
+                if(w.State==RabbitWaterReview.TaskState.Walking&&footStateBefore==AdultRabbitFootTransition.Stage.Walking&&feet.State==AdultRabbitFootTransition.Stage.Walking&&feet.Speed>.1f&&w.TimeInState>oldTime+.00001f)minMovingSpeed=Mathf.Min(minMovingSpeed,Vector3.Distance(old,h.resident.transform.position)*fps/scale);
                 old=h.resident.transform.position;q=h.resident.transform.rotation;
+                if(fps==240&&feet.State!=AdultRabbitFootTransition.Stage.Idle){if(!float.IsNaN(previousCorrection))maxCorrectionStep=Mathf.Max(maxCorrectionStep,Mathf.Abs(feet.AdditionalDrop-previousCorrection));previousCorrection=feet.AdditionalDrop;}
                 maxDrop=Mathf.Max(maxDrop,feet.AdditionalDrop);maxBend=Mathf.Max(maxBend,feet.AdditionalSupportBend);
                 Check(w.MaxDrift<=.0035f&&w.MinSole>=-.0005f&&w.MaxSupportGap<=.005f,$"contacts carry={carrying} yaw={yaw} fps={fps} slow={slow} t={w.TimeInState:F3} drift={w.MaxDrift:F6} {w.WalkingDetail}");
             }
@@ -52,8 +53,9 @@ public static class RabbitWalkingTurnChecks {
             Check(Mathf.Abs(Mathf.DeltaAngle(h.resident.transform.eulerAngles.y,yaw))<1,"arrival heading "+w.WalkingDetail);
             Check(w.MaxGripError<=.01f&&w.MaxReach<=.001f,$"grip/reach carry={carrying} yaw={yaw} fps={fps} slow={slow} grip={w.MaxGripError:F6} reach={w.MaxReach:F6} {w.WalkingDetail}");
             Check(maxYawSpeed<=181&&minMovingSpeed>.01f,$"stationary turn/angular speed yaw={yaw} fps={fps} minSpeed={minMovingSpeed:F6} yawSpeed={maxYawSpeed:F3}");
-            Check(maxDrop<=.0101f&&maxBend<=10.05f,$"posture yaw={yaw} fps={fps} drop={maxDrop:F6} bend={maxBend:F3}");
-            rows.Add($"carry={carrying} yaw={yaw} fps={fps} slow={slow} duration={n/(float)fps:F4} drift={w.MaxDrift:F6} sole={w.MinSole:F6} yawSpeed={maxYawSpeed:F3} minMovingSpeed={minMovingSpeed:F4} extraDrop={maxDrop:F6} extraBend={maxBend:F3}");
+            Check(maxCorrectionStep<=.002001f,$"correction step yaw={yaw} fps={fps} slow={slow} step={maxCorrectionStep:F7}");
+            Check(maxDrop<=.010001f&&maxBend<=10.001f,$"posture yaw={yaw} fps={fps} drop={maxDrop:F6} bend={maxBend:F3}");
+            rows.Add($"carry={carrying} yaw={yaw} fps={fps} slow={slow} duration={n/(float)fps:F4} drift={w.MaxDrift:F6} sole={w.MinSole:F6} yawSpeed={maxYawSpeed:F3} minMovingSpeed={minMovingSpeed:F4} extraDrop={maxDrop:F6} extraBend={maxBend:F3} max240HzCorrectionStep={maxCorrectionStep:F7}");
         }
         File.WriteAllLines("Docs/RabbitWalkingTurnVerification.txt",rows);Debug.Log("MOVING_TURN_ANGLES_OK cases="+(rows.Count-1));
         VerifyStops();Debug.Log("MOVING_TURN_VERIFY_OK cases="+(rows.Count-1));

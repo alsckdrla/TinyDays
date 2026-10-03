@@ -34,6 +34,7 @@ namespace TinyDays.Review {
         }
         public string Label=>State==Phase.ToBench?"벤치로 이동 · 방향 정리":State==Phase.BenchSitting?"벤치에 앉는 중":State==Phase.BenchResting?"벤치에서 6초 휴식":State==Phase.BenchRising?"벤치에서 일어나는 중":State==Phase.BenchDeparting?"벤치에서 약 1m 이동":State==Phase.Inside?"실내 대기":State==Phase.Exiting?"외출 중":State==Phase.ToCan?"물뿌리개로 이동":State==Phase.Picking?"물뿌리개 집기":State==Phase.ToFlowers?"화단으로 운반":State==Phase.Watering?"물 주기":State==Phase.ToStorage?"보관점으로 돌아오기":State==Phase.Putting?"제자리에 내려놓기":State==Phase.Finished?"완료 · 서서 대기":"중단 · 현재 위치 대기";
         public void ResetTask(){
+            exitApproachReady=false;
             Water.Shutdown();Bench.Shutdown();MaxOwnerPositionJump=0;benchOwned=benchRested=includeBench=false;State=Phase.Inside;remainder=0;StopRequested=false;Completed=0;
             Water.can.gameObject.SetActive(true);Water.can.SetPositionAndRotation(storage.position,storage.rotation);
         }
@@ -83,6 +84,10 @@ namespace TinyDays.Review {
             return !float.IsPositiveInfinity(best);
         }
         float WorkReachOffset()=>Mathf.Max(0,Vector3.Dot(storage.position-home.resident.transform.position,home.resident.transform.forward)-.36f);
+        bool exitApproachReady;
+        internal bool TryExitDestination(out Pose pose){
+            exitApproachReady=TryCanApproach(out canApproach);pose=canApproach;return exitApproachReady;
+        }
         void Travel(Phase phase){
             if(phase==Phase.ToFlowers){State=phase;Water.BeginTravel(work.position,work.eulerAngles.y);return;}
             if(!TryCanApproach(out canApproach)){resume=phase;State=Phase.Held;return;}
@@ -98,6 +103,7 @@ namespace TinyDays.Review {
             while(remainder>=1f/240){remainder-=1f/240;Tick(1f/240);}
         }
         void Tick(float dt){
+            if(State!=Phase.Inside&&State!=Phase.Exiting)home.AdvanceDoorOnly(dt);
             if(benchOwned){
                 Bench.AdvanceFlow(dt);
                 if(State==Phase.Finished||State==Phase.Held)return;
@@ -109,7 +115,12 @@ namespace TinyDays.Review {
             if(State==Phase.Inside){home.AdvanceDoorTick(dt);return;}
             if(State==Phase.Exiting){
                 home.AdvanceDoorTick(dt);
-                if(home.Outside&&home.DoorClosed){Water.EnterCurrentFromPose(false);if(StopRequested)State=Phase.Held;else Travel(Phase.ToCan);}
+                if(home.Outside){
+                    Water.EnterCurrentFromPose(false);
+                    if(StopRequested)State=Phase.Held;
+                    else if(exitApproachReady){State=Phase.Picking;Water.BeginPickup(storage.position,storage.rotation,WorkReachOffset());}
+                    else Travel(Phase.ToCan);
+                }
                 return;
             }
             Water.AdvanceFlow(dt);

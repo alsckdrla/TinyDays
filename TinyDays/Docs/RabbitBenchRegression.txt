@@ -1,11 +1,27 @@
 v0.122 bench task checks; automatic, not OS input or quality approval.
-240Hz walking/turning clearance=0.073955m; both airborne soles=0.056100..0.056100m; actual bench solid vertices and seat footprint: PASS
-30fps 1x complete=15.1333s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
-60fps 1x complete=15.1333s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
-120fps 1x complete=15.1333s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
-30fps 0.5x complete=30.2667s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
-60fps 0.5x complete=30.2667s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
-120fps 0.5x complete=30.2750s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+240Hz walking/turning clearance=0.172609m; both airborne soles=0.056100..0.056100m; actual bench solid vertices and seat footprint: PASS
+30fps 1x complete=18.8667s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+60fps 1x complete=18.8833s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+120fps 1x complete=18.8917s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+30fps 0.5x complete=37.7667s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+60fps 0.5x complete=37.7833s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+120fps 0.5x complete=37.7833s sole=0.002447 gap=0.002554 drift=0.000163 reach=0.000000
+phase 0/0 safe movement completion=6.1292s
+phase 0/1 safe movement completion=5.8750s
+phase 0/2 safe movement completion=5.6167s
+phase 0/3 safe movement completion=5.3583s
+phase 0/4 safe movement completion=5.1042s
+phase 0/5 safe movement completion=4.8458s
+phase 0/6 safe movement completion=4.5875s
+phase 0/7 safe movement completion=4.3333s
+phase 2/0 safe movement completion=4.3292s
+phase 2/1 safe movement completion=4.0750s
+phase 2/2 safe movement completion=3.8167s
+phase 2/3 safe movement completion=3.5583s
+phase 2/4 safe movement completion=3.3042s
+phase 2/5 safe movement completion=3.0458s
+phase 2/6 safe movement completion=2.7875s
+phase 2/7 safe movement completion=2.5333s
 seated chest vertical width=0.014000m; physical butt/seat gap=0.002509..0.002509
 re-seating through safe route and geometry-derived anchors after bench translation: PASS
 phase movement/repeated requests, cancellation, pause, mode restore: PASS

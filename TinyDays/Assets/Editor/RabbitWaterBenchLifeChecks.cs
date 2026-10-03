@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -81,7 +81,7 @@ public static class RabbitWaterBenchLifeChecks {
         h.ResetLifeFlow();for(int i=0;i<20;i++){run(60,false,false);Check(f.Completed==i+1,"outdoor repeat counter");}rows.Add("20 outdoor routines: PASS, no actor/can reset between runs");
         for(int i=0;i<20;i++){h.ResetLifeFlow();run(60,false,false);Check(h.Trips==1,"indoor exit missing");}rows.Add("20 indoor-to-end routines: PASS");
         foreach(var phase in new[]{RabbitWaterLifeFlow.Phase.Exiting,RabbitWaterLifeFlow.Phase.ToCan,RabbitWaterLifeFlow.Phase.Picking,RabbitWaterLifeFlow.Phase.ToFlowers,RabbitWaterLifeFlow.Phase.Watering,RabbitWaterLifeFlow.Phase.ToStorage,RabbitWaterLifeFlow.Phase.Putting,RabbitWaterLifeFlow.Phase.ToBench,RabbitWaterLifeFlow.Phase.BenchSitting,RabbitWaterLifeFlow.Phase.BenchResting,RabbitWaterLifeFlow.Phase.BenchRising,RabbitWaterLifeFlow.Phase.BenchDeparting}){
-            h.ResetLifeFlow();f.StartFlow(true);for(int n=0;n<60*100&&f.State!=phase;n++)h.Advance(1f/60);Check(f.State==phase,"unavailable phase "+phase);
+            h.ResetLifeFlow();if(phase==RabbitWaterLifeFlow.Phase.ToCan){f.StartFlow(true);h.Advance(120);Check(f.State==RabbitWaterLifeFlow.Phase.Finished,"outside setup for ToCan");}f.StartFlow(true);for(int n=0;n<60*100&&f.State!=phase;n++)h.Advance(1f/60);Check(f.State==phase,"unavailable phase "+phase);
             h.Advance(.12f);var p=h.resident.transform.position;var can=w.can.position;double blink=h.AutomaticBlinkClock;h.paused=true;h.Advance(1);Check(p==h.resident.transform.position&&can==w.can.position&&blink==h.AutomaticBlinkClock,"paused routine changed");h.paused=false;
             f.StartFlow(true);Check(f.State==phase,"repeat restarted "+phase);f.Stop();f.Stop();for(int n=0;n<60*30&&f.State!=RabbitWaterLifeFlow.Phase.Held;n++)h.Advance(1f/60);Check(f.State==RabbitWaterLifeFlow.Phase.Held,"stop not safe "+phase);
             p=h.resident.transform.position;h.Advance(1);Check(Vector3.Distance(p,h.resident.transform.position)<.001f,"held drift");

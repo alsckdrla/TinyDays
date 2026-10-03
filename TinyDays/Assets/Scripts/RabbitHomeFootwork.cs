@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using UnityEngine;
 
@@ -20,6 +20,7 @@ namespace TinyDays.Review
         int steps,segment=-1,swing;
         float duration,turnLowering=.035f;
         bool turnOnly,exactSteps;
+        internal float ExactStepLowering {get;set;}=.035f;
         Vector3 from,to;
         Quaternion fromRotation,toRotation;
         public bool[] Planted {get;}={true,true};
@@ -92,7 +93,7 @@ namespace TinyDays.Review
             // Even during yaw, use the actual shoe bottom, not its ankle height.
             var level=Ground(swing,target[swing],rotation[swing]);
             target[swing].y=level.y+.022f*Mathf.Pow(Mathf.Sin(Mathf.PI*u),2);
-            pelvis.position-=Vector3.up*((turnOnly?turnLowering:exactSteps?.035f:.018f)*Ease(time/.25f)*Ease((duration-time)/.25f));
+            pelvis.position-=Vector3.up*((turnOnly?turnLowering:exactSteps?ExactStepLowering:.018f)*Ease(time/.25f)*Ease((duration-time)/.25f));
             Solve();
         }
         public void Hold(){Planted[0]=Planted[1]=true;Solve();}
@@ -106,7 +107,7 @@ namespace TinyDays.Review
             // Match the source's resting shoe clearance to this floor once;
             // do not ask the knee solver to stretch a straight idle leg.
             pelvis.position-=Vector3.up*neutralLowering;
-            if(FitStandingReach&&Planted[0]&&Planted[1]){
+            if(FitStandingReach){
                 float drop=0;
                 for(int i=0;i<2;i++){
                     float length=Vector3.Distance(legs[i].Upper.position,legs[i].Lower.position)+Vector3.Distance(legs[i].Lower.position,legs[i].End.position)-.0002f;

@@ -1,0 +1,8 @@
+v0.130 automatic door checks; direct editor calls, not OS input.
+exit 1x: movement during closing 0.8098m; pause and unsafe sweep hold PASS
+entry 1x: movement during closing 0.7506m; pause and unsafe sweep hold PASS
+exit 0.5x: movement during closing 0.8098m; pause and unsafe sweep hold PASS
+entry 0.5x: movement during closing 0.7506m; pause and unsafe sweep hold PASS
+Repeat/opposite request, reset: PASS
+Exit/water/bench routine finished; automatic door closed by 6.288s. This does not approve v0.129 posture/bench collision quality.
+Flow-owned door: pause freezes;0.35s reaches half-close;0.75s closes (single simulation clock): PASS. Injected door state.

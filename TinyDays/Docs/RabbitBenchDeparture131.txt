@@ -1,0 +1,32 @@
+approach=0 canYaw=0: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=0 canYaw=90: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=0 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=0 canYaw=270: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=45 canYaw=0: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=45 canYaw=90: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=45 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=45 canYaw=270: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=90 canYaw=0: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=90 canYaw=90: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=90 canYaw=180: blocked, safely held; sole=0.002452 gap=0.002518 drift=0.000228 reach=0.000000
+approach=90 canYaw=270: blocked, safely held; sole=0.002452 gap=0.002518 drift=0.000228 reach=0.000000
+approach=135 canYaw=0: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=135 canYaw=90: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=135 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=135 canYaw=270: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=180 canYaw=0: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=180 canYaw=90: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=180 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=180 canYaw=270: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=225 canYaw=0: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=225 canYaw=90: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=225 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=225 canYaw=270: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=270 canYaw=0: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=270 canYaw=90: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=270 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=270 canYaw=270: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=315 canYaw=0: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000
+approach=315 canYaw=90: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=315 canYaw=180: blocked, safely held; sole=0.002441 gap=0.002518 drift=0.000228 reach=0.000000
+approach=315 canYaw=270: completed; sole=0.002447 gap=0.002554 drift=0.000228 reach=0.000000

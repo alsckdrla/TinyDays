@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ public static class RabbitHomeGroundChecks
             Require(exit?r.Outside:r.Inside,"240Hz trip did not complete");
         }
         File.WriteAllLines("Docs/RabbitHomeMotion240.csv",rows);
-        var log=new List<string>{"v0.119 stop-close-resume direct-call 240Hz / actual floor .275m; not OS input or aesthetic approval.",
+        var log=new List<string>{"v0.131 automatic door closing direct-call 240Hz / actual floor .275m; not OS input or aesthetic approval.",
             $"2 trips in {time:F3}s; minimum sole above actual floor {r.MinimumSole:F6}m; maximum support gap {r.MaximumSupportGap:F6}m; maximum planted drift {r.MaximumSupportDrift:F6}m; step reach error {r.MaxStepReach:F6}m",
             $"Unsafe door samples {r.UnsafeDoorSamples}; maximum turn footfalls {r.MaxTurnSteps}; reverse travel {r.ReverseTravel:F6}m; lateral deviation {r.MaximumLateralDeviation:F6}m; manual hand contact removed.",
             $"Maximum pelvis/head height delta at a stage boundary {maxBoundary:F6}m per 1/240s; full limb speed series in RabbitHomeMotion240.csv"};

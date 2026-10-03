@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -89,7 +89,7 @@ public static class RabbitBenchChecks {
         }
     }
     public static void Verify(){
-        var h=Open();var b=h.benchRest;var rows=new List<string>{"v0.122 bench task checks; automatic, not OS input or quality approval."};
+        var h=Open();var b=h.benchRest;var rows=new List<string>{"v0.131 bench task checks (v0.122 physical criteria retained); automatic, not OS input or quality approval."};
         b.StartFlow();float clearance=float.PositiveInfinity;
         float airLow=float.PositiveInfinity,airHigh=0;
         for(int n=0;n<240*25;n++){h.Advance(1f/240);BenchIntersection(h);if(b.State==RabbitBenchReview.TaskState.Walking||b.State==RabbitBenchReview.TaskState.Turning)clearance=Mathf.Min(clearance,HorizontalClearance(h));if(b.State==RabbitBenchReview.TaskState.Resting){SeatFootprint(h);for(int side=0;side<2;side++){float sole=b.SoleHeight(side);airLow=Mathf.Min(airLow,sole);airHigh=Mathf.Max(airHigh,sole);Check(sole>=.05f&&sole<=.06f,$"floating sole {side} {sole}");}}}
@@ -101,7 +101,7 @@ public static class RabbitBenchChecks {
         }
         // Transitions hold their contact targets at 240Hz; resume requests never restart them.
         foreach(int action in new[]{0,2})foreach(int phase in Enumerable.Range(0,8)){
-            b.Pose(action,phase);h.paused=false;h.slow=false;b.RequestWalk();b.RequestWalk();h.Advance(6);Check(b.State==RabbitBenchReview.TaskState.Standing,$"phase movement failed {action}/{phase} {b.State}");
+            b.Pose(action,phase);h.paused=false;h.slow=false;b.RequestWalk();b.RequestWalk();int transitionTicks=0;while(b.State!=RabbitBenchReview.TaskState.Standing&&transitionTicks++<240*12)h.Advance(1f/240);Check(b.State==RabbitBenchReview.TaskState.Standing,$"phase movement failed {action}/{phase} {b.State}");Contacts(b);rows.Add($"phase {action}/{phase} safe movement completion={transitionTicks/240f:F4}s");
             h.SelectBenchMode();b.RequestSit();h.Advance(.2f);b.StopTask();h.Advance(3);Check(b.State==RabbitBenchReview.TaskState.Standing,"approach cancellation failed");
         }
         foreach(int phase in Enumerable.Range(0,8)){

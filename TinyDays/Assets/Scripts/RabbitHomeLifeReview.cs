@@ -29,6 +29,10 @@ namespace TinyDays.Review
         public void ResetLifeFlow(){ResetStudy();FlowMode=true;automatic=false;lifeFlow.ResetTask();ViewLifeFlow(45);}
         public void ViewLifeFlow(float angle){pivot=new Vector3(-.6f,1.05f,-3.8f);yaw=180+angle;pitch=15;distance=10;reviewCamera.fieldOfView=40;ApplyCamera();}
         public void AdvanceDoorTick(float dt){Tick(dt);}
+        internal void AdvanceDoorOnly(float dt){
+            float before=DoorAngle;UpdateDoor(dt);
+            if(Mathf.Abs(before-DoorAngle)>.000001f&&!ClearOfSweep())UnsafeDoorSamples++;
+        }
         public bool BenchMode {get;private set;}
         int benchPoseAction;
         public void SelectBenchMode(){var face=faceMotion;ResetStudy();faceMotion=face;BenchMode=true;automatic=false;benchRest.ResetTask();ViewBench(140);}
@@ -95,7 +99,7 @@ namespace TinyDays.Review
             ResetStudy();
             foreach(bool exit in new[]{true,false}){
                 Request(exit);
-                for(int i=0;i<60*240&&!(exit?Outside:Inside);i++){
+                for(int i=0;i<60*240&&(!(exit?Outside:Inside)||!DoorClosed);i++){
                     Advance(1f/60);if(i%120==0)yield return null;
                 }
                 if(!(exit?Outside:Inside)||!DoorClosed){Debug.LogError("HOME_PLAYER_SMOKE_FAILED "+Current);Application.Quit(1);yield break;}
@@ -153,6 +157,7 @@ namespace TinyDays.Review
         public void Request(bool exit){
             if((exit&&Outside)||(!exit&&Inside)){pending=null;return;}
             if((exit&&Inside)||(!exit&&Outside)){
+                if(Door!=DoorState.Closed){pending=exit;return;}
                 // Enter the requested phase even while paused; Advance keeps its
                 // clock frozen until Resume, so the request cannot get stranded.
                 exiting=exit;Begin(exit?Step.ApproachInside:Step.ApproachOutside);
@@ -192,9 +197,10 @@ namespace TinyDays.Review
             Vector3 p=resident.transform.position;
             return p.z+BodyClearanceRadius<h.z-.08f || p.z-BodyClearanceRadius>h.z+radius+.08f;
         }
+        bool PassedDoor()=>exiting?resident.transform.position.z+BodyClearanceRadius<hinge.position.z-.08f:
+            resident.transform.position.z-BodyClearanceRadius>hinge.position.z+.78f*hinge.lossyScale.x+.08f;
         void Begin(Step step){
             if((step==Step.CrossOut||step==Step.CrossIn)&&(Door!=DoorState.Open||Mathf.Abs(DoorAngle-doorOpenAngle)>.01f))EarlyPassSamples++;
-            if(step==Step.WalkToDestination&&Door!=DoorState.Closed)PrematureDepartureSamples++;
             Current=step;Clock=0;navPhase=0;actionTime=0;usingWalk=false;stopping=false;
             footwork.Capture();
         }
@@ -225,9 +231,9 @@ namespace TinyDays.Review
                 }
             }
         }
-        bool Walk(Vector3 target,float dt){
+        bool Walk(Vector3 target,float dt,bool allowStop=true){
             if(navPhase==0){
-                feet=new AdultRabbitFootTransition(resident,groundHeight){FollowWalkingHeading=true};
+                feet=new AdultRabbitFootTransition(resident,groundHeight){FollowWalkingHeading=true};feet.ConfigureWalkingReference(walkClip);
                 var direction=target-resident.transform.position;direction.y=0;
                 walkingRoute=new RabbitWalkingRoute(resident.transform,target,Yaw(direction));
                 feet.WalkingPoseAhead=distance=>walkingRoute.Predict(distance,feet.Speed>.1f?feet.Speed:.6f);
@@ -238,7 +244,7 @@ namespace TinyDays.Review
             }
             usingWalk=true;
             float remaining=walkingRoute.Remaining;
-            if(!stopping&&remaining<feet.EstimatedStopTravel+.14f){stopping=true;feet.WalkingPoseAhead=null;feet.Request(false);}
+            if(allowStop&&!stopping&&remaining<feet.EstimatedStopTravel+.14f){stopping=true;feet.WalkingPoseAhead=null;feet.Request(false);}
             feet.WalkingSpeedScale=walkingRoute.SpeedScale;
             float moved=feet.Step(dt);var pose=walkingRoute.Advance(moved,dt);resident.transform.SetPositionAndRotation(pose.position,pose.rotation);TotalTravel+=Mathf.Abs(moved);
             if(moved<0)ReverseTravel-=moved;
@@ -266,8 +272,7 @@ namespace TinyDays.Review
                     doorClock+=dt;SetDoor(doorOpenAngle*Ease(doorClock/.7f));
                     if(doorClock>=.7f){SetDoor(doorOpenAngle);Door=DoorState.Open;doorClock=0;}break;
                 case DoorState.Open:
-                    if(Current==Step.WaitForClosing&&feet.State==AdultRabbitFootTransition.Stage.Idle&&
-                       feet.BothFeetGrounded&&ClearOfSweep()){
+                    if(PassedDoor()&&Current!=Step.OpenInside&&Current!=Step.OpenOutside){
                         Door=DoorState.ClosingDelay;doorClock=0;
                     }break;
                 case DoorState.ClosingDelay:
@@ -308,7 +313,8 @@ namespace TinyDays.Review
             Clock+=dt;idleTime+=dt;restRecoveryTime+=dt;
             switch(Current){
                 case Step.Inside:case Step.Outside:
-                    Stand();if(automatic){waitClock+=dt;if(waitClock>=5)Request(Inside);}break;
+                    Stand();if(pending.HasValue&&Door==DoorState.Closed){bool next=pending.Value;pending=null;Request(next);}
+                    else if(automatic){waitClock+=dt;if(waitClock>=5)Request(Inside);}break;
                 case Step.ApproachInside:
                     if(Rotate(180,dt))StartOpening();break;
                 case Step.ApproachOutside:
@@ -318,31 +324,29 @@ namespace TinyDays.Review
                 case Step.OpenInside:case Step.OpenOutside:
                     Stand();if(Door==DoorState.Open)Begin(exiting?Step.CrossOut:Step.CrossIn);break;
                 case Step.CrossOut:case Step.CrossIn:case Step.PassDeceleration:
-                    bool stopped=Walk(ClosingWaitTarget(exiting),dt);
-                    if(stopping)Current=Step.PassDeceleration;
-                    if(stopped){
-                        closingPosition=resident.transform.position;closingRotation=resident.transform.rotation;
-                        ClosingStops++;Begin(Step.WaitForClosing);
+                    Walk(ClosingWaitTarget(exiting),dt,false);
+                    if(PassedDoor()){
+                        Vector3 destination=exiting?outsideWait:insideWait;
+                        float heading=exiting?180:0;
+                        if(FlowMode&&exiting&&lifeFlow.TryExitDestination(out Pose approach)){
+                            destination=approach.position;heading=approach.rotation.eulerAngles.y;
+                        }
+                        // Retarget the existing gait without a stop or pose reset.
+                        walkingRoute=new RabbitWalkingRoute(resident.transform,destination,heading);
+                        feet.WalkingGoal=walkingRoute.Goal;
+                        Current=Step.WalkToDestination;
                     }
                     break;
                 case Step.WaitForClosing:
-                    Stand();
-                    MaximumClosingDrift=Mathf.Max(MaximumClosingDrift,Vector3.Distance(closingPosition,resident.transform.position));
-                    if(Quaternion.Angle(closingRotation,resident.transform.rotation)>.01f)PrematureDepartureSamples++;
-                    if(Door==DoorState.Closed){
-                        // The connected routine's next destination is the can,
-                        // not an extra outside waypoint followed by another stop.
-                        if(FlowMode&&exiting)Finish(Step.Outside);else Begin(Step.WalkToDestination);
-                    }
+                    // Legacy serialized state: resume moving rather than wait.
+                    PrematureDepartureSamples++;Begin(Step.WalkToDestination);
                     break;
                 case Step.WalkToDestination:
                     if(Walk(exiting?outsideWait:insideWait,dt))Finish(exiting?Step.Outside:Step.Inside);
                     break;
             }
-            float previousDoorAngle=DoorAngle;UpdateDoor(dt);
-            if((Door==DoorState.ClosingDelay||Door==DoorState.Closing)&&Current!=Step.WaitForClosing)PrematureDepartureSamples++;
+            AdvanceDoorOnly(dt);
             MaximumLateralDeviation=Mathf.Max(MaximumLateralDeviation,Mathf.Abs(resident.transform.position.x-insideWait.x));
-            if(Mathf.Abs(previousDoorAngle-DoorAngle)>.000001f&&!ClearOfSweep())UnsafeDoorSamples++;
             for(int i=0;i<2;i++){
                 MinimumSole=Mathf.Min(MinimumSole,footwork.SoleHeight(i));
                 bool planted=usingWalk?(i==0?feet.LeftPlanted:feet.RightPlanted):footwork.Planted[i];

@@ -29,7 +29,7 @@ namespace TinyDays.Review {
             Vector3 d=target-home.resident.transform.position;d.y=0;
             if(d.magnitude>=.08f){
                 walkingRoute=new RabbitWalkingRoute(home.resident.transform,target,arrivalYaw);
-                feet=new AdultRabbitFootTransition(home.resident,home.groundHeight){SmoothStopBalance=true,FollowWalkingHeading=true};
+                feet=new AdultRabbitFootTransition(home.resident,home.groundHeight){SmoothStopBalance=true,FollowWalkingHeading=true};feet.ConfigureWalkingReference(home.walkClip);
                 feet.WalkingPoseAhead=distance=>walkingRoute.Predict(distance,feet.Speed>.1f?feet.Speed:.6f);
                 feet.WalkingSpeedScale=walkingRoute.SpeedScale;
                 feet.WalkingGoal=walkingRoute.Goal;
@@ -80,16 +80,17 @@ namespace TinyDays.Review {
             for(int i=0;i<bones.Length;i++){bones[i].localPosition=restPositions[i];bones[i].localRotation=restRotations[i];}
             for(int i=0;i<5;i++)mix.SetInputWeight(i,i==(pick?3:4)?1:0);
             if(pick)pickupPlay.SetTime(t);else putdownPlay.SetTime(t);graph.Evaluate(0);
-            float bend=pick?Ease(t/.65f)*(1-Ease((t-.75f)/1.05f)):Ease(t/1.05f)*(1-Ease((t-1.15f)/.65f));
+            float bend=pick?Ease(t/.65f)*(1-Ease((t-.75f)/1.05f)):Ease(t/1.05f)*(1-Ease((t-1.05f)/.30f));
             // Only the connected safe approach uses a little extra whole-body reach.
             // Feet remain planted, all bone lengths and source clip curves are unchanged.
             pelvis.position+=home.resident.transform.forward*(workReachOffset*bend);support.Hold();
             float lift=pick?Ease((t-.75f)/1.05f):1-Ease(t/1.05f);
             var actor=home.resident.transform;
             var held=spine.position+actor.rotation*canOffset;
-            var groundRotation=pick?Quaternion.Slerp(pickupStartRotation,Quaternion.Euler(0,actor.eulerAngles.y,0),Ease(t/.65f)):storedRotation;
+            var groundRotation=pick?Quaternion.Slerp(pickupStartRotation,Quaternion.Euler(0,actor.eulerAngles.y,0),Ease(t/.65f)):pickupStartRotation;
             can.SetPositionAndRotation(Vector3.Lerp(storedPosition,held,lift),Quaternion.Slerp(groundRotation,actor.rotation,lift));
-            float contact=pick?Ease((t-.3f)/.35f):1-Ease((t-1.15f)/.65f);
+            if(!pick&&t>=1.35f)can.rotation=Quaternion.Slerp(pickupStartRotation,storedRotation,Ease((t-1.35f)/.45f));
+            float contact=pick?Ease((t-.3f)/.35f):1-Ease((t-1.05f)/.30f);
             if(lift>0&&lift<1&&contact>.999f)for(int pass=0;pass<4;pass++)for(int i=0;i<2;i++){
                 float reach=Vector3.Distance(arms[i].Upper.position,arms[i].Lower.position)+Vector3.Distance(arms[i].Lower.position,arms[i].End.position)-.0005f;
                 var delta=grips[i].position-arms[i].Upper.position;
