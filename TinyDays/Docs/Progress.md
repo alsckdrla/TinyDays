@@ -7,6 +7,7 @@
 ### GitHub 저장·다른 PC 재개 준비 (2026-10-04)
 
 - 사용자 요청으로 v0.132~v0.138의 카메라·짧은 디딤·물뿌리개 회피·경로 계산 개선과 검증/비교 자료를 저장한다. `Docs/References` 전체28개와 최신 MasterPlan·Progress·README, 변경된 루트/프로젝트 AGENTS를 포함한다. 사용자 품질 확인 대기는 그대로 유지한다.
+- 작업 커밋 `ffbe278e1c6f3d5109540e64b56e9e617d313188`을 `origin/main`에 푸시했고 `git ls-remote`의 원격 SHA와 로컬 SHA 일치를 확인했다. 원격 커밋의 참고 자료28개·기본 원본·생활 장면·진행 문서 포함도 확인했다. 남은 비추적 파일은 PC 전용 바로가기1개이며 로컬에 보존한다. 이 확인 기록은 후속 문서 커밋으로 함께 저장한다.
 - Logs 실행 파일·캐시와 PC 전용 `.lnk`는 로컬에 보존하며 업로드하지 않는다. 기본 모델·기존 클립·저장 장면과 프로토타입을 다시 생성하거나 변경하지 않는다. 원격 동기화 완료 여부는 푸시 뒤 로컬/원격 SHA 비교로 확인한다.
 - 다른 PC는 최신 `main`을 받은 뒤 AGENTS → MasterPlan → Progress → `RabbitRoute138Review.md` 순서로 읽고 `Assets/Scenes/RabbitHomeLifeStudy.unity`에서 재개한다. 기존 안전 거리와 짧은 디딤·좌회전/우패닝·거리별 키 이동을 유지한다.
 - 실행 파일은 Git 관리 대상이 아니다. Unity 2022.3.20f1에서 기존 장면을 사용해 `RabbitHomeLifeBuilder.BuildPlayer`를 실행하면 `Logs/RabbitHomeLifePlayer/TinyDaysRabbitHomeLife.exe`가 생성된다. 자산 재생성 없이 아래 README의 배치 빌드 방법을 사용한다.
