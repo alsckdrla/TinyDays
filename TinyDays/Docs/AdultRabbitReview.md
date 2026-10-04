@@ -13,9 +13,13 @@ v0.65 초안은 디자인 미승인이다. v0.66은 [재디자인 기록](AdultR
 
 ## 열기와 조작
 
+- 최신 v0.137: WASD/화살표와 Q/E는 중심점 거리×0.5m/s(최소 계산 거리1m)로 이동한다. Q 하강·E 상승을 외형에도 적용하며 패널 위 키 이동을 허용한다. 상세 `ReviewDistance137.md`.
+
+- v0.136 추가: WASD/화살표로 카메라 기준 수평 이동. 패널 위에서도 가능하며 포커스 상실/텍스트 입력/설정창에서는 차단한다. 최신 검사와 실행 파일은 `ReviewKeyboard136.md`를 따른다.
+
 - Unity 장면: `Assets/Scenes/AdultRabbitStudy.unity`. 메뉴 `Tiny Days → Adult rabbit → Open design review`로 연 뒤 Play한다.
 - Windows 검토 실행 파일: `Logs/AdultRabbitPlayer/TinyDaysAdultRabbit.exe`. 옆의 데이터 폴더와 DLL이 필요하다. Logs는 PC 간 Git 동기화 대상이 아니므로 다른 PC에서는 재빌드한다.
-- 왼쪽 드래그 패닝, 오른쪽 드래그 회전, 휠 줌, Home 기본 구도. 하단에서 상의·바지·신발·목수건·배낭을 각각 탈착한다. 전체 착용·기본 몸·정면·뒷면·기본 자세·관절 굽힘·네 발 전환 검토 자세를 제공한다.
+- v0.132: 왼쪽 드래그 회전, 오른쪽 드래그 패닝, 휠 줌, Home 기본 구도. 하단에서 상의·바지·신발·목수건·배낭을 각각 탈착한다. 전체 착용·기본 몸·정면·뒷면·기본 자세·관절 굽힘·네 발 전환 검토 자세를 제공한다.
 - 재생성: `powershell -ExecutionPolicy Bypass -File Tools/RebuildAdultRabbit.ps1 -BuildPlayer`. Unity에서 해당 프로젝트를 닫은 상태에서 실행한다. Blender 5.2.1 / Unity 2022.3.20f1의 기존 설치 경로를 사용한다. 검토 장면의 `ManualEdits`는 보존한다.
 
 ## 체형군과 장비 공유

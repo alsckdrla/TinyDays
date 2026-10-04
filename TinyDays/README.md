@@ -1,5 +1,21 @@
 # Tiny Days — 본게임
 
+현재 재개 기준은 [MasterPlan](Docs/MasterPlan.md) v0.138과 [Progress](Docs/Progress.md)다. 아래 농가 단계 설명은 보존 자료이며 최신 생활 검토는 `RabbitHomeLifeStudy`를 사용한다. 물뿌리개→벤치 경로 계산은 같은PC 실행 파일에서1408→493ms로 줄었으며 약0.5초는 남는다. 상세 [경로 성능 검토](Docs/RabbitRoute138Review.md).
+
+생활·동작·외형·농가·집 검토 공통 조작: **왼쪽 드래그 회전 / 오른쪽 드래그 패닝 / WASD·화살표 수평 이동 / Q 하강·E 상승**. W/↑ 전방, S/↓ 후방, A/← 좌측, D/→ 우측이며 카메라 방향을 따른다. 키 이동 속도는 현재 중심점 거리×0.5m/s(최소 계산 거리1m)로 가까우면 느리고 멀면 빠르다. 대각선과 중복 키는 더 빨라지지 않는다. 기존 휠·마우스·Home은 유지한다. 키 이동은 재생 일시정지/배속과 무관하고 패널 위에서도 가능하며, 텍스트 입력·설정/색상창·포커스 상실에는 차단한다. 상세 [거리별 카메라 검토](Docs/ReviewDistance137.md).
+
+## 다른 PC에서 생활 검토 재개 (v0.138)
+
+최신 `main`을 받은 뒤 AGENTS → MasterPlan → Progress → [경로 성능 검토](Docs/RabbitRoute138Review.md)를 읽고 `Assets/Scenes/RabbitHomeLifeStudy.unity`를 사용한다. 기본 원본은 `ArtSource/AdultRabbit - 01.blend`다. 참고 파일28개와 비교/검증 자료는 저장소에 포함하며 사용자 품질 확인 대기는 유지한다.
+
+실행 파일·캐시·PC 전용 바로가기는 업로드하지 않는다. Unity Editor를 닫은 상태에서 PowerShell로 아래를 실행한다. 프로젝트 경로만 해당 PC의 실제 위치로 바꾸며, 이 명령은 기존 자산을 다시 생성하지 않고 생활 프로그램만 빌드한다.
+
+```powershell
+& 'C:/Program Files/Unity/Hub/Editor/2022.3.20f1/Editor/Unity.exe' -batchmode -projectPath 'D:/mc da kim/Codex/TinyDays/TinyDays' -executeMethod RabbitHomeLifeBuilder.BuildPlayer -quit -logFile 'D:/mc da kim/Codex/TinyDays/TinyDays/Logs/home-life-rebuild.log'
+```
+
+빌드 로그의 `RABBIT_HOME_PLAYER_OK`와 성공 결과를 확인한다. 출력은 `Logs/RabbitHomeLifePlayer/TinyDaysRabbitHomeLife.exe`이며 실행할 때 같은 폴더의 데이터와 DLL도 함께 유지한다.
+
 작업 기준: [마스터 플랜](Docs/MasterPlan.md) v0.46. 현재는 **2-7-2 하루 길이·배속 사용자 확인 대기**다. 시작은 낮 12시·하루 5분·1배속이다. `시간대 비교` 하단에서 하루 길이 1~120분을 입력해 적용하거나 5·10·20·30분 버튼을 누른다. 0.5·1·2·4배속은 주민과 자동 낮밤에 함께 적용한다. 예: 20분·2배속은 실제 하루 10분이다. 검토 설정은 실행 중 유지하며 재실행하면 5분·1배로 돌아간다.
 
 특정 시간을 고정하거나 `자동 순환`으로 현재 시각부터 재개한다. 색상표 편집은 해당 시간에 고정하며 확인하면 색상을 저장하고 취소/Esc는 편집 전 색으로 돌아간다. 일시정지는 주민과 시간을 함께 멈춘다. 처음부터는 현재 하루 길이·배속·정지 여부를 유지하고 낮 12시 자동 모드로 돌아간다. 캐릭터 보완은 보류 상태다.
@@ -8,7 +24,7 @@
 
 Unity 2022.3.20f1 메뉴 **Tiny Days → Stage 2-6 → Open farm review**에서 `Assets/Scenes/FarmStudy.unity`를 열고 Play를 누른다. 목조집·노란 회벽집·짚지붕집과 오른쪽 창고, 텃밭·쉼터 사이로 임시 토끼 6명이 이동하고 머무른다. 실제 생산·자원·피로 판단은 아직 없다.
 
-하단 검토 버튼은 일시정지/재생, 처음부터, 전체 보기, 네 구도, 주민 목록, 메뉴 숨김이다. 주민을 클릭하면 선택하고 더블클릭하면 따라본다. 주민 목록을 열면 전체 번호가 표시되며 목록·주민·번호를 한 번 클릭해 따라볼 수 있다. 선택 후 목록을 닫고 선택한 번호만 유지한다. 포커싱 중에도 왼쪽 드래그·Q/E·가운데 회전·휠 줌을 유지하며, 조작한 구도로 주민을 계속 따라간다. 전체 보기/Home은 주민 선택·목록·번호를 해제하고 기본 전체 구도로 돌아간다. 메뉴 숨김은 목록·번호도 숨기고 오른쪽 하단의 같은 위치·크기 버튼으로 복원한다.
+하단 검토 버튼은 일시정지/재생, 처음부터, 전체 보기, 네 구도, 주민 목록, 메뉴 숨김이다. 주민을 클릭하면 선택하고 더블클릭하면 따라본다. 주민 목록을 열면 전체 번호가 표시되며 목록·주민·번호를 한 번 클릭해 따라볼 수 있다. 선택 후 목록을 닫고 선택한 번호만 유지한다. 포커싱 중에도 왼쪽 회전·오른쪽 패닝·WASD/화살표·Q/E·가운데 높이·휠 줌을 유지하며 이동 오프셋을 적용해 주민을 계속 따라간다. 전체 보기/Home은 오프셋·주민 선택·목록·번호를 해제하고 기본 전체 구도로 돌아간다. 메뉴 숨김은 목록·번호도 숨기고 오른쪽 하단의 같은 위치·크기 버튼으로 복원한다.
 
 전체/자유 보기에서는 주민 가림으로 투명화하지 않는다. 따라보는 주민 앞의 장애물과 카메라 내부·지하 진입 조건을 독립적으로 반투명 처리한다. 이번 검증은 `Docs/ResidentOcclusionVerification.txt`와 `Docs/ResidentSelectionObservation.md`에 기록한다.
 

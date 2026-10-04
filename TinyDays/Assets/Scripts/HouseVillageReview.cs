@@ -10,12 +10,13 @@ namespace TinyDays.Review
         Vector3 pivot,previous;
         float yaw,pitch,distance,baseDistance;
         bool rotating,panning;
+        bool cameraFocused=true;
         Font font;
         public int view;
         void OnEnable(){font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",18);if(reviewCamera)SetView(0);}
         void Start(){SetView(0);}
         void OnDisable(){if(occlusion)occlusion.Restore();rotating=panning=false;if(font)Destroy(font);}
-        void OnApplicationFocus(bool focused){if(!focused)rotating=panning=false;}
+        void OnApplicationFocus(bool focused){cameraFocused=focused;if(!focused)rotating=panning=false;}
         public void SetView(int index)
         {
             view=index;occlusion=GetComponent<FarmCameraOcclusion>();if(!occlusion)occlusion=gameObject.AddComponent<FarmCameraOcclusion>();occlusion.Initialize(transform);
@@ -27,15 +28,28 @@ namespace TinyDays.Review
         void Update()
         {
             bool ui=Input.mousePosition.y<58||Input.mousePosition.y>Screen.height-75;
+            if(ui)rotating=panning=false;
             if(Input.GetMouseButtonDown(FarmStudyReview.PanButton)){panning=!ui;previous=Input.mousePosition;}
             if(Input.GetMouseButtonDown(FarmStudyReview.RotateButton))rotating=!ui;
             if(Input.GetMouseButtonUp(FarmStudyReview.PanButton))panning=false;if(Input.GetMouseButtonUp(FarmStudyReview.RotateButton))rotating=false;
             if(Input.GetKeyDown(KeyCode.Home)){SetView(0);return;}
-            if(rotating){yaw=Mathf.Repeat(yaw+Input.GetAxisRaw("Mouse X")*12.5f,360);pitch=Mathf.Clamp(pitch-Input.GetAxisRaw("Mouse Y")*10,-90,75);}
-            if(panning){pivot+=FarmStudyReview.ScreenPan(Quaternion.Euler(pitch,yaw,0),Input.mousePosition-previous,distance,reviewCamera.fieldOfView,reviewCamera.pixelHeight);previous=Input.mousePosition;}
+            if(rotating)RotateCamera(new Vector2(Input.GetAxisRaw("Mouse X"),Input.GetAxisRaw("Mouse Y")));
+            if(panning){PanCamera(Input.mousePosition-previous);previous=Input.mousePosition;}
             if(!ui)distance=Mathf.Clamp(distance*Mathf.Exp(-Input.mouseScrollDelta.y*.12f),baseDistance*.2f,baseDistance*1.5f);
-            pivot.y+=((Input.GetKey(KeyCode.E)?1:0)-(Input.GetKey(KeyCode.Q)?1:0))*5*Time.unscaledDeltaTime;
+            KeyboardMove(ReviewCameraKeys.Read(),Time.unscaledDeltaTime);
+            KeyboardElevate(ReviewCameraKeys.ReadHeight(),Time.unscaledDeltaTime);
         }
+        public void KeyboardMove(Vector2 input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            Apply(false);
+            pivot+=FarmStudyReview.KeyboardPan(reviewCamera.transform.rotation,input,distance)*seconds;Apply(false);
+        }
+        public void KeyboardElevate(float input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            pivot+=Vector3.up*Mathf.Clamp(input,-1,1)*ReviewCameraKeys.Speed(distance)*seconds;Apply(false);
+        }
+        void RotateCamera(Vector2 axes){yaw=Mathf.Repeat(yaw+axes.x*12.5f,360);pitch=Mathf.Clamp(pitch-axes.y*10,-90,75);}
+        void PanCamera(Vector2 delta){pivot+=FarmStudyReview.ScreenPan(Quaternion.Euler(pitch,yaw,0),delta,distance,reviewCamera.fieldOfView,reviewCamera.pixelHeight);}
         void LateUpdate(){Apply(true);}
         void Apply(bool fade)
         {
@@ -46,7 +60,7 @@ namespace TinyDays.Review
         {
             if(font)GUI.skin.font=font;GUI.skin.label.fontSize=16;GUI.skin.label.normal.textColor=new Color(.27f,.29f,.22f);
             GUI.Label(new Rect(18,12,Screen.width-36,26),"Tiny Days · 집 3종과 작은 앞마당 · 디자인 검토");GUI.skin.label.fontSize=12;
-            GUI.Label(new Rect(18,40,Screen.width-36,25),"왼쪽 드래그 패닝 · 가운데 드래그 회전 · 휠 줌 · Q/E 높이 · Home 전체 보기");
+            GUI.Label(new Rect(18,40,Screen.width-36,25),"왼쪽 드래그 회전 · 오른쪽 드래그 패닝 · WASD/화살표 이동 · 휠 줌 · Q/E 높이 · Home 전체 보기");
             string[] labels={"전체 보기","목조집","노란 회벽집","작은 시골집"};float w=(Screen.width-32)/4f;
             for(int i=0;i<4;i++)if(GUI.Button(new Rect(16+i*w,Screen.height-46,w-6,32),labels[i]))SetView(i);
         }

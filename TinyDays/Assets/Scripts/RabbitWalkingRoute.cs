@@ -14,11 +14,35 @@ namespace TinyDays.Review {
         float heading,headingVelocity;
         bool stopped;
         public void StopTurning(){stopped=true;headingVelocity=0;}
+        internal void ResetProgress(){Distance=0;heading=startYaw;headingVelocity=0;stopped=false;}
         public float SpeedScale=>Mathf.Lerp(1,.3f,Mathf.InverseLerp(15,80,Mathf.Abs(Mathf.DeltaAngle(heading,At(Mathf.Min(Length,Distance+.16f)).rotation.eulerAngles.y))));
         public float Distance {get;private set;}
         public float Length=>lengths[Samples];
         public float Remaining=>Mathf.Max(0,Length-Distance);
         public RabbitWalkingRoute(Transform actor,Vector3 target,float arrivalYaw):this(actor,target,arrivalYaw,false){}
+        // A single distance clock across local avoidance waypoints: no intermediate stop.
+        internal RabbitWalkingRoute(Pose start,Vector3[] waypoints,float arrivalYaw){
+            startYaw=start.rotation.eulerAngles.y;endYaw=arrivalYaw;heading=startYaw;
+            var nodes=new Vector3[waypoints.Length+2];nodes[0]=start.position;
+            for(int i=0;i<waypoints.Length-1;i++)nodes[i+1]=new Vector3(waypoints[i].x,start.position.y,waypoints[i].z);
+            var end=waypoints[waypoints.Length-1];end.y=start.position.y;
+            Goal=new Pose(end,Quaternion.Euler(0,arrivalYaw,0));
+            nodes[nodes.Length-1]=end;
+            nodes[nodes.Length-2]=end-Goal.rotation*Vector3.forward*.65f;
+            nodes[nodes.Length-1]+=Goal.rotation*Vector3.forward*.14f;
+            var tangents=new Vector3[nodes.Length];
+            tangents[0]=start.rotation*Vector3.forward;
+            tangents[nodes.Length-1]=Goal.rotation*Vector3.forward;
+            for(int i=1;i<nodes.Length-1;i++)tangents[i]=(nodes[i+1]-nodes[i-1]).normalized;
+            tangents[nodes.Length-2]=Goal.rotation*Vector3.forward;
+            for(int i=0;i<=Samples;i++){
+                float span=i/(float)Samples*(nodes.Length-1);int j=Mathf.Min(nodes.Length-2,Mathf.FloorToInt(span));float u=span-j;
+                float d=Vector3.Distance(nodes[j],nodes[j+1]);float handle=Mathf.Min(.35f,d*.3f);
+                var a=nodes[j]+tangents[j]*handle;var b=nodes[j+1]-tangents[j+1]*handle;float v=1-u;
+                points[i]=v*v*v*nodes[j]+3*v*v*u*a+3*v*u*u*b+u*u*u*nodes[j+1];
+                if(i>0)lengths[i]=lengths[i-1]+Vector3.Distance(points[i-1],points[i]);
+            }
+        }
         internal RabbitWalkingRoute(Transform actor,Vector3 target,float arrivalYaw,bool stableApproach){
             var start=actor.position;target.y=start.y;
             startYaw=actor.eulerAngles.y;endYaw=arrivalYaw;

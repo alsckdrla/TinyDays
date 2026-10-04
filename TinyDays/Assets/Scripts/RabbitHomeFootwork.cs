@@ -19,7 +19,7 @@ namespace TinyDays.Review
         Func<float,Pose> route;
         int steps,segment=-1,swing;
         float duration,turnLowering=.035f;
-        bool turnOnly,exactSteps;
+        bool turnOnly,exactSteps,stagedPreparation;
         internal float ExactStepLowering {get;set;}=.035f;
         Vector3 from,to;
         Quaternion fromRotation,toRotation;
@@ -27,10 +27,14 @@ namespace TinyDays.Review
         public float MaxReachError {get;private set;}
         public string ReachDetail {get;private set;}
         public float Duration=>duration;
+        public int Footfalls=>steps;
+        public float LandingFraction {get;private set;}=1;
+        public int StepIndex=>segment;
+        public static int PreparationFootfalls(Pose from,Pose to)=>Vector3.Distance(from.position,to.position)<=.150001f&&Quaternion.Angle(from.rotation,to.rotation)<=45.001f?2:3;
         public float RestingPelvisDrop=>neutralLowering;
         public bool FitStandingReach {get;set;}
         static float Travel(float u){u=Mathf.Clamp01(u);const float a=.15f;if(u<a)return .5f*(u-a/Mathf.PI*Mathf.Sin(Mathf.PI*u/a))/(1-a);if(u>1-a)return 1-Travel(1-u);return (u-a*.5f)/(1-a);}
-        public float MotionFraction(float time)=>turnOnly?Ease(time/duration):Travel(Mathf.Clamp01(time/duration*(exactSteps?steps:steps+2)/steps));
+        public float MotionFraction(float time)=>stagedPreparation&&steps==3?Travel(time/.8f):turnOnly?Ease(time/duration):Travel(Mathf.Clamp01(time/duration*(exactSteps?steps:steps+2)/steps));
         public RabbitHomeFootwork(GameObject resident,float floorHeight)
         {
             actor=resident.transform;floor=floorHeight;
@@ -59,12 +63,16 @@ namespace TinyDays.Review
         public void Capture(){for(int i=0;i<2;i++){target[i]=legs[i].End.position;rotation[i]=legs[i].End.rotation;Planted[i]=true;}}
         public void Begin(Func<float,Pose> path,int movingSteps,float secondsPerStep=.28f)
         {
-            turnOnly=false;exactSteps=false;Capture();route=path;steps=Mathf.Max(2,movingSteps);duration=(steps+2)*secondsPerStep;segment=-1;
+            turnOnly=false;exactSteps=stagedPreparation=false;Capture();route=path;steps=Mathf.Max(2,movingSteps);duration=(steps+2)*secondsPerStep;segment=-1;
         }
         public void BeginExactPair(Func<float,Pose> path){Begin(path,2,.4f);exactSteps=true;duration=.8f;}
+        public void BeginPreparation(Func<float,Pose> path){
+            int count=PreparationFootfalls(path(0),path(1));Begin(path,count,.4f);
+            exactSteps=stagedPreparation=true;duration=count*.4f;
+        }
         public void BeginTurn(float yaw,int footfalls,float secondsPerStep,float pelvisLowering=.035f){
             turnLowering=pelvisLowering;
-            Capture();turnOnly=true;exactSteps=false;steps=footfalls;duration=steps*secondsPerStep;segment=-1;
+            Capture();turnOnly=true;exactSteps=stagedPreparation=false;steps=footfalls;duration=steps*secondsPerStep;segment=-1;
             var start=actor.rotation;var end=Quaternion.Euler(0,yaw,0);var position=actor.position;
             route=u=>new Pose(position,Quaternion.Slerp(start,end,u));
         }
@@ -83,7 +91,11 @@ namespace TinyDays.Review
                 segment=index;swing=index%2;
                 // Land ahead of the moving body so the planted interval spans
                 // either side of the hip, as it does in the normal walk.
-                var p=route(exactSteps?1:turnOnly?Mathf.Min((index+1f)/(steps-1),1):Travel(Mathf.Min((index+1.5f)/steps,1)));
+                // A longer preparation first plants at the midpoint, then the
+                // other foot arrives, and finally the first foot gathers.
+                float landing=stagedPreparation&&steps==3&&index==0?.5f:1;
+                LandingFraction=landing;
+                var p=route(exactSteps?landing:turnOnly?Mathf.Min((index+1f)/(steps-1),1):Travel(Mathf.Min((index+1.5f)/steps,1)));
                 from=target[swing];fromRotation=rotation[swing];
                 toRotation=p.rotation*restRotation[swing];to=Ground(swing,p.position+p.rotation*rest[swing],toRotation);
             }

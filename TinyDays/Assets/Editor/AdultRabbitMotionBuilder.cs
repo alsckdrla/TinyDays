@@ -156,8 +156,8 @@ public static class AdultRabbitMotionBuilder
         review.Select(1);review.slow=true;review.Advance(.4f);Check(Math.Abs(review.Elapsed-.2)<.0001,"0.5x clock");
         review.paused=true;review.Advance(.4f);Check(Math.Abs(review.Elapsed-.2)<.0001,"Paused clock");
         review.Select(0);Check(review.Elapsed==0,"Clip reset");review.paused=false;review.slow=false;
-        review.Home();var start=review.reviewCamera.transform.position;review.CameraDrag(0,new Vector2(40,20));Check(Vector3.Distance(start,review.reviewCamera.transform.position)>.01f,"Pan");
-        review.Home();review.CameraDrag(1,new Vector2(40,20));Check(Vector3.Distance(start,review.reviewCamera.transform.position)>.01f,"Orbit");
+        review.Home();var start=review.reviewCamera.transform.position;review.CameraDrag(FarmStudyReview.PanButton,new Vector2(40,20));Check(Vector3.Distance(start,review.reviewCamera.transform.position)>.01f,"Pan");
+        review.Home();review.CameraDrag(FarmStudyReview.RotateButton,new Vector2(40,20));Check(Vector3.Distance(start,review.reviewCamera.transform.position)>.01f,"Orbit");
         review.Home();review.CameraDrag(2,new Vector2(0,40));Check(Mathf.Abs(start.y-review.reviewCamera.transform.position.y)>.01f,"Height");
         review.Home();review.Zoom(1);Check(Vector3.Distance(start,review.reviewCamera.transform.position)>.01f,"Zoom");review.Home();
         log.Add("Direct-call clock 1x/0.5x/pause/reset and camera pan/orbit/height/zoom: PASS (not actual input)");

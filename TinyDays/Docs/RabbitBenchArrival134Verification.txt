@@ -1,0 +1,19 @@
+v0.134 bench arrival; automatic callbacks, not OS input or quality approval.
+connected=False 240fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 240fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 30fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 30fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 60fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 60fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 120fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=False 120fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002447 reach=0.000000
+connected=True 240fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 240fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 30fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 30fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 60fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 60fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 120fps 1x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+connected=True 120fps 0.5x: one two-footfall preparation <=0.8s; drift=0.000163 gap=0.002554 sole=0.002399 reach=0.000000
+Four preparation phases: pause/repeated request/cancel at safe pair completion/re-seat PASS.
+Existing bench/water/home regression, three-view render and Windows build PASS. Art/source FBX and saved scene hashes preserved. OS input not performed.

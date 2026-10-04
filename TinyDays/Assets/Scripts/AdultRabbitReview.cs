@@ -13,6 +13,7 @@ namespace TinyDays.Review
         float yaw=25,pitch=8,distance=5.6f;
         Vector3 pivot=new Vector3(0,1.06f,0),previous;
         bool pan,rotate;
+        bool cameraFocused=true;
         Font font;
         AdultFaceMotion faceMotion;
         Transform breathSpine;
@@ -23,7 +24,7 @@ namespace TinyDays.Review
         readonly Dictionary<Transform,Vector3> positions=new Dictionary<Transform,Vector3>();
         void OnEnable(){font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",16);}
         void OnDisable(){faceMotion?.Clear();faceMotion=null;if(breathSpine)breathSpine.position-=breathOffset;breathOffset=Vector3.zero;breathClock=0;pan=rotate=false;if(font)Destroy(font);}
-        void OnApplicationFocus(bool focused){if(!focused)pan=rotate=false;}
+        void OnApplicationFocus(bool focused){cameraFocused=focused;if(!focused)pan=rotate=false;}
         void Start(){CachePose();Home();}
         void CachePose(){if(rest.Count>0)return;foreach(var t in character.bodyParts.SelectMany(s=>s.bones).Distinct()){rest[t]=t.localRotation;positions[t]=t.localPosition;}}
         public void SetPose(int pose)
@@ -74,21 +75,34 @@ namespace TinyDays.Review
                 if(breathSpine&&currentPose==0){breathSpine.position-=breathOffset;breathClock+=Time.unscaledDeltaTime;breathOffset=Vector3.up*(.007f*Mathf.Sin(breathClock*Mathf.PI/2));breathSpine.position+=breathOffset;}
             }
             bool ui=Input.mousePosition.y<145||Input.mousePosition.y>Screen.height-75;
-            if(Input.GetMouseButtonDown(0)){pan=!ui;previous=Input.mousePosition;}
-            if(Input.GetMouseButtonDown(1))rotate=!ui;
-            if(!Input.GetMouseButton(0))pan=false;if(!Input.GetMouseButton(1))rotate=false;
+            if(Input.GetMouseButtonDown(FarmStudyReview.PanButton)){pan=!ui;previous=Input.mousePosition;}
+            if(Input.GetMouseButtonDown(FarmStudyReview.RotateButton))rotate=!ui;
+            if(!Input.GetMouseButton(FarmStudyReview.PanButton))pan=false;if(!Input.GetMouseButton(FarmStudyReview.RotateButton))rotate=false;
             if(ui){pan=rotate=false;}
-            if(rotate){yaw+=Input.GetAxis("Mouse X")*12.5f;pitch=Mathf.Clamp(pitch-Input.GetAxis("Mouse Y")*10,-65,75);}
-            if(pan){Vector3 delta=Input.mousePosition-previous;pivot+=FarmStudyReview.ScreenPan(reviewCamera.transform.rotation,new Vector2(delta.x,delta.y),distance,35,Screen.height);previous=Input.mousePosition;}
+            if(rotate)RotateCamera(new Vector2(Input.GetAxis("Mouse X"),Input.GetAxis("Mouse Y")));
+            if(pan){PanCamera(Input.mousePosition-previous);previous=Input.mousePosition;}
             if(!ui)distance=Mathf.Clamp(distance*Mathf.Exp(Input.mouseScrollDelta.y*.12f),1.6f,9);
-            if(Input.GetKeyDown(KeyCode.Home))Home();Apply();
+            if(Input.GetKeyDown(KeyCode.Home)){Home();return;}
+            KeyboardMove(ReviewCameraKeys.Read(),Time.unscaledDeltaTime);Apply();
+            KeyboardElevate(ReviewCameraKeys.ReadHeight(),Time.unscaledDeltaTime);
         }
+        public void KeyboardMove(Vector2 input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            Apply();
+            pivot+=FarmStudyReview.KeyboardPan(reviewCamera.transform.rotation,input,distance)*seconds;Apply();
+        }
+        public void KeyboardElevate(float input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            pivot+=Vector3.up*Mathf.Clamp(input,-1,1)*ReviewCameraKeys.Speed(distance)*seconds;Apply();
+        }
+        void RotateCamera(Vector2 axes){yaw+=axes.x*12.5f;pitch=Mathf.Clamp(pitch-axes.y*10,-65,75);}
+        void PanCamera(Vector2 delta){pivot+=FarmStudyReview.ScreenPan(reviewCamera.transform.rotation,delta,distance,35,Screen.height);}
         void Apply(){if(!reviewCamera)return;reviewCamera.transform.rotation=Quaternion.Euler(pitch,180+yaw,0);reviewCamera.transform.position=pivot-reviewCamera.transform.forward*distance;}
         void OnGUI()
         {
             if(font)GUI.skin.font=font;GUI.skin.label.normal.textColor=new Color(.2f,.22f,.25f);
             GUI.Label(new Rect(18,12,Screen.width-30,30),"Tiny Days · 성인 토끼 / 공용 의상 디자인 검토");
-            GUI.Label(new Rect(18,40,Screen.width-30,26),"왼쪽 패닝 · 오른쪽 회전 · 휠 줌 · Home 기본 구도 · 기본 호흡/깜빡임 자동");
+            GUI.Label(new Rect(18,40,Screen.width-30,26),"왼쪽 회전 · 오른쪽 패닝 · WASD/화살표 이동 · Q/E 높이 · 거리별 속도 · 휠 줌 · Home 복귀");
             GUILayout.BeginArea(new Rect(12,Screen.height-140,Screen.width-24,138));GUILayout.BeginHorizontal();
             string[] labels={"상의","바지","신발","목수건","배낭"};
             for(int i=0;i<character.wardrobe.Length;i++){

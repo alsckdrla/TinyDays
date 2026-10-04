@@ -77,7 +77,7 @@ public static class HouseVillageBuilder
     static void Verify()
     {
         var lines=new List<string>{"House village automatic checks / NOT live Game input, NOT minimum-PC performance measurement."};
-        Require(FarmStudyReview.PanButton==0&&FarmStudyReview.RotateButton==2,"Shared camera drag binding changed");
+        Require(FarmStudyReview.PanButton==1&&FarmStudyReview.RotateButton==0,"Shared camera drag binding changed");
         var o=root.GetComponent<FarmCameraOcclusion>();var all=root.GetComponentsInChildren<MeshRenderer>();var original=all.Select(r=>r.sharedMaterial).ToArray();
         for(int i=0;i<3;i++)
         {

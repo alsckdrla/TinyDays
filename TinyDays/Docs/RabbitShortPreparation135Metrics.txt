@@ -1,0 +1,3 @@
+v0.135 matched original full-target versus staged preparation, 240Hz; automatic, not quality approval.
+bench first foot horizontal travel 0.300396 -> 0.150198m; both knee angles and pelvis/head heights recorded at240Hz.
+can first foot horizontal travel 0.286493 -> 0.178978m; both knee angles and pelvis/head heights recorded at240Hz.

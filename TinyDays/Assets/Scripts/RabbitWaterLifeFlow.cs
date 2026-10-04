@@ -32,7 +32,7 @@ namespace TinyDays.Review {
             if(capture>=0&&capture+1<args.Length){home.paused=true;yield return new WaitForEndOfFrame();Bench.CapturePlayerCamera(args[capture+1]);yield return null;}
             Application.Quit(pass?0:1);
         }
-        public string Label=>State==Phase.ToBench?"벤치로 이동 · 방향 정리":State==Phase.BenchSitting?"벤치에 앉는 중":State==Phase.BenchResting?"벤치에서 6초 휴식":State==Phase.BenchRising?"벤치에서 일어나는 중":State==Phase.BenchDeparting?"벤치에서 약 1m 이동":State==Phase.Inside?"실내 대기":State==Phase.Exiting?"외출 중":State==Phase.ToCan?"물뿌리개로 이동":State==Phase.Picking?"물뿌리개 집기":State==Phase.ToFlowers?"화단으로 운반":State==Phase.Watering?"물 주기":State==Phase.ToStorage?"보관점으로 돌아오기":State==Phase.Putting?"제자리에 내려놓기":State==Phase.Finished?"완료 · 서서 대기":"중단 · 현재 위치 대기";
+        public string Label=>benchOwned&&Bench.PathBlocked?"이동 경로 막힘 · 재개 시 다시 확인":State==Phase.ToBench?"벤치로 이동 · 방향 정리":State==Phase.BenchSitting?"벤치에 앉는 중":State==Phase.BenchResting?"벤치에서 6초 휴식":State==Phase.BenchRising?"벤치에서 일어나는 중":State==Phase.BenchDeparting?"벤치에서 약 1m 이동":State==Phase.Inside?"실내 대기":State==Phase.Exiting?"외출 중":State==Phase.ToCan?"물뿌리개로 이동":State==Phase.Picking?"물뿌리개 집기":State==Phase.ToFlowers?"화단으로 운반":State==Phase.Watering?"물 주기":State==Phase.ToStorage?"보관점으로 돌아오기":State==Phase.Putting?"제자리에 내려놓기":State==Phase.Finished?"완료 · 서서 대기":"중단 · 현재 위치 대기";
         public void ResetTask(){
             exitApproachReady=false;
             Water.Shutdown();Bench.Shutdown();MaxOwnerPositionJump=0;benchOwned=benchRested=includeBench=false;State=Phase.Inside;remainder=0;StopRequested=false;Completed=0;
@@ -107,6 +107,7 @@ namespace TinyDays.Review {
             if(benchOwned){
                 Bench.AdvanceFlow(dt);
                 if(State==Phase.Finished||State==Phase.Held)return;
+                if(Bench.PathBlocked){resume=Phase.ToBench;StopRequested=false;State=Phase.Held;return;}
                 if(StopRequested&&(Bench.State==RabbitBenchReview.TaskState.Standing||Bench.State==RabbitBenchReview.TaskState.Resting)){
                     StopRequested=false;State=Phase.Held;return;
                 }
@@ -183,6 +184,7 @@ namespace TinyDays.Review {
                 if(GUI.Button(new Rect(column*width/3,y,width/3-3,24),column==0?"전체 · 정면":column==1?"전체 · 비스듬":"전체 · 측면",button))home.ViewLifeFlow(angle);
             }y+=29;
             GUI.Label(new Rect(0,y,width,50),"외출 → 물 주기 → 내려놓기"+(includeBench?" → 벤치 휴식":"")+"\n자동 귀가/물 채우기는 하지 않음",label);y+=50;
+            GUI.Label(new Rect(0,y,width,72),"왼쪽 회전 · 오른쪽 패닝\nWASD/화살표 이동 · 휠 줌\n가운데/Q/E 높이 · Home 복귀",label);y+=72;
         }
     }
 }

@@ -109,7 +109,8 @@ namespace TinyDays.Review
             Application.Quit(pass?0:1);
         }
         void OnDisable(){faceMotion?.Clear();faceMotion=null;drag=-1;pending=null;feet?.RestoreSourcePose();feet=null;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
-        void OnApplicationFocus(bool focus){if(!focus)drag=-1;}
+        bool cameraFocused=true;
+        void OnApplicationFocus(bool focus){cameraFocused=focus;if(!focus)drag=-1;}
         static float Ease(float u){u=Mathf.Clamp01(u);return u*u*(3-2*u);}
         static float Yaw(Vector3 direction)=>Mathf.Atan2(direction.x,direction.z)*Mathf.Rad2Deg;
         void SetYaw(float degrees){resident.transform.rotation=Quaternion.Euler(0,degrees,0);}
@@ -358,7 +359,7 @@ namespace TinyDays.Review
         }
         void Update(){if(smoke)return;CameraInput();Advance(Time.unscaledDeltaTime);ApplyCamera();}
         public void Home(){pivot=new Vector3(0,1.3f,-1.7f);yaw=155;pitch=18;distance=8;drag=-1;if(reviewCamera)reviewCamera.fieldOfView=40;ApplyCamera();}
-        public void View(float y){pivot=new Vector3(0,1.3f,-1.8f);yaw=y;pitch=8;distance=7;if(reviewCamera)reviewCamera.fieldOfView=40;ApplyCamera();}
+        public void View(float y){drag=-1;pivot=new Vector3(0,1.3f,-1.8f);yaw=y;pitch=8;distance=7;if(reviewCamera)reviewCamera.fieldOfView=40;ApplyCamera();}
         public void ViewInside(){pivot=new Vector3(-.45f,1f,-.7f);yaw=-30;pitch=25;distance=2.8f;if(reviewCamera)reviewCamera.fieldOfView=65;ApplyCamera();}
         void ApplyCamera(){if(!reviewCamera)return;reviewCamera.transform.rotation=Quaternion.Euler(pitch,180+yaw,0);reviewCamera.transform.position=pivot-reviewCamera.transform.forward*distance;}
         void CameraInput(){
@@ -369,11 +370,25 @@ namespace TinyDays.Review
             if(ui)drag=-1;
             for(int b=0;b<3;b++)if(Input.GetMouseButtonDown(b))drag=ui?-1:b;
             if(drag>=0&&!Input.GetMouseButton(drag))drag=-1;
-            if(drag==0)pivot+=FarmStudyReview.ScreenPan(reviewCamera.transform.rotation,delta,distance,reviewCamera.fieldOfView,Screen.height);
-            if(drag==1){yaw+=delta.x*.16f;pitch=Mathf.Clamp(pitch-delta.y*.16f,-89,75);}
-            if(drag==2)pivot+=Vector3.up*FarmStudyReview.MouseHeightDelta(delta.y,distance,reviewCamera.fieldOfView,Screen.height);
+            if(drag>=0)CameraDrag(drag,delta);
             if(!ui&&Input.mouseScrollDelta.y!=0)distance=Mathf.Clamp(distance*Mathf.Exp(-Input.mouseScrollDelta.y*.12f),1,14);
-            if(!ui)pivot.y+=((Input.GetKey(KeyCode.E)?1:0)-(Input.GetKey(KeyCode.Q)?1:0))*2*Time.unscaledDeltaTime;
+            KeyboardMove(ReviewCameraKeys.Read(),Time.unscaledDeltaTime);
+            KeyboardElevate(ReviewCameraKeys.ReadHeight(),Time.unscaledDeltaTime);
+        }
+        public void KeyboardMove(Vector2 input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            ApplyCamera();
+            pivot+=FarmStudyReview.KeyboardPan(reviewCamera.transform.rotation,input,distance)*seconds;ApplyCamera();
+        }
+        public void KeyboardElevate(float input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            pivot+=Vector3.up*Mathf.Clamp(input,-1,1)*ReviewCameraKeys.Speed(distance)*seconds;ApplyCamera();
+        }
+        public void CameraDrag(int button,Vector2 delta){
+            if(button==FarmStudyReview.PanButton)pivot+=FarmStudyReview.ScreenPan(reviewCamera.transform.rotation,delta,distance,reviewCamera.fieldOfView,Screen.height);
+            if(button==FarmStudyReview.RotateButton){yaw+=delta.x*.16f;pitch=Mathf.Clamp(pitch-delta.y*.16f,-89,75);}
+            if(button==FarmStudyReview.HeightDragButton)pivot+=Vector3.up*FarmStudyReview.MouseHeightDelta(delta.y,distance,reviewCamera.fieldOfView,Screen.height);
+            ApplyCamera();
         }
         void OnGUI(){
             if(!resident)return;
@@ -441,7 +456,7 @@ namespace TinyDays.Review
             if(GUI.Button(new Rect(0,y,w/3-3,24),"정면",buttonStyle))View(180);
             if(GUI.Button(new Rect(w/3,y,w/3-3,24),"측면",buttonStyle))View(90);
             if(GUI.Button(new Rect(2*w/3,y,w/3-3,24),"실내",buttonStyle))ViewInside();y+=31;
-            GUI.Label(new Rect(0,y,w,90),"왼쪽 드래그 패닝 · 오른쪽 회전\n가운데 높이 · 휠 줌 · Q/E 높이\nHome 기본 구도",labelStyle);
+            GUI.Label(new Rect(0,y,w,90),"왼쪽 드래그 회전 · 오른쪽 패닝\n가운데 높이 · 휠 줌 · Q/E 높이\nWASD/화살표 이동 · Home 기본 구도",labelStyle);
             GUI.EndScrollView();
         }
     }

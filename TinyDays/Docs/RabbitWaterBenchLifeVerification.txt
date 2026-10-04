@@ -1,11 +1,11 @@
 v0.128 water-to-bench routine; automated functions, not OS input or user quality approval.
-240Hz complete=52.6250s rootStep=0.004792 handoffBoneStep=0.000047
-fps=30 slow=False complete=52.6333 sole=0.002399 gap=0.002554 drift=0.000174 reach=0.000000
-fps=30 slow=True complete=105.2667 sole=0.002399 gap=0.002554 drift=0.000174 reach=0.000000
-fps=60 slow=False complete=52.6333 sole=0.002399 gap=0.002554 drift=0.000174 reach=0.000000
-fps=60 slow=True complete=105.2500 sole=0.002399 gap=0.002554 drift=0.000174 reach=0.000000
-fps=120 slow=False complete=52.6250 sole=0.002399 gap=0.002554 drift=0.000174 reach=0.000000
-fps=120 slow=True complete=105.2500 sole=0.002399 gap=0.002554 drift=0.000174 reach=0.000000
+240Hz complete=41.5250s rootStep=0.004792 handoffBoneStep=0.000047
+fps=30 slow=False complete=41.5333 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=30 slow=True complete=83.0667 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=60 slow=False complete=41.5333 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=60 slow=True complete=83.0500 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=120 slow=False complete=41.5250 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
+fps=120 slow=True complete=83.0500 sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000
 20 outdoor routines: PASS, no actor/can reset between runs
 20 indoor-to-end routines: PASS
 stop/pause/repeat/resume Exiting: PASS
@@ -20,4 +20,4 @@ stop/pause/repeat/resume BenchSitting: PASS
 stop/pause/repeat/resume BenchResting: PASS
 stop/pause/repeat/resume BenchRising: PASS
 stop/pause/repeat/resume BenchDeparting: PASS
-contacts sole=0.002399 gap=0.002554 drift=0.000294 reach=0.000000; rootStep=0.038334; handoffFrameStep=0.000797 (includes intentional movement); exactOwnerJump=0.000000; ownership/can/face/reset: PASS
+contacts sole=0.002399 gap=0.002554 drift=0.000163 reach=0.000000; rootStep=0.038334; handoffFrameStep=0.000797 (includes intentional movement); exactOwnerJump=0.000001; ownership/can/face/reset: PASS

@@ -22,12 +22,12 @@ public static class FarmUiLayoutChecks
             Require(right.x>0&&Math.Abs(right.z)<.001f&&up.z>0&&Math.Abs(up.x)<.001f,"Screen-space keyboard directions changed");
             Require(Math.Abs(diagonal.magnitude-FarmStudyReview.PanDistance(20)*FarmStudyReview.KeyboardPanMultiplier)<.001f,"Keyboard diagonal speed changed");
             Require(FarmStudyReview.KeyboardPan(UnityEngine.Quaternion.identity,new UnityEngine.Vector2(1,0),40).magnitude>right.magnitude,"Keyboard zoom scaling changed");
-            Require(FarmStudyReview.RotateButton==1&&FarmStudyReview.HeightDragButton==2,"Camera mouse bindings changed");
-            Require(!FarmStudyReview.RotationActive(false)&&FarmStudyReview.RotationActive(true),"Right-drag rotation state changed");
+            Require(FarmStudyReview.RotateButton==0&&FarmStudyReview.PanButton==1&&FarmStudyReview.HeightDragButton==2,"Camera mouse bindings changed");
+            Require(!FarmStudyReview.RotationActive(false)&&FarmStudyReview.RotationActive(true),"Left-drag rotation state changed");
             float near=FarmStudyReview.MouseHeightDelta(100,8,40,900),far=FarmStudyReview.MouseHeightDelta(100,32,40,900);
             Require(near>0&&far>near,"Middle-drag height direction or zoom scaling changed");
             Require(FarmStudyReview.ZoomFromWheel(10,1,34)>10&&FarmStudyReview.ZoomFromWheel(10,-1,34)<10,"Wheel zoom direction changed");
-            File.WriteAllText("Docs/Stage27UiVerification.txt","v0.62 PASS: 42 logical-pixel control height; 740px bottom-menu three-column/two-row wrap boundary; time-panel scroll top, bottom and no-overflow clamping; screen-space keyboard W/A/S/D and arrows, normalized diagonal, and zoom-scaled speed; right-drag rotation plus middle-drag height scaling; wheel-up zoom-out and wheel-down zoom-in. Direct layout checks, not live input.\n");
+            File.WriteAllText("Docs/Stage27UiVerification.txt","v0.132 bindings / v0.62 layout PASS: 42 logical-pixel control height; 740px bottom-menu three-column/two-row wrap boundary; time-panel scroll top, bottom and no-overflow clamping; screen-space keyboard W/A/S/D and arrows, normalized diagonal, and zoom-scaled speed; left-drag rotation, right-drag pan plus middle-drag height scaling; wheel-up zoom-out and wheel-down zoom-in. Direct layout checks, not live input.\n");
             UnityEngine.Debug.Log("STAGE27_UI_OK");
         }
         catch(Exception e){UnityEngine.Debug.LogException(e);EditorApplication.Exit(1);}

@@ -5,8 +5,9 @@ namespace TinyDays.Review
 {
     public sealed class FarmStudyReview : MonoBehaviour
     {
-        public const int PanButton=0;
-        public const int RotateButton=1;
+        public const int ClickButton=0;
+        public const int PanButton=1;
+        public const int RotateButton=0;
         public const int HeightDragButton=2;
         public const float MinZoomDistance=1f;
         public const float ClosePanReferenceDistance=8f;
@@ -29,7 +30,8 @@ namespace TinyDays.Review
         // Player-controlled framing relative to a followed resident.
         Vector3 followOffset;
         float yaw, pitch, orthographicSize, heightOffset;
-        bool cameraReady, rotatingCamera, panningCamera, rightRotateHeld, heightDragHeld;
+        bool cameraReady, rotatingCamera, panningCamera, heightDragHeld, rotationDragged;
+        Vector2 previousPanPointer;
         float desiredDistance, baseDistance;
         Vector3 previousPointer, previousHeightPointer;
         FarmCameraOcclusion occlusion;
@@ -66,7 +68,8 @@ namespace TinyDays.Review
             shadowQuality=GetComponent<ShadowQualitySettings>();if(!shadowQuality)shadowQuality=gameObject.AddComponent<ShadowQualitySettings>();
             shadowQuality.Configure(shadowLow,shadowBalanced,shadowHigh);ResetCameraToPreset();
         }
-        void OnApplicationFocus(bool focused){if(!focused){StopCameraDrags();CancelPointer();}}
+        bool cameraFocused=true;
+        void OnApplicationFocus(bool focused){cameraFocused=focused;if(!focused){StopCameraDrags();CancelPointer();}}
         float Scale=>Mathf.Clamp(Screen.width/1100f,.65f,1.5f);
         Rect ButtonRect(int i)
         {
@@ -90,7 +93,7 @@ namespace TinyDays.Review
             }
             if(settingsOpen)
             {
-                if(Input.GetMouseButtonDown(PanButton)&&shadowQuality)
+                if(Input.GetMouseButtonDown(ClickButton)&&shadowQuality)
                 {
                     Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
                     for(int i=0;i<3;i++)if(ShadowRow(i).Contains(p)){shadowQuality.Apply(i);break;}
@@ -105,19 +108,19 @@ namespace TinyDays.Review
                     lightingScroll=ClampLightingScroll(lightingScroll-Input.mouseScrollDelta.y*36,LightingPanel().height);
             }
             bool overMenu=PointerOverMenu();
-            if(Input.GetMouseButtonDown(RotateButton)&&!overMenu&&!following)BeginOverviewOrbitAtScreenCenter();
-            if(Input.GetMouseButtonDown(RotateButton))rightRotateHeld=!overMenu;
-            if(Input.GetMouseButtonUp(RotateButton))rightRotateHeld=false;
+            if(overMenu){CancelPointer();StopCameraDrags();}
+            if(Input.GetMouseButtonDown(PanButton)){panningCamera=!overMenu;previousPanPointer=Input.mousePosition;}
+            if(!Input.GetMouseButton(PanButton))panningCamera=false;
+            if(panningCamera){PanPointer((Vector2)Input.mousePosition-previousPanPointer);previousPanPointer=Input.mousePosition;}
             if(Input.GetMouseButtonDown(HeightDragButton)){heightDragHeld=!overMenu;previousHeightPointer=Input.mousePosition;}
             if(Input.GetMouseButtonUp(HeightDragButton))heightDragHeld=false;
-            rotatingCamera=rightRotateHeld;
             if(heightDragHeld&&Input.GetMouseButton(HeightDragButton))
             {
                 float delta=((Vector2)Input.mousePosition-(Vector2)previousHeightPointer).y;
                 ElevateCamera(MouseHeightDelta(delta,PanDistance(desiredDistance),reviewCamera.fieldOfView,reviewCamera.pixelHeight));
                 previousHeightPointer=Input.mousePosition;
             }
-            if(Input.GetMouseButtonDown(PanButton))
+            if(Input.GetMouseButtonDown(ClickButton))
             {
                 Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
                 bool handled=overMenu;
@@ -154,8 +157,8 @@ namespace TinyDays.Review
                 if(!handled)BeginPointer(Input.mousePosition);
                 else lastClickedResident=-1;
             }
-            if(pointerHeld&&Input.GetMouseButton(PanButton))MovePointer(Input.mousePosition);
-            if(Input.GetMouseButtonUp(PanButton))EndPointer(Input.mousePosition,Time.unscaledTimeAsDouble);
+            if(pointerHeld&&Input.GetMouseButton(ClickButton))MovePointer(Input.mousePosition);
+            if(Input.GetMouseButtonUp(ClickButton))EndPointer(Input.mousePosition,Time.unscaledTimeAsDouble);
             HandleCameraInput();
         }
         bool ValidResident(int i)=>director&&director.residents!=null&&i>=0&&i<director.residents.Length&&director.residents[i].root&&director.residents[i].root.gameObject.activeInHierarchy;
@@ -166,7 +169,7 @@ namespace TinyDays.Review
             ResetCameraToPreset();
         }
         public void ReleaseFocus(){following=false;close=false;}
-        public void ShowOverview(){CancelPointer();ReleaseFocus();followOffset=Vector3.zero;selected=-1;lastClickedResident=-1;residentListOpen=false;view=0;ResetCameraToPreset();}
+        public void ShowOverview(){CancelPointer();StopCameraDrags();ReleaseFocus();followOffset=Vector3.zero;selected=-1;lastClickedResident=-1;residentListOpen=false;view=0;ResetCameraToPreset();}
         public void ClickResident(int index,double time)
         {
             if(!ValidResident(index)){lastClickedResident=-1;return;}
@@ -177,28 +180,29 @@ namespace TinyDays.Review
         }
         public void BeginPointer(Vector2 position)
         {
-            pointerHeld=true;panningCamera=false;pressPosition=previousPointer=position;
+            pointerHeld=true;rotationDragged=rotatingCamera=false;pressPosition=previousPointer=position;
             pressedResident=PickResident(position);
         }
         public void MovePointer(Vector2 position)
         {
             if(!pointerHeld)return;
-            if(!panningCamera&&(position-pressPosition).sqrMagnitude>=36){panningCamera=true;lastClickedResident=-1;}
-            if(!panningCamera)return;
-            Vector3 movement=GroundScreenPan(reviewCamera.transform.rotation,position-(Vector2)previousPointer,PanDistance(desiredDistance),reviewCamera.fieldOfView,reviewCamera.pixelHeight);
-            ApplyPlanarPan(movement);previousPointer=position;
+            if(!rotationDragged&&(position-pressPosition).sqrMagnitude>=36){
+                rotationDragged=rotatingCamera=true;lastClickedResident=-1;
+                if(!following)BeginOverviewOrbitAtScreenCenter();
+            }
         }
         public void EndPointer(Vector2 position,double time)
         {
             if(!pointerHeld)return;
             MovePointer(position);
-            if(!panningCamera&&!PointerOverMenu()&&pressedResident>=0)ClickResident(pressedResident,time);
+            if(!rotationDragged&&!PointerOverMenu()&&pressedResident>=0)ClickResident(pressedResident,time);
             else lastClickedResident=-1;
-            pointerHeld=panningCamera=false;pressedResident=-1;
+            pointerHeld=rotationDragged=rotatingCamera=false;pressedResident=-1;
         }
-        void CancelPointer(){pointerHeld=panningCamera=false;pressedResident=lastClickedResident=-1;}
-        void StopCameraDrags(){rightRotateHeld=heightDragHeld=rotatingCamera=false;}
-        public static bool RotationActive(bool rightHeld)=>rightHeld;
+        void CancelPointer(){pointerHeld=rotationDragged=rotatingCamera=false;pressedResident=lastClickedResident=-1;}
+        void StopCameraDrags(){panningCamera=heightDragHeld=rotatingCamera=false;}
+        public static bool RotationActive(bool leftDragged)=>leftDragged;
+        public void PanPointer(Vector2 delta){ApplyPlanarPan(GroundScreenPan(reviewCamera.transform.rotation,delta,PanDistance(desiredDistance),reviewCamera.fieldOfView,reviewCamera.pixelHeight));}
         public int PickResident(Vector2 screenPosition)
         {
             if(!cameraReady||!reviewCamera.pixelRect.Contains(screenPosition))return -1;
@@ -251,7 +255,7 @@ namespace TinyDays.Review
         {
             if(!cameraReady)return;
             if(!hidden&&lightingOpen&&GUI.GetNameOfFocusedControl()=="DayMinutesInput")return;
-            if(Input.GetKeyDown(KeyCode.Home)){CancelPointer();ShowOverview();return;}
+            if(Input.GetKeyDown(KeyCode.Home)){CancelPointer();StopCameraDrags();ShowOverview();return;}
             if(rotatingCamera)
             {
                 yaw=Mathf.Repeat(yaw+Input.GetAxisRaw("Mouse X")*12.5f,360f);
@@ -259,18 +263,39 @@ namespace TinyDays.Review
             }
             float wheel=Input.mouseScrollDelta.y;
             if(!PointerOverMenu()&&Mathf.Abs(wheel)>.001f)desiredDistance=ZoomFromWheel(desiredDistance,wheel,baseDistance);
-            float height=(Input.GetKey(KeyCode.E)?1f:0f)-(Input.GetKey(KeyCode.Q)?1f:0f);
-            if(height!=0)
-            {
-                ElevateCamera(height*5f*Time.unscaledDeltaTime);
+            MoveKeyboardPivot(ReviewCameraKeys.Read(),Time.unscaledDeltaTime);
+            ElevateKeyboard(ReviewCameraKeys.ReadHeight(),Time.unscaledDeltaTime);
+        }
+        public void KeyboardMove(Vector2 input,float seconds)
+        {
+            if(MoveKeyboardPivot(input,seconds))ApplyCamera();
+        }
+        // Includes the existing vertical framing offset, not only the orbit radius.
+        public float KeyboardTargetDistance=>(-(Quaternion.Euler(pitch,yaw,0)*Vector3.forward)*desiredDistance+Vector3.up*heightOffset).magnitude;
+        public void KeyboardElevate(float input,float seconds){if(ElevateKeyboard(input,seconds))ApplyCamera();}
+        bool KeyboardAllowed=>cameraReady&&reviewCamera&&ReviewCameraKeys.Allowed(cameraFocused,settingsOpen||colorPicker.Open,!hidden&&lightingOpen&&ReviewCameraKeys.EditingText);
+        bool ElevateKeyboard(float input,float seconds){
+            if(!KeyboardAllowed)return false;
+            input=Mathf.Clamp(input,-1,1);
+            // Elevation can rebind the existing center target. Sample its changing distance
+            // at <=1/120s so 30/60/120fps do not accelerate differently at target boundaries.
+            float remaining=Mathf.Max(0,seconds);
+            if(input!=0)while(remaining>1e-6f){
+                float step=Mathf.Min(remaining,1f/120);
+                // The legacy rebind reads the camera ray. Refresh the virtual camera pose
+                // between substeps without running occlusion/fade more than once per frame.
+                var q=Quaternion.Euler(pitch,yaw,0);
+                reviewCamera.transform.SetPositionAndRotation(pivot-q*Vector3.forward*desiredDistance+Vector3.up*heightOffset,q);
+                ElevateCamera(input*ReviewCameraKeys.Speed(KeyboardTargetDistance)*step);remaining-=step;
             }
-            float horizontal=(Input.GetKey(KeyCode.D)||Input.GetKey(KeyCode.RightArrow)?1f:0f)-(Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.LeftArrow)?1f:0f);
-            float vertical=(Input.GetKey(KeyCode.W)||Input.GetKey(KeyCode.UpArrow)?1f:0f)-(Input.GetKey(KeyCode.S)||Input.GetKey(KeyCode.DownArrow)?1f:0f);
-            if(horizontal!=0||vertical!=0)
-            {
-                Vector3 movement=KeyboardPan(reviewCamera.transform.rotation,new Vector2(horizontal,vertical),desiredDistance)*Time.unscaledDeltaTime;
-                ApplyPlanarPan(movement);
-            }
+            return true;
+        }
+        bool MoveKeyboardPivot(Vector2 input,float seconds)
+        {
+            if(!KeyboardAllowed)return false;
+            // Runtime renders/fades once in LateUpdate, not once per input operation.
+            ApplyPlanarPan(KeyboardPan(Quaternion.Euler(pitch,yaw,0),input,KeyboardTargetDistance)*seconds);
+            return true;
         }
         public static Vector3 ScreenPan(Quaternion rotation,Vector2 pixels,float distance,float fov,int pixelHeight)
         {
@@ -336,7 +361,10 @@ namespace TinyDays.Review
             input=Vector2.ClampMagnitude(input,1);
             Vector3 right=Vector3.ProjectOnPlane(rotation*Vector3.right,Vector3.up).normalized;
             Vector3 up=Vector3.ProjectOnPlane(rotation*Vector3.forward,Vector3.up).normalized;
-            return (right*input.x+up*input.y)*PanDistance(zoomDistance)*KeyboardPanMultiplier;
+            // At an overhead view the forward projection vanishes; right still encodes yaw.
+            if(Vector3.ProjectOnPlane(rotation*Vector3.forward,Vector3.up).sqrMagnitude<1e-6f)
+                up=Vector3.Cross(right,Vector3.up).normalized;
+            return (right*input.x+up*input.y)*ReviewCameraKeys.Speed(zoomDistance);
         }
         public static float ZoomFromWheel(float distance,float wheel,float baseDistance)=>ClampZoomDistance(distance*Mathf.Exp(wheel*.12f),baseDistance);
         public static float ClampZoomDistance(float distance,float baseDistance)=>Mathf.Clamp(distance,MinZoomDistance,baseDistance*1.5f);
@@ -385,6 +413,7 @@ namespace TinyDays.Review
         }
         public void ResetCameraToPreset()
         {
+            CancelPointer();StopCameraDrags();
             if(!reviewCamera || !director || director.residents==null || director.residents.Length==0)return;
             occlusion=GetComponent<FarmCameraOcclusion>();if(!occlusion)occlusion=gameObject.AddComponent<FarmCameraOcclusion>();
             following=close&&ValidResident(focus);close=following;
@@ -430,7 +459,7 @@ namespace TinyDays.Review
             GUI.Label(new Rect(18,42,w-36,22),$"임시 생활 장면 · 이동과 머무르기 · {director.elapsed:F0}초");
             string[] labels={director.paused?"재생":"일시정지","처음부터","전체 보기",views[view],"주민 목록","메뉴 숨김"};
             for(int i=0;i<6;i++)Draw(ButtonRect(i),labels[i],pointer);
-            GUI.Label(new Rect(18,66,w-36,24),"클릭 선택 · 더블클릭 따라보기 · 드래그 이동 · WASD/화살표 이동 · 가운데 드래그 높이 · 우클릭 드래그 회전 · 휠 줌 · Q/E 높이 · Home 전체");
+            GUI.Label(new Rect(18,66,w-36,24),"좌클릭 선택 · 더블클릭 따라보기 · 좌드래그 회전 · 우드래그 패닝 · WASD/화살표 이동 · 가운데 높이 · 휠 줌 · Q/E 높이 · Home 전체");
             for(int i=0;i<director.residents.Length;i++)if((residentListOpen||selected==i)&&NameRect(i,out Rect rect))
                 Draw(rect,(selected==i?"● ":"")+"주민 "+(i+1),pointer);
             if(residentListOpen)

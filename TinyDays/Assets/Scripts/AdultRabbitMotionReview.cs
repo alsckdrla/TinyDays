@@ -108,7 +108,8 @@ namespace TinyDays.Review
         static readonly string[] Labels={"두 발 대기","두 발 총총걸음","네 발 대기 (보류)","깡충 (보류)","두 발 달리기","앉기","일어서기","앉은 자세"};
         void OnEnable(){faceMotion=null;if(!Application.isPlaying)return;panelButton=panelLabel=panelHeading=null;font=Font.CreateDynamicFontFromOSFont("Malgun Gothic",13);if(resident&&clips!=null&&clips.Length>=10)StartBreathing(false);else Sample(0);}
         void OnDisable(){faceMotion?.Clear();faceMotion=null;ResetLying();idleProfile.RestoreFidget();panelButton=panelLabel=panelHeading=null;panelScroll=Vector2.zero;PanelItems.Clear();Idle=null;followBreathing=false;sitCoat?.Dispose();sitCoat=null;pendingSit=false;coatClearance?.Dispose();coatClearance=null;drag=-1;active=-1;MovingReview=false;MoveWeight=0;WantsToWalk=false;footTransition?.RestoreSourcePose();footTransition=null;if(resident)resident.transform.localPosition=Vector3.zero;selected=0;elapsed=0;if(graph.IsValid())graph.Destroy();if(font)Destroy(font);}
-        void OnApplicationFocus(bool focus){if(!focus)drag=-1;}
+        bool cameraFocused=true;
+        void OnApplicationFocus(bool focus){cameraFocused=focus;if(!focus)drag=-1;}
         void Update(){HandleCamera();Advance(Time.unscaledDeltaTime);}
         AdultFaceMotion faceMotion;
         public int blinkSeed=1701;
@@ -166,8 +167,8 @@ namespace TinyDays.Review
         public void View(float angle){Home();yaw=angle;pitch=4;ApplyCamera();}
         void ApplyCamera(){reviewCamera.transform.rotation=Quaternion.Euler(pitch,180+yaw,0);reviewCamera.transform.position=pivot-reviewCamera.transform.forward*distance;}
         public void CameraDrag(int button,Vector2 delta){
-            if(button==0)pivot+=FarmStudyReview.ScreenPan(reviewCamera.transform.rotation,delta,distance,reviewCamera.fieldOfView,Screen.height);
-            if(button==1){yaw+=delta.x*.16f;pitch=Mathf.Clamp(pitch-delta.y*.16f,-89,75);}
+            if(button==FarmStudyReview.PanButton)pivot+=FarmStudyReview.ScreenPan(reviewCamera.transform.rotation,delta,distance,reviewCamera.fieldOfView,Screen.height);
+            if(button==FarmStudyReview.RotateButton){yaw+=delta.x*.16f;pitch=Mathf.Clamp(pitch-delta.y*.16f,-89,75);}
             if(button==2)pivot+=Vector3.up*FarmStudyReview.MouseHeightDelta(delta.y,distance,reviewCamera.fieldOfView,Screen.height);
             ApplyCamera();}
         public void Zoom(float wheel){distance=Mathf.Clamp(distance*Mathf.Exp(wheel*.12f),.5f,12);ApplyCamera();}
@@ -186,9 +187,17 @@ namespace TinyDays.Review
             int pressed=0,held=0;for(int b=0;b<3;b++){if(Input.GetMouseButtonDown(b))pressed|=1<<b;if(Input.GetMouseButton(b))held|=1<<b;}
             Vector3 delta=Input.mousePosition-previous;previous=Input.mousePosition;
             PointerInput(point,new Vector2(delta.x,delta.y),pressed,held,Input.mouseScrollDelta.y);
-            if(!IsPanelPoint(point,Screen.width,Screen.height)){
-                float h=(Input.GetKey(KeyCode.E)?1:0)-(Input.GetKey(KeyCode.Q)?1:0);if(h!=0){pivot+=Vector3.up*h*2*Time.unscaledDeltaTime;ApplyCamera();}
-            }
+            KeyboardMove(ReviewCameraKeys.Read(),Time.unscaledDeltaTime);
+            KeyboardElevate(ReviewCameraKeys.ReadHeight(),Time.unscaledDeltaTime);
+        }
+        public void KeyboardMove(Vector2 input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            ApplyCamera();
+            pivot+=FarmStudyReview.KeyboardPan(reviewCamera.transform.rotation,input,distance)*seconds;ApplyCamera();
+        }
+        public void KeyboardElevate(float input,float seconds){
+            if(!reviewCamera||!ReviewCameraKeys.Allowed(cameraFocused,editing:ReviewCameraKeys.EditingText))return;
+            pivot+=Vector3.up*Mathf.Clamp(input,-1,1)*ReviewCameraKeys.Speed(distance)*seconds;ApplyCamera();
         }
         bool ShowingRun => selected==4||(MovingReview&&footTransition.RunWeight>.5f);
         static readonly float[] SitPhases={0,.125f,.32f,.52f,.6875f,.75f,.90f,1},StandPhases={0,.14f,.22f,.36f,.55f,.75f,.90f,1};
@@ -248,7 +257,7 @@ namespace TinyDays.Review
                 selected>=5?(IsStandUp(selected)?new[]{"앉음","준비","손 지지","들기","올라가기","펴기","안정","서기"}:new[]{"서기","준비","굽힘","내려가기","접촉","손 짚기","안정","앉음"}):
                 new[]{"L Contact","L Recoil","L Passing","L High","R Contact","R Recoil","R Passing","R High"};
             for(int i=0;i<8;i++){int phase=i;PanelAction(ShowingRun?AdultRunTiming.Label(i):phases[i],()=>Pose(phase));}
-            PanelText("왼쪽 패닝 · 오른쪽 회전 · 가운데 높이\n휠 줌 · Q/E 높이 · Home 복귀");
+            PanelText("왼쪽 회전 · 오른쪽 패닝 · 가운데 높이\nWASD/화살표 이동 · 휠 줌\nQ/E 높이 · Home 복귀");
             PanelText("이동",true);
             PanelAction("이동 검토 / 처음 위치",BeginMovement);
             PanelAction("걷기 / 출발",()=>RequestRun(false),!SitTransition||Idle!=null);

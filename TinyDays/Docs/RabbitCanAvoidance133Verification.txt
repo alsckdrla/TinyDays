@@ -1,0 +1,13 @@
+v0.133 local can avoidance; automatic checks, not OS mouse input or quality approval.
+240fps 1x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.8063 correctionStep=0.001980; drift=0.000163
+240fps 0.5x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.8062 correctionStep=0.001980; drift=0.000163
+30fps 1x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.3864 correctionStep=0.014032; drift=0.000163
+30fps 0.5x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.3861 correctionStep=0.007919; drift=0.000163
+60fps 1x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.3852 correctionStep=0.007919; drift=0.000163
+60fps 0.5x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.4610 correctionStep=0.003959; drift=0.000163
+120fps 1x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.4610 correctionStep=0.003959; drift=0.000163
+120fps 0.5x finished; one continuous approach; prep steps=3; drop=0.006068 knee=4.8061 correctionStep=0.001980; drift=0.000163
+8 approach directions x4 can directions: 19 completed, 13 safely blocked; no root relocation when blocked.
+Preparation/walking stop and current-pose replan at5 offsets: PASS
+Left/right local exit obstructed individually: alternative route completes with5cm shoe/leg clearance PASS
+Both exits obstructed: standing/block label; blocker removed: replan PASS

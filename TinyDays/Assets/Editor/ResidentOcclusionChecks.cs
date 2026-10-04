@@ -47,7 +47,9 @@ public static class ResidentOcclusionChecks
             Check(review.IsFollowing,"Sub-threshold jitter released focus");
             review.MovePointer(new Vector2(16,200));Check(review.IsFollowing&&review.close,"Drag released focus");
             var offsetField=typeof(FarmStudyReview).GetField("followOffset",System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic);
-            Check(offsetField!=null&&((Vector3)offsetField.GetValue(review)).sqrMagnitude>0,"Drag did not retain a follow framing offset");
+            Check(offsetField!=null&&((Vector3)offsetField.GetValue(review)).sqrMagnitude==0,"Left orbit changed follow framing offset");
+            review.PanPointer(new Vector2(20,10));
+            Check(((Vector3)offsetField.GetValue(review)).sqrMagnitude>0,"Right pan did not retain a follow framing offset");
             review.EndPointer(new Vector2(16,200),4);Check(review.selected==3,"Drag unexpectedly selected resident");
             review.FocusResident(4);review.residentListOpen=true;review.ShowOverview();
             Check(!review.IsFollowing&&!review.close&&review.view==0&&review.selected==-1&&!review.residentListOpen,"Overview did not clear focus, selection and list");

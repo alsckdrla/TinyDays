@@ -4,8 +4,12 @@
 
 ## 보기와 조작
 
+- 최신 v0.137: WASD/화살표와 Q/E 속도는 중심점 거리×0.5m/s(최소 계산 거리1m)다. Q/E도 패널 위에서 가능하며 마우스 감도는 유지한다. 상세 `ReviewDistance137.md`.
+
+- v0.136 추가: WASD/화살표로 카메라 기준 수평 이동. 좌회전/우패닝과 기존 휠·Q/E·Home을 유지한다. 집 검토는 저장 Unity 장면의 자동 함수 검사이며 상세 `ReviewKeyboard136.md`를 따른다.
+
 - Unity 메뉴 **Tiny Days → House village → Open comparison** 또는 `Assets/Scenes/HouseVillageStudy.unity`를 연다. Play 후 전체 보기·목조집·노란 회벽집·작은 시골집 버튼으로 선택한다.
-- 왼쪽 드래그 화면 패닝, 가운데 드래그 회전, 휠 줌, Q/E 높이, Home 전체 보기. 기존 농가와 같은 감도·화면 패닝 계산을 사용한다.
+- v0.132: 왼쪽 드래그 회전, 오른쪽 드래그 화면 패닝, 휠 줌, Q/E 높이, Home 전체 보기. 기존 감도·화면 패닝 계산을 사용한다.
 - 주민이 없는 비교 장면이다. 일반 장애물 가림은 적용하지 않으며 카메라가 집·장식·지하에 들어갈 때만 기존 내부 반투명 예외를 사용한다.
 - [전체 비교](Captures/HouseVillage/Overview.png).
 - [목조집 확대](<Captures/HouseVillage/Timber Cottage-Oblique.png>): 가파른 청회색 지붕, 판재 벽, 다락창과 낮은 현관 데크. 화분 2·관목 2·상자·통·디딤돌 그룹.
