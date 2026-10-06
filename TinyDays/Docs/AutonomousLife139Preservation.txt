@@ -1,0 +1,6 @@
+v0.139 preservation check - 2026-10-05
+Original tracked ArtSource/Art/Scenes/Prototype files checked: 829
+Changed originals: 0
+Missing new asset .meta files: 0
+ManualEdits preservation: two regenerations passed in AutonomousLife139Integration.txt
+Local Logs builds and personal shortcut remain local; no GitHub upload.

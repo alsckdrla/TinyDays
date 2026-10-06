@@ -1,0 +1,8 @@
+Stability120, rain/night pause, short stability no build, food11 cancels: PASS
+Unavailable space waits without construction: PASS
+Production project cancels unstarted garden reservation: PASS
+Started garden priority, rain/night pause, direction change, completion exact save: PASS
+Both garden rest seats reserve independently and restore while resting: PASS
+142/144/145/146/147/148/149 source-preserving migration and repeat150 restore: PASS
+Malformed garden rejected without changing live state: PASS
+30/60/120fps x 0.5/1/4 rates: pressure threshold/reservations PASS

@@ -1,0 +1,4 @@
+Manual weather fade and clear lighting restore: PASS
+Custom sunlight and window emission preserved: PASS
+Invalid weather rejected without active state mutation: PASS
+Isolated v143 save exact simulation/view/time migration: PASS

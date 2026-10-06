@@ -1,0 +1,13 @@
+3-day cycle/day length/fixed/resume/blend: PASS
+Pause/4x/fixed lighting: PASS
+Winter growth50%/rest threshold/leisure: PASS
+Season during Plant: PASS
+Season during Harvest: PASS
+Season during Gather: PASS
+Season during Deliver: PASS
+Winter shortage/snow save/transition save/spring resume: PASS
+Legacy 142 exact migration/archive: PASS
+Legacy 144 exact migration/archive: PASS
+Invalid season preserves active state: PASS
+12-day season/weather/life/ownership cycle: PASS
+Season materials/snow clear/window emission preservation: PASS

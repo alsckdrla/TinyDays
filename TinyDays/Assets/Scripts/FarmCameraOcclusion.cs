@@ -52,7 +52,7 @@ namespace TinyDays.Review
                 while(group.parent&&group.parent!=scenery)group=group.parent;
                 bool ground=r.name=="Spring meadow"||r.name=="Meadow foundation"||r.name=="Backdrop";
                 items.Add(new Item{renderer=r,geometry=geometry,group=group,ground=ground,skin=skin,
-                    resident=r.GetComponentInParent<FarmResidentVisual>()});
+                    resident=r.GetComponentInParent<FarmResidentVisual>()||r.GetComponentInParent<TinyDays.Life.PoultryHenVisual>()});
             }
             initialized=true;
         }
@@ -290,6 +290,7 @@ namespace TinyDays.Review
                     var source=i.originals[k];var fade=i.fades[k];
                     if(!source||!fade)continue;
                     if(source.HasProperty("_BaseColor")){var c=source.GetColor("_BaseColor");c.a=i.alpha;fade.SetColor("_BaseColor",c);}
+                    if(source.HasProperty("_SnowAmount"))fade.SetFloat("_SnowAmount",source.GetFloat("_SnowAmount"));
                     if(source.HasProperty("_EmissionColor"))fade.SetColor("_EmissionColor",source.GetColor("_EmissionColor"));
                 }
             }

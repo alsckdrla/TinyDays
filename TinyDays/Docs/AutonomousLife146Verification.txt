@@ -1,0 +1,14 @@
+Natural autonomous approach/greeting at separate existing places: PASS at 105.5018
+Greeting/conversation/shared rest/end + exact restore/pause: PASS
+Interrupt hunger / pair and reservations valid: PASS
+Interrupt fatigue / pair and reservations valid: PASS
+Interrupt night / pair and reservations valid: PASS
+Interrupt rain / pair and reservations valid: PASS
+Interrupt shortage / pair and reservations valid: PASS
+Interrupt cancel / pair and reservations valid: PASS
+Invalid asymmetric partner rejected without mutation: PASS
+Legacy 142 state and archive: PASS
+Legacy 144 state and archive: PASS
+Legacy 145 state and archive: PASS
+Six days natural life/weather/seasons/food/reservations: PASS encounters=13 home=18
+0.5/1/4x common social clock: PASS

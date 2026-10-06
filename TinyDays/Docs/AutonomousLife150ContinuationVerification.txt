@@ -1,0 +1,3 @@
+Accelerated12days: PASS; winter=True; new meals=92; garden users=4,3,5,2,0,1; shared social=True; stock=46/60; warehouse=3; field=0
+Minute exact save roundtrip, every-second conservation/reservations: PASS
+Not actual2hour observation.

@@ -1,0 +1,21 @@
+120 eligible seconds, night/rain pause, transient recovery cancels plot: PASS
+Capacity-aware target, stable food and maintenance do not expand: PASS
+Pre-start direction cancel releases plot and workers: PASS
+No space preserves existing farm and reports waiting: PASS
+Both unstarted: warehouse reserves first: PASS
+Reserved but unstarted field yields its reservation to ready warehouse: PASS
+Digging pause + exact save: rain PASS
+Digging pause + exact save: night PASS
+Digging pause + exact save: food PASS
+Digging pause + exact save: fatigue PASS
+Digging pause + exact save: hunger PASS
+Started digging takes precedence, completes after mode change, no wood cost: PASS
+Blocked approach releases reservation; unblocked work completes: PASS
+30/60/120fps x 0.5/1/4, pause work continuity: PASS
+Legacy 142 same life/resources/view + source archive: PASS
+Legacy 144 same life/resources/view + source archive: PASS
+Legacy 145 same life/resources/view + source archive: PASS
+Legacy 146 same life/resources/view + source archive: PASS
+Legacy 147 same life/resources/view + source archive: PASS
+Legacy 148 same life/resources/view + source archive: PASS
+Malformed field rejected without altering active play: PASS

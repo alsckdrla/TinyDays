@@ -1,0 +1,1 @@
+Food12 -> earlier resident reserves meal in same tick -> gardener cancels before first work; no construction/ownership leak; exact restore: PASS

@@ -1,0 +1,4 @@
+Reserved ground basket counted once at exact shortage threshold: PASS
+Recoverable unreserved remainder included; blocked basket excluded: PASS
+Accelerated 12 days / winter / additional field harvest / per-minute exact restore: PASS, additional meals=47, food=49/60
+New carrot winter growth uses existing 50 percent factor: PASS

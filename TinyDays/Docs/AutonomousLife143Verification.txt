@@ -1,0 +1,12 @@
+v0.143 · 2026-10-05 · isolated Windows player observation
+PASS: native 800x600 Esc save/load, new game confirm/cancel, resident list selection, paused nameplate selection
+PASS: native 600x900 restart view/pause/resident restore, Esc save/load; no panel/button clipping
+PASS: actual 1x 10-minute day, uninterrupted 1800.2-second Windows run
+PASS: Day4 12.12, food18, produced21, consumed12, rests2, home9, autosave writes30
+PASS: per-second food/ownership/reservation/navigation state validation and saved snapshots validation
+PASS: quit saved payload equals Expected143 exactly
+PASS: new process exact JSON state restore and continued resident activities for 60.4 seconds
+PASS: final 1280x800 native Esc/save and Home input blocked; saved camera data exactly unchanged
+PASS: original/source preservation829 hashes unchanged; missing Assets meta0
+NOTE: weak settings label contrast retained for later UI work; user quality approval pending
+NOTE: 2-hour stability deferred; no GitHub upload

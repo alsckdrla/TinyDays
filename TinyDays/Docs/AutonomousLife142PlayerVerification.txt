@@ -1,0 +1,11 @@
+v0.142 Windows player verification - 2026-10-05
+Isolated save directory: Logs/Save142PlayerFinal
+61 actual seconds elapsed; paused state with dirty data was autosaved.
+Additional dirty state was persisted by normal Application.Quit callback.
+New Windows process restored exact payload including simulation, clock and camera.
+PASS LIFE142_PLAYER_AUTOSAVE_PAUSED_OK
+PASS LIFE142_PLAYER_QUIT_EXPECTED_READY
+PASS LIFE142_PLAYER_RESTART_EXACT_OK
+Final guard build also restored exact payload; missing isolated directory exits before opening player saves.
+Snapshot: Day 5; Hour 18.25; dayMinutes 20; rate 4; paused True; food 9
+No native OS button input was performed. Actual Esc/save/load/new-game and small/portrait UI verification are pending availability reply.

@@ -1,0 +1,4 @@
+Whole/close/stakes/digging/complete/winter renders: PASS
+Soil snow, inside 25%, spring/opaque restoration: PASS
+New farm resets field and preserves playback: PASS
+Actual window/user quality confirmation is separate.

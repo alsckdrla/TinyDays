@@ -41,6 +41,8 @@ namespace TinyDays.Review
         }
         public void ResumeClock(){Automatic=true;RenderHour();}
         public void RestartClock(){Day=1;Hour=12;Automatic=true;RenderHour();}
+        public void RestoreClock(int day,float hour,bool automatic)
+        {Day=day;Hour=hour;Automatic=automatic;RenderHour();}
         public void Apply(int index)
         {
             selected=Mathf.Clamp(index,0,3);
@@ -57,6 +59,7 @@ namespace TinyDays.Review
             var c=Colors.Get(t,0);if(c!=LightingColors.Default(t,0))return c;
             return t==1?new Color(.894f,.871f,.792f):t==3?new Color(.17f,.23f,.35f):c;
         }
+        public void RefreshEnvironment()=>RenderHour();
         void RenderHour()
         {
             var occlusion=GetComponent<FarmCameraOcclusion>();
@@ -83,6 +86,14 @@ namespace TinyDays.Review
             RenderSettings.ambientEquatorColor=Color.Lerp(Ambient(a,false),Ambient(b,false),u);
             RenderSettings.ambientGroundColor=Color.Lerp(Ambient(a,true),Ambient(b,true),u);
             reviewCamera.backgroundColor=Color.Lerp(CameraBackground(a),CameraBackground(b),u);
+            var weather=GetComponent<TinyDays.Life.AutonomousLifeWorld>()?.Weather.State;
+            if(weather!=null){
+                sun.intensity*=1-.25f*weather.cloud-.18f*weather.rain;
+                float ambient=1-.12f*weather.cloud-.10f*weather.rain;
+                RenderSettings.ambientSkyColor*=ambient;RenderSettings.ambientEquatorColor*=ambient;RenderSettings.ambientGroundColor*=ambient;
+                background=Color.Lerp(background,new Color(background.grayscale*.88f,background.grayscale*.92f,background.grayscale),.35f*weather.cloud);
+                reviewCamera.backgroundColor=Color.Lerp(reviewCamera.backgroundColor,background,.4f*weather.cloud);
+            }
             if(backdrop)backdrop.SetColor("_BaseColor",background);
             float glow=Mathf.Lerp(a==1?0:a==3?1.05f:.4f,b==1?0:b==3?1.05f:.4f,u);
             float windowBlend=Mathf.Lerp(a==1?0:1,b==1?0:1,u);

@@ -1,0 +1,3 @@
+Safe field candidates: 8 first=(2.15, 0.00, -2.30)
+Natural 4 days: field=3 planted=True harvested=True warehouse=3 food=49, no forced expansion
+Prepared shortage: reserve/dig/finish/production exact save: PASS

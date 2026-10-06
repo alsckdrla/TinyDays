@@ -73,7 +73,7 @@ namespace TinyDays.Review
                 resident.visual.Sample(time+resident.offset,p.walkTime,p.weight);
             }
         }
-        public void Restart(){elapsed=0;Sample(0);}
+        public void Restart(){var life=GetComponent<TinyDays.Life.AutonomousLifeWorld>();if(life){life.Restart();return;}elapsed=0;Sample(0);}
         public void Advance(float realSeconds){elapsed+=Playback.ScaledSeconds(realSeconds,paused);Sample(elapsed);}
         void Update(){Advance(Time.unscaledDeltaTime);}
     }

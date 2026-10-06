@@ -1,0 +1,12 @@
+Baseline files: 1140
+Changed intended runtime scripts: 8
+Preserved existing files: 1132
+TinyDays/Assets/Scripts/AutonomousGrowth.cs
+TinyDays/Assets/Scripts/AutonomousLifeSave.cs
+TinyDays/Assets/Scripts/AutonomousLifeWorld.cs
+TinyDays/Assets/Scripts/AutonomousNavigation.cs
+TinyDays/Assets/Scripts/AutonomousSaveData.cs
+TinyDays/Assets/Scripts/AutonomousSeason.cs
+TinyDays/Assets/Scripts/AutonomousSimulation.cs
+TinyDays/Assets/Scripts/FarmStudyReview.cs
+Missing .meta: []

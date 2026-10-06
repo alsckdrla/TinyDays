@@ -1,0 +1,16 @@
+2026-10-05 | Winter fixed, weather automatic, 1x, day 10 minutes.
+Isolated save: Logs/Save145Observation. No user save accessed.
+Per-second state/reservation/save validation + intermittent actual Windows screen observation.
+Not a 2-hour real-time four-season observation.
+LIFE145_WINTER_START
+LIFE145_SAMPLE wall=60.4 day=1 weather=맑음 food=11 produced=6 consumed=0 home=0 shelter=0
+LIFE145_SAMPLE wall=120.8 day=1 weather=흐림 food=15 produced=6 consumed=0 home=0 shelter=0
+LIFE145_SAMPLE wall=180.2 day=1 weather=눈 food=14 produced=6 consumed=1 home=0 shelter=22
+LIFE145_SAMPLE wall=240.7 day=1 weather=흐림 food=13 produced=6 consumed=2 home=3 shelter=38
+LIFE145_SAMPLE wall=300.1 day=2 weather=맑음 food=13 produced=6 consumed=2 home=3 shelter=38
+LIFE145_SAMPLE wall=360.5 day=2 weather=맑음 food=13 produced=6 consumed=2 home=3 shelter=38
+LIFE145_SAMPLE wall=421.0 day=2 weather=눈 food=13 produced=6 consumed=2 home=3 shelter=38
+LIFE145_SAMPLE wall=480.3 day=2 weather=눈 food=12 produced=6 consumed=3 home=3 shelter=68
+LIFE145_SAMPLE wall=540.8 day=2 weather=맑음 food=15 produced=14 consumed=3 home=3 shelter=94
+LIFE145_SAMPLE wall=600.1 day=2 weather=맑음 food=20 produced=14 consumed=3 home=3 shelter=94
+LIFE145_REALTIME_10MIN_OK snow=173 shelter=94

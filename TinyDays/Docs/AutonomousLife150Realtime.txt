@@ -1,0 +1,5 @@
+Actual Windows 1280x800, initial farm, maintenance,10min day,1x, no gameplay inputs
+LIFE150_REALTIME_20MIN_OK wall=1200.1 garden=3
+Final {"day": 3, "hour": 12.821619987487793, "elapsed": 1222.0006103515625, "counts": [16, 26, 16, 6, 4, 4, 16, 2, 12, 0], "garden": {"stage": 3, "stability": 120.0, "progress": 60.0, "retry": 536.701416015625, "site": {"x": -9.850000381469727, "y": 0.0, "z": -6.300005912780762}}, "residents": 6}
+Per-second simulation/reservation/full snapshot validation; minute autosave and normal quit
+Final code additionally fixes legacy night spawn, resident list/toast overlap and same-tick meal reservation before first garden work; separately tested. This20min run is the original150 observation build.

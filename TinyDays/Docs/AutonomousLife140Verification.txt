@@ -1,0 +1,16 @@
+v0.140 automated checks; not OS input, wall-clock observation, or user approval.
+Concurrent capacity (34/36), last meal/cancel/oldest-first, empty food/all residents fed: PASS
+Same-needs traits, urgent override, rest -0.1, leisure x1.5, traits-off control: PASS
+Single station/3 residents, blocked store and homes: each restarts <=30s and completes <=90s: PASS
+Three residents / opposite narrow passage / >=0.595m validation / 90s completion: PASS
+6 days 30fps 0.5x: food=17 produced=32 eaten=24 homes=18 recoveries=0: PASS
+6 days 30fps 1x: food=16 produced=33 eaten=24 homes=18 recoveries=0: PASS
+6 days 30fps 4x: food=17 produced=32 eaten=24 homes=18 recoveries=2: PASS
+6 days 60fps 0.5x: food=17 produced=34 eaten=24 homes=18 recoveries=0: PASS
+6 days 60fps 1x: food=17 produced=32 eaten=24 homes=18 recoveries=0: PASS
+6 days 60fps 4x: food=17 produced=34 eaten=24 homes=18 recoveries=0: PASS
+6 days 120fps 0.5x: food=17 produced=32 eaten=24 homes=18 recoveries=0: PASS
+6 days 120fps 1x: food=17 produced=34 eaten=24 homes=18 recoveries=0: PASS
+6 days 120fps 4x: food=16 produced=33 eaten=24 homes=18 recoveries=0: PASS
+Shared clock/rate/pause/reset reservations, visible dropped basket: PASS
+Two regenerations preserve unsaved ManualEdits: PASS

@@ -1,0 +1,18 @@
+Before150 baseline: 4764 files
+Intentional changes:12 (10 existing scripts + MasterPlan/Progress)
+Other 4752 files unchanged; none missing
+Original Blender/assets/scenes/manual data preserved
+Missing Assets meta:0
+Logs builds/test saves excluded from Git; no GitHub upload
+TinyDays\Assets\Scripts\AutonomousField.cs
+TinyDays\Assets\Scripts\AutonomousGrowth.cs
+TinyDays\Assets\Scripts\AutonomousLifeSave.cs
+TinyDays\Assets\Scripts\AutonomousLifeWorld.cs
+TinyDays\Assets\Scripts\AutonomousNavigation.cs
+TinyDays\Assets\Scripts\AutonomousSaveData.cs
+TinyDays\Assets\Scripts\AutonomousSeason.cs
+TinyDays\Assets\Scripts\AutonomousSimulation.cs
+TinyDays\Assets\Scripts\AutonomousWeather.cs
+TinyDays\Assets\Scripts\FarmStudyReview.cs
+TinyDays\Docs\MasterPlan.md
+TinyDays\Docs\Progress.md

@@ -1,0 +1,4 @@
+Whole/close/stakes/working/complete/winter renders: PASS
+Garden soil and wood snow, inside25%, spring/opaque restore: PASS
+Reset six residents/no garden, preserve playback: PASS
+Actual UI and user quality confirmation remain separate.

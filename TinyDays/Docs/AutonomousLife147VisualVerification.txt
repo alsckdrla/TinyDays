@@ -1,0 +1,2 @@
+Whole/close/winter renders generated
+Coop roof snow / interior alpha25 / spring and material restore: PASS

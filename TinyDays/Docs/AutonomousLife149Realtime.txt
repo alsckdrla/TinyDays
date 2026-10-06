@@ -1,0 +1,31 @@
+Final149 Windows player, isolated Save149FinalObservation. Fresh initial farm, stockpile direction, 1x, 10min days.
+LIFE149_OBSERVATION_START existing isolated fixture=False
+LIFE149_SAMPLE wall=60.4 food=10/36 field=0 pressure=74.5 work=0.0 warehouse=0 meals=0 home=0
+LIFE149_SAMPLE wall=120.9 food=14/36 field=1 pressure=120.0 work=0.0 warehouse=0 meals=0 home=0
+LIFE149_SAMPLE wall=180.3 food=21/36 field=2 pressure=120.0 work=6.2 warehouse=0 meals=1 home=0
+LIFE149_SAMPLE wall=240.8 food=20/36 field=2 pressure=120.0 work=6.2 warehouse=0 meals=2 home=3
+LIFE149_SAMPLE wall=300.2 food=20/36 field=2 pressure=120.0 work=6.2 warehouse=0 meals=2 home=3
+LIFE149_SAMPLE wall=360.9 food=20/36 field=2 pressure=120.0 work=6.2 warehouse=0 meals=2 home=3
+LIFE149_SAMPLE wall=420.9 food=20/36 field=2 pressure=120.0 work=6.2 warehouse=0 meals=2 home=3
+LIFE149_SAMPLE wall=480.3 food=19/36 field=2 pressure=120.0 work=6.2 warehouse=0 meals=3 home=3
+LIFE149_SAMPLE wall=540.9 food=21/36 field=2 pressure=120.0 work=39.9 warehouse=0 meals=3 home=3
+LIFE149_SAMPLE wall=600.3 food=29/36 field=3 pressure=120.0 work=60.0 warehouse=0 meals=3 home=3
+LIFE149_SAMPLE wall=660.8 food=34/36 field=3 pressure=120.0 work=60.0 warehouse=0 meals=3 home=3
+LIFE149_SAMPLE wall=720.5 food=34/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=5 home=3
+LIFE149_SAMPLE wall=780.9 food=33/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=3
+LIFE149_SAMPLE wall=840.5 food=36/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=6
+LIFE149_SAMPLE wall=900.0 food=36/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=6
+LIFE149_SAMPLE wall=960.9 food=36/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=6
+LIFE149_SAMPLE wall=1020.5 food=36/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=6
+LIFE149_SAMPLE wall=1081.0 food=35/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=6
+LIFE149_SAMPLE wall=1140.4 food=36/36 field=3 pressure=120.0 work=60.0 warehouse=1 meals=6 home=6
+LIFE149_SAMPLE wall=1200.0 food=35/36 field=3 pressure=120.0 work=60.0 warehouse=2 meals=8 home=6
+LIFE149_REALTIME_20MIN_OK wall=1200.0 field=3
+Runtime simulation/reservations/full save validated once per second. Intermediate aborted observations excluded.
+
+Resume: Save149Resume isolated copy, 149 data/player, existing143 probe reused.
+LIFE143_RESTART_EXACT_OK
+LIFE143_OBSERVATION_START resume=True duration=60
+LIFE143_SAMPLE wall=60.4 elapsed=1290.6 day=3 hour=15.56 food=38 produced=41 consumed=9 rests=2 home=6 saves=2 actions=Shelter,Shelter,Shelter
+LIFE143_RESUMED_LIFE_60SEC_OK
+LIFE143_QUIT_EXPECTED_READY

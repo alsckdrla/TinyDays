@@ -1,0 +1,13 @@
+Weather cycle/fixed/resume: PASS
+Pause,4x, fixed lighting independence: PASS
+Three shelter reservations,clear resumes production: PASS
+Rain during Plant: PASS
+Rain during Harvest: PASS
+Rain during Gather: PASS
+Rain during Deliver: PASS
+Food shortage during rain: PASS
+Blocked shelters recover/night returns: PASS
+Rain action/weather/ownership save exact: PASS
+142 migration preserves progress/sites; original archive: PASS
+Invalid migration rejected without mutation: PASS
+Accelerated three-day weather/life/ownership regression: PASS

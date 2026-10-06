@@ -1,0 +1,39 @@
+v0.139 actual Windows player observation - 2026-10-05
+Build: Logs/AutonomousLifePlayer/TinyDaysAutonomousLife.exe
+Configuration: 10 minute day, 1x, Day 1 12:00; no pause/speed/time/reset input during this run.
+Actual wall-clock: 1800 seconds. Per-minute state validation plus periodic native window observations.
+Native input verified: resident list, resident selection/focus/action reason, Home, menu hide/show.
+Not a continuous video or user quality approval. Detailed task animations and progress saving remain deferred.
+Runtime Exception/Error/Assertion matches: 0
+
+LIFE139_WALL_SAMPLE wall=60.0 simulated=62.6 day=1 food=11 produced=6 eaten=0 home=0
+LIFE139_WALL_SAMPLE wall=120.0 simulated=122.6 day=1 food=15 produced=12 eaten=0 home=0
+LIFE139_WALL_SAMPLE wall=180.0 simulated=182.6 day=1 food=24 produced=15 eaten=0 home=0
+LIFE139_WALL_SAMPLE wall=240.0 simulated=242.7 day=1 food=22 produced=15 eaten=2 home=3
+LIFE139_WALL_SAMPLE wall=300.0 simulated=302.7 day=2 food=22 produced=15 eaten=2 home=3
+LIFE139_WALL_SAMPLE wall=360.0 simulated=362.6 day=2 food=22 produced=15 eaten=2 home=3
+LIFE139_WALL_SAMPLE wall=420.0 simulated=422.6 day=2 food=22 produced=15 eaten=2 home=3
+LIFE139_WALL_SAMPLE wall=480.0 simulated=482.6 day=2 food=21 produced=15 eaten=3 home=3
+LIFE139_WALL_SAMPLE wall=540.0 simulated=542.7 day=2 food=21 produced=15 eaten=3 home=3
+LIFE139_WALL_SAMPLE wall=600.0 simulated=602.8 day=2 food=21 produced=15 eaten=3 home=3
+LIFE139_WALL_SAMPLE wall=660.0 simulated=662.9 day=2 food=20 produced=15 eaten=4 home=3
+LIFE139_WALL_SAMPLE wall=720.0 simulated=723.0 day=2 food=19 produced=15 eaten=5 home=3
+LIFE139_WALL_SAMPLE wall=780.0 simulated=783.2 day=2 food=18 produced=15 eaten=6 home=3
+LIFE139_WALL_SAMPLE wall=840.0 simulated=843.3 day=2 food=18 produced=15 eaten=6 home=6
+LIFE139_WALL_SAMPLE wall=900.0 simulated=903.4 day=3 food=18 produced=15 eaten=6 home=6
+LIFE139_WALL_SAMPLE wall=960.0 simulated=963.5 day=3 food=18 produced=15 eaten=6 home=6
+LIFE139_WALL_SAMPLE wall=1020.0 simulated=1023.6 day=3 food=18 produced=15 eaten=6 home=6
+LIFE139_WALL_SAMPLE wall=1080.0 simulated=1083.8 day=3 food=18 produced=15 eaten=6 home=6
+LIFE139_WALL_SAMPLE wall=1140.0 simulated=1143.9 day=3 food=18 produced=15 eaten=6 home=6
+LIFE139_WALL_SAMPLE wall=1200.0 simulated=1204.0 day=3 food=25 produced=24 eaten=8 home=6
+LIFE139_WALL_SAMPLE wall=1260.0 simulated=1264.1 day=3 food=25 produced=24 eaten=8 home=6
+LIFE139_WALL_SAMPLE wall=1320.0 simulated=1324.2 day=3 food=24 produced=24 eaten=9 home=6
+LIFE139_WALL_SAMPLE wall=1380.0 simulated=1384.4 day=3 food=24 produced=24 eaten=9 home=6
+LIFE139_WALL_SAMPLE wall=1440.0 simulated=1444.5 day=3 food=24 produced=24 eaten=9 home=9
+LIFE139_WALL_SAMPLE wall=1500.0 simulated=1504.6 day=4 food=24 produced=24 eaten=9 home=9
+LIFE139_WALL_SAMPLE wall=1560.0 simulated=1564.7 day=4 food=24 produced=24 eaten=9 home=9
+LIFE139_WALL_SAMPLE wall=1620.0 simulated=1624.8 day=4 food=24 produced=24 eaten=9 home=9
+LIFE139_WALL_SAMPLE wall=1680.0 simulated=1684.9 day=4 food=23 produced=24 eaten=10 home=9
+LIFE139_WALL_SAMPLE wall=1740.0 simulated=1745.1 day=4 food=22 produced=24 eaten=11 home=9
+LIFE139_WALL_SAMPLE wall=1800.0 simulated=1805.2 day=4 food=21 produced=24 eaten=12 home=9
+LIFE139_REALTIME_30MIN_OK

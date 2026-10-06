@@ -1,0 +1,5 @@
+PASS roundtrip + 6s uninterrupted/resumed comparison: Rest,Plant,Eat,Gather,Deliver,Collect,Leisure,Harvest,Home; moving/sleeping/drop/collect/path-block
+PASS Day/hour/fixed clock/day length/rate/pause/camera framing/follow/selection/menu hidden
+PASS same-site waiting/reservation roundtrip
+PASS atomic primary/backup, corruption fallback/preservation/explicit replacement, failed load unchanged, locked write, autosave while paused, normal quit, new game, invalid number/ID/food/scene
+Isolated fixture directory: E:\mck\9999. Codex\Tiny Days\TinyDays\Logs\Save142Checks-595ee62615b84b15911614cd2b294cd0

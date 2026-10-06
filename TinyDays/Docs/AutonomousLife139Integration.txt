@@ -1,0 +1,14 @@
+v0.139 integration/failure checks. Accelerated tests, not real wall-clock or user approval.
+30fps 0.5x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+30fps 1x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+30fps 4x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+60fps 0.5x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+60fps 1x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+60fps 4x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+120fps 0.5x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+120fps 1x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+120fps 4x: food=21 harvested=6 gathered=3 consumed=12 home=9 recovered=0: PASS
+Blocked production / release / food recovery: PASS
+Interrupted delivery / bundle ownership / conservation / recovery: PASS
+0.5x / fixed-time life / common pause: PASS
+Two regenerations preserve ManualEdits: PASS

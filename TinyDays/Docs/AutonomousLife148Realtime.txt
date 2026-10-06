@@ -1,0 +1,15 @@
+Final Windows player / isolated Logs/Save148FinalObservation
+life148-final-realtime.log: LIFE148_REALTIME_20MIN_OK wall=1200.3 seconds.
+Playback 1x, day10min, initial Day1 noon, selected stockpile once; no work orders.
+Each real second: simulation invariants and full snapshot validation.
+Observed actual windows: first day work/night/rain, next-day production, construction stakes/wood gathering, second night, frame at90%, finished annex/capacity60.
+Final normal-exit save v148: Day3, hour12.2180, simulation elapsed1206.9114.
+Food38/60, produced43, consumed8, meals8, rests2, home arrivals6, recoveries0.
+Wood sources0+0, stored0, spent12, no ground timber, construction complete60/60.
+The initial hidden and intermediate player runs were stopped before completion and are excluded.
+Actual 2-hour release stability was not performed.
+Restart: isolated Save148Resume, final148 executable + existing143 resume harness.
+LIFE143_RESTART_EXACT_OK and LIFE143_RESUMED_LIFE_60SEC_OK,60.4 real seconds.
+Post-resume food48,produced51,consumed9,all residents sheltering from rain; construction stage3/capacity60/spent12 retained.
+Small800x600 and portrait600x900 actual growth selection/save/load/restart and panels: PASS.
+All final player logs: no exception/save/load failure. Review windows closed normally.

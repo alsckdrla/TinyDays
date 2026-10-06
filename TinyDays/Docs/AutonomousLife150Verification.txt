@@ -1,0 +1,3 @@
+Six residents, 6 homes/shelters, paired traits, fresh exact save: PASS
+149 active save migration, first3/reservations untouched, repeat load, continuation: PASS
+Natural 3 days: garden complete=True, occupied rest seats max=2, meals=24, home=18, food=17

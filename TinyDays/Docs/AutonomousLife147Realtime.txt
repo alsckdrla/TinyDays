@@ -1,0 +1,15 @@
+LIFE147_OBSERVATION_START
+LIFE147_SAMPLE wall=60.4 food=10 produced=2 consumed=0 feedSpent=1 laid=0 collected=0 sheltered=0
+LIFE147_SAMPLE wall=120.9 food=14 produced=6 consumed=0 feedSpent=1 laid=0 collected=0 sheltered=0
+LIFE147_SAMPLE wall=180.4 food=19 produced=12 consumed=1 feedSpent=1 laid=0 collected=0 sheltered=26
+LIFE147_SAMPLE wall=240.1 food=18 produced=12 consumed=2 feedSpent=1 laid=0 collected=0 sheltered=83
+LIFE147_SAMPLE wall=301.0 food=18 produced=12 consumed=2 feedSpent=1 laid=0 collected=0 sheltered=141
+LIFE147_SAMPLE wall=360.7 food=18 produced=12 consumed=2 feedSpent=1 laid=3 collected=0 sheltered=198
+LIFE147_SAMPLE wall=420.5 food=18 produced=12 consumed=2 feedSpent=1 laid=3 collected=0 sheltered=255
+LIFE147_SAMPLE wall=480.0 food=17 produced=12 consumed=3 feedSpent=1 laid=3 collected=0 sheltered=312
+LIFE147_SAMPLE wall=540.7 food=19 produced=15 consumed=3 feedSpent=1 laid=3 collected=3 sheltered=338
+LIFE147_SAMPLE wall=600.3 food=19 produced=15 consumed=3 feedSpent=2 laid=3 collected=3 sheltered=338
+LIFE147_REALTIME_10MIN_OK wall=600.3 feed=2 laid=3 collected=3 shelter=338
+
+Runtime world: fresh isolated Save147FinalObservation; 10-minute days,1x; normal weather cycle and night.
+No user save was used. Final display-only ground decoration relocation is verified separately; life/save logic is unchanged.

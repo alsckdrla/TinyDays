@@ -38,14 +38,27 @@ namespace TinyDays.Review
         ShadowQualitySettings shadowQuality;
         bool following;
         bool settingsOpen;
+        bool newGameConfirm,confirmSaveOverwrite;
+        float settingsScroll;
         bool lightingOpen;
+        bool weatherOpen,seasonOpen,growthOpen;
+        Rect GrowthToggle()=>new Rect(590,102+LifeHeaderOffset,190,ControlHeight);
+        Rect GrowthPanel()=>new Rect(14,154+LifeHeaderOffset,350,334);
+        Rect GrowthButton(int i){var p=GrowthPanel();return new Rect(p.x+8+i*170,p.y+34,164,ControlHeight);}
+        Rect SeasonToggle()=>new Rect(386,102+LifeHeaderOffset,196,ControlHeight);
+        Rect SeasonPanel()=>new Rect(14,154+LifeHeaderOffset,350,194);
+        Rect SeasonButton(int i){var p=SeasonPanel();return new Rect(p.x+8+(i%2)*170,p.y+40+(i/2)*48,164,ControlHeight);}
+        Rect WeatherToggle()=>new Rect(202,102+LifeHeaderOffset,176,ControlHeight);
+        Rect WeatherPanel()=>new Rect(14,154+LifeHeaderOffset,350,146);
+        Rect WeatherButton(int i){var p=WeatherPanel();return new Rect(p.x+8+(i%2)*170,p.y+40+(i/2)*48,164,ControlHeight);}
         float lightingScroll;
         readonly LightingColorPicker colorPicker=new LightingColorPicker();
         const float ControlGap=6,LightingContentHeight=590;
-        Rect LightingToggle()=>new Rect(14,102,200,ControlHeight);
+        float LifeHeaderOffset=>GetComponent<TinyDays.Life.AutonomousLifeWorld>()?80:0;
+        Rect LightingToggle()=>new Rect(14,102+LifeHeaderOffset,180,ControlHeight);
         Rect LightingPanel()
         {
-            float width=Mathf.Min(400,Screen.width/Scale-28),top=154;
+            float width=Mathf.Min(400,Screen.width/Scale-28),top=154+LifeHeaderOffset;
             float available=ButtonRect(0).y-top-10;
             return new Rect(14,top,width,Mathf.Clamp(available,120,620));
         }
@@ -66,7 +79,7 @@ namespace TinyDays.Review
         void Start()
         {
             shadowQuality=GetComponent<ShadowQualitySettings>();if(!shadowQuality)shadowQuality=gameObject.AddComponent<ShadowQualitySettings>();
-            shadowQuality.Configure(shadowLow,shadowBalanced,shadowHigh);ResetCameraToPreset();
+            shadowQuality.Configure(shadowLow,shadowBalanced,shadowHigh);ResetCameraToPreset();if(GetComponent<TinyDays.Life.AutonomousLifeWorld>())dayMinutesInput="10";
         }
         bool cameraFocused=true;
         void OnApplicationFocus(bool focused){cameraFocused=focused;if(!focused){StopCameraDrags();CancelPointer();}}
@@ -85,6 +98,20 @@ namespace TinyDays.Review
         void ClampLightingScroll(){lightingScroll=ClampLightingScroll(lightingScroll,LightingPanel().height);}
         void Update()
         {
+            if(newGameConfirm)
+            {
+                CancelPointer();StopCameraDrags();
+                if(Input.GetKeyDown(KeyCode.Escape)){newGameConfirm=false;return;}
+                if(Input.GetMouseButtonDown(ClickButton)){
+                    Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
+                    if(ConfirmButton(false).Contains(p))newGameConfirm=false;
+                    else if(ConfirmButton(true).Contains(p)){
+                        var saving=GetComponent<TinyDays.Life.AutonomousLifeSave>();newGameConfirm=false;
+                        if(confirmSaveOverwrite)saving?.SaveNow(true);else saving?.StartNewGame();
+                    }
+                }
+                return;
+            }
             if(colorPicker.EscapeConsumed){colorPicker.EscapeConsumed=false;return;}
             if(colorPicker.Open){CancelPointer();StopCameraDrags();if(Input.GetKeyDown(KeyCode.Escape))colorPicker.Cancel();return;}
             if(Input.GetKeyDown(KeyCode.Escape))
@@ -93,10 +120,19 @@ namespace TinyDays.Review
             }
             if(settingsOpen)
             {
+                float available=SettingsPanel().height;
+                settingsScroll=Mathf.Clamp(settingsScroll,0,Mathf.Max(0,SettingsContentHeight-available));
+                Vector2 screenPointer=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
+                if(SettingsPanel().Contains(screenPointer))settingsScroll=Mathf.Clamp(settingsScroll-Input.mouseScrollDelta.y*36,0,Mathf.Max(0,SettingsContentHeight-available));
                 if(Input.GetMouseButtonDown(ClickButton)&&shadowQuality)
                 {
-                    Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
-                    for(int i=0;i<3;i++)if(ShadowRow(i).Contains(p)){shadowQuality.Apply(i);break;}
+                    Vector2 p=screenPointer+Vector2.up*settingsScroll;
+                    if(SettingsPanel().Contains(screenPointer)){
+                        for(int i=0;i<3;i++)if(ShadowRow(i).Contains(p)){shadowQuality.Apply(i);break;}
+                        var saving=GetComponent<TinyDays.Life.AutonomousLifeSave>();
+                        if(saving&&SaveRow(false).Contains(p)){if(saving.SaveBlocked){newGameConfirm=true;confirmSaveOverwrite=true;}else saving.SaveNow();}
+                        if(saving&&SaveRow(true).Contains(p))saving.LoadNow();
+                    }
                 }
                 return;
             }
@@ -126,7 +162,13 @@ namespace TinyDays.Review
                 bool handled=overMenu;
                 if(!hidden)
                 {
-                    if(LightingToggle().Contains(p)){lightingOpen=!lightingOpen;if(!lightingOpen)lightingScroll=0;else ClampLightingScroll();}
+                    if(GetComponent<TinyDays.Life.AutonomousLifeWorld>()&&GrowthToggle().Contains(p)){growthOpen=!growthOpen;lightingOpen=weatherOpen=seasonOpen=false;GUI.FocusControl(null);}
+                    else if(growthOpen&&GrowthPanel().Contains(p)){for(int i=0;i<2;i++)if(GrowthButton(i).Contains(p))GetComponent<TinyDays.Life.AutonomousLifeWorld>()?.Simulation.SetGrowthDirection(i==1);}
+                    else if(GetComponent<TinyDays.Life.AutonomousLifeWorld>()&&WeatherToggle().Contains(p)){weatherOpen=!weatherOpen;lightingOpen=seasonOpen=growthOpen=false;GUI.FocusControl(null);}
+                    else if(GetComponent<TinyDays.Life.AutonomousLifeWorld>()&&SeasonToggle().Contains(p)){seasonOpen=!seasonOpen;lightingOpen=weatherOpen=growthOpen=false;GUI.FocusControl(null);}
+                    else if(seasonOpen&&SeasonPanel().Contains(p)){for(int i=0;i<5;i++)if(SeasonButton(i).Contains(p))GetComponent<TinyDays.Life.AutonomousLifeWorld>()?.SelectSeason(i);}
+                    else if(weatherOpen&&WeatherPanel().Contains(p)){for(int i=0;i<4;i++)if(WeatherButton(i).Contains(p))GetComponent<TinyDays.Life.AutonomousLifeWorld>()?.SelectWeather(i);}
+                    else if(LightingToggle().Contains(p)){lightingOpen=!lightingOpen;weatherOpen=seasonOpen=growthOpen=false;if(!lightingOpen)lightingScroll=0;else ClampLightingScroll();}
                     else if(lightingOpen&&LightingPanel().Contains(p)&&AutomaticRow().Contains(LightingPointer(p)))GetComponent<FarmLightingStudy>()?.ResumeClock();
                     else if(lightingOpen&&LightingPanel().Contains(p)&&DayApply().Contains(LightingPointer(p)))
                     {invalidDayMinutes=!director.Playback.SetDayMinutes(dayMinutesInput);if(!invalidDayMinutes)GUI.FocusControl(null);}
@@ -144,7 +186,7 @@ namespace TinyDays.Review
                 else for(int i=0;i<6;i++)if(ButtonRect(i).Contains(p))
                 {
                     if(i==0)director.paused=!director.paused;
-                    if(i==1){director.Restart();GetComponent<FarmLightingStudy>()?.RestartClock();}
+                    if(i==1){if(GetComponent<TinyDays.Life.AutonomousLifeSave>()){newGameConfirm=true;confirmSaveOverwrite=false;CancelPointer();StopCameraDrags();}else {director.Restart();GetComponent<FarmLightingStudy>()?.RestartClock();}}
                     if(i==2)ShowOverview();
                     if(i==3){view=(view+1)%4;followOffset=Vector3.zero;ResetCameraToPreset();}
                     if(i==4)residentListOpen=!residentListOpen;
@@ -216,19 +258,25 @@ namespace TinyDays.Review
         Rect ListPanel()
         {
             float width=Mathf.Min(210,Screen.width/Scale-28),height=30+director.residents.Length*28;
-            return new Rect(Screen.width/Scale-width-14,Mathf.Max(94,ButtonRect(0).y-height-8),width,height);
+            return new Rect(Screen.width/Scale-width-14,Mathf.Max(94,ButtonRect(0).y-height-(GetComponent<TinyDays.Life.AutonomousLifeWorld>()?68:8)),width,height);
         }
         Rect ListRow(int i){var r=ListPanel();return new Rect(r.x+6,r.y+26+i*28,r.width-12,26);}
         Rect SettingsPanel()
         {
-            float width=Mathf.Min(390,Screen.width/Scale-28),height=268;
+            float width=Mathf.Min(390,Screen.width/Scale-28),height=Mathf.Min(SettingsContentHeight,Screen.height/Scale-28);
             return new Rect((Screen.width/Scale-width)*.5f,(Screen.height/Scale-height)*.5f,width,height);
         }
+        float SettingsContentHeight=>GetComponent<TinyDays.Life.AutonomousLifeWorld>()?460:268;
+        Rect SaveRow(bool load){var r=SettingsPanel();return new Rect(r.x+16,r.y+(load?280:230),r.width-32,ControlHeight);}
+        Rect ConfirmPanel(){float w=Mathf.Min(390,Screen.width/Scale-28);return new Rect((Screen.width/Scale-w)*.5f,(Screen.height/Scale-180)*.5f,w,180);}
+        Rect ConfirmButton(bool yes){var r=ConfirmPanel();return new Rect(r.x+16+(yes?0:(r.width-38)*.5f+6),r.y+120,(r.width-38)*.5f,ControlHeight);}
         Rect ShadowRow(int i){var r=SettingsPanel();return new Rect(r.x+16,r.y+58+i*(ControlHeight+ControlGap),r.width-32,ControlHeight);}
         bool NameRect(int i,out Rect rect)
         {
             rect=default;if(!ValidResident(i))return false;
             var resident=director.residents[i];
+            bool life=GetComponent<TinyDays.Life.AutonomousLifeWorld>();
+            if(life&&(!resident.visual||!resident.visual.gameObject.activeInHierarchy||!resident.visual.animator||!resident.visual.animator.gameObject.activeInHierarchy))return false;
             // Use the current visual bounds so future models need no fixed nameplate height.
             Vector3 top=resident.root.position+Vector3.up*1.5f;
             if(resident.visual)
@@ -238,14 +286,16 @@ namespace TinyDays.Review
             }
             var p=reviewCamera.WorldToScreenPoint(top);
             if(p.z<reviewCamera.nearClipPlane||p.z>reviewCamera.farClipPlane||!reviewCamera.pixelRect.Contains(p))return false;
-            rect=new Rect(Mathf.Clamp(p.x/Scale-35,0,Screen.width/Scale-70),Mathf.Clamp((Screen.height-p.y)/Scale-22,0,Screen.height/Scale-24),70,24);return true;
+            float width=life?140:70,height=life?56:24;
+            rect=new Rect(Mathf.Clamp(p.x/Scale-width*.5f,0,Screen.width/Scale-width),Mathf.Clamp((Screen.height-p.y)/Scale-height,0,Screen.height/Scale-height),width,height);return true;
         }
         bool PointerOverMenu()
         {
-            if(settingsOpen||colorPicker.Open)return true;
+            if(settingsOpen||colorPicker.Open||newGameConfirm)return true;
             Vector2 p=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
             if(hidden)return ButtonRect(5).Contains(p);
             if(LightingToggle().Contains(p)||(lightingOpen&&LightingPanel().Contains(p)))return true;
+            if(GetComponent<TinyDays.Life.AutonomousLifeWorld>()&&(GrowthToggle().Contains(p)||growthOpen&&GrowthPanel().Contains(p)||WeatherToggle().Contains(p)||weatherOpen&&WeatherPanel().Contains(p)||SeasonToggle().Contains(p)||seasonOpen&&SeasonPanel().Contains(p)))return true;
             if(residentListOpen&&ListPanel().Contains(p))return true;
             if(new Rect(12,12,Mathf.Max(112,Screen.width/Scale-24),78).Contains(p))return true;
             for(int i=0;i<6;i++)if(ButtonRect(i).Contains(p))return true;
@@ -273,7 +323,7 @@ namespace TinyDays.Review
         // Includes the existing vertical framing offset, not only the orbit radius.
         public float KeyboardTargetDistance=>(-(Quaternion.Euler(pitch,yaw,0)*Vector3.forward)*desiredDistance+Vector3.up*heightOffset).magnitude;
         public void KeyboardElevate(float input,float seconds){if(ElevateKeyboard(input,seconds))ApplyCamera();}
-        bool KeyboardAllowed=>cameraReady&&reviewCamera&&ReviewCameraKeys.Allowed(cameraFocused,settingsOpen||colorPicker.Open,!hidden&&lightingOpen&&ReviewCameraKeys.EditingText);
+        bool KeyboardAllowed=>cameraReady&&reviewCamera&&ReviewCameraKeys.Allowed(cameraFocused,settingsOpen||colorPicker.Open||newGameConfirm,!hidden&&lightingOpen&&ReviewCameraKeys.EditingText);
         bool ElevateKeyboard(float input,float seconds){
             if(!KeyboardAllowed)return false;
             input=Mathf.Clamp(input,-1,1);
@@ -429,22 +479,47 @@ namespace TinyDays.Review
             desiredDistance=orthographicSize/Mathf.Tan(20f*Mathf.Deg2Rad);
             cameraReady=true;ApplyCamera();
         }
+        public TinyDays.Life.CameraSaveData CaptureView()
+        {
+            if(!cameraReady)ResetCameraToPreset();
+            return new TinyDays.Life.CameraSaveData{view=view,focus=focus,selected=selected,following=following,hidden=hidden,pivot=pivot,followOffset=followOffset,yaw=yaw,pitch=pitch,distance=desiredDistance,baseDistance=baseDistance,height=heightOffset,size=orthographicSize};
+        }
+        public static void ValidateView(TinyDays.Life.CameraSaveData data,int residents)
+        {
+            TinyDays.Life.AutonomousSaveCodec.Require(data!=null&&data.view>=0&&data.view<4&&data.selected>=-1&&data.selected<residents&&data.focus>=0&&data.focus<residents,"Invalid saved selection");
+            TinyDays.Life.AutonomousSaveCodec.Require(TinyDays.Life.AutonomousSaveCodec.Finite(data.pivot)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.followOffset)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.yaw)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.pitch)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.distance)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.baseDistance)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.height)&&TinyDays.Life.AutonomousSaveCodec.Finite(data.size)&&data.pitch>=-90&&data.pitch<=75&&data.distance>=MinZoomDistance&&data.baseDistance>0&&data.distance<=data.baseDistance*1.5f&&data.size>0,"Invalid saved camera");
+        }
+        public void RestoreView(TinyDays.Life.CameraSaveData data)
+        {
+            ValidateView(data,director.residents.Length);CancelPointer();StopCameraDrags();if(colorPicker.Open)colorPicker.Cancel();
+            settingsOpen=lightingOpen=weatherOpen=seasonOpen=growthOpen=residentListOpen=newGameConfirm=false;settingsScroll=lightingScroll=0;
+            view=data.view;focus=data.focus;selected=data.selected;close=following=data.following;hidden=data.hidden;
+            pivot=data.pivot;followOffset=data.followOffset;yaw=data.yaw;pitch=data.pitch;desiredDistance=data.distance;baseDistance=data.baseDistance;heightOffset=data.height;orthographicSize=data.size;cameraReady=true;
+            dayMinutesInput=director.Playback.DayMinutes.ToString();invalidDayMinutes=false;ApplyCamera();
+        }
         void OnGUI()
         {
             GUI.matrix=Matrix4x4.Scale(Vector3.one*Scale);if(font)GUI.skin.font=font;
             GUI.skin.label.fontSize=16;GUI.skin.button.fontSize=16;
             GUI.skin.label.normal.textColor=new Color(.27f,.29f,.22f);
             Vector2 pointer=new Vector2(Input.mousePosition.x,Screen.height-Input.mousePosition.y)/Scale;
+            if(newGameConfirm){var p=ConfirmPanel();GUI.Box(p,"확인");GUI.Label(new Rect(p.x+16,p.y+34,p.width-32,76),confirmSaveOverwrite?"읽을 수 없는 파일을 보존하고\n현재 생활을 새로 저장할까요?":"새 농가로 처음부터 시작하고\n저장을 갱신할까요?",new GUIStyle(GUI.skin.label){wordWrap=true});Draw(ConfirmButton(true),"확인",pointer);Draw(ConfirmButton(false),"취소",pointer);GUI.matrix=Matrix4x4.identity;return;}
             if(colorPicker.Open){colorPicker.Draw(Screen.width/Scale,Screen.height/Scale);GUI.matrix=Matrix4x4.identity;return;}
             DrawClock(GetComponent<FarmLightingStudy>());
             if(settingsOpen)
             {
                 var panel=SettingsPanel();GUI.Box(panel,"설정");
-                GUI.Label(new Rect(panel.x+16,panel.y+28,panel.width-32,24),"그림자 품질");
+                GUI.BeginGroup(panel);
+                GUI.BeginGroup(new Rect(0,-settingsScroll,panel.width,SettingsContentHeight));
+                Vector2 localPointer=pointer-panel.position+Vector2.up*settingsScroll;
+                GUI.Label(new Rect(16,28,panel.width-32,24),"그림자 품질");
                 string[] choices={"낮음 · 선명한 경계 · 낮은 성능 부담","기본 · 부드러운 경계 · 균형","높음 · 더 부드러운 경계 · 높은 성능 부담"};
                 int current=shadowQuality?shadowQuality.Selected:1;
-                for(int i=0;i<3;i++)Draw(ShadowRow(i),(current==i?"● ":"")+choices[i],pointer);
-                GUI.Label(new Rect(panel.x+16,panel.y+230,panel.width-32,24),"Esc를 누르면 설정을 닫습니다.");
+                for(int i=0;i<3;i++){var row=ShadowRow(i);row.position-=panel.position;Draw(row,(current==i?"● ":"")+choices[i],localPointer);}
+                var saving=GetComponent<TinyDays.Life.AutonomousLifeSave>();
+                if(saving){var save=SaveRow(false);save.position-=panel.position;var load=SaveRow(true);load.position-=panel.position;Draw(save,"저장",localPointer);Draw(load,"불러오기",localPointer);GUI.Label(new Rect(16,334,panel.width-32,76),saving.Status,new GUIStyle(GUI.skin.label){wordWrap=true});}
+                GUI.Label(new Rect(16,saving?422:230,panel.width-32,24),"Esc 닫기 · 짧은 창에서는 휠 스크롤");
+                GUI.EndGroup();GUI.EndGroup();
                 GUI.matrix=Matrix4x4.identity;return;
             }
             if(hidden){Draw(ButtonRect(5),"메뉴 보기",pointer);GUI.matrix=Matrix4x4.identity;return;}
@@ -452,22 +527,82 @@ namespace TinyDays.Review
             var lighting=GetComponent<FarmLightingStudy>();
             if(lighting&&lighting.selected==3)GUI.skin.label.normal.textColor=new Color(.91f,.92f,.96f);
             Draw(LightingToggle(),lightingOpen?"시간대 비교 닫기":"시간대 비교",pointer);
+            var weatherWorld=GetComponent<TinyDays.Life.AutonomousLifeWorld>();
+            if(weatherWorld){
+                Draw(GrowthToggle(),weatherWorld.Simulation.Growth.stockpile?"성장: 비축 확대":"성장: 생활 유지",pointer);
+                if(growthOpen){var gp=GrowthPanel();GUI.Box(gp,"성장 방향");Draw(GrowthButton(0),"생활 유지",pointer);Draw(GrowthButton(1),"비축 확대",pointer);var gs=weatherWorld.Simulation;GUI.Label(new Rect(gp.x+12,gp.y+84,gp.width-24,240),$"식량 {gs.food}/{gs.Capacity} · 목표 {gs.TargetFood}\n목재 {gs.Growth.wood}/12 · 사용 {gs.Growth.spent}\n{gs.GrowthStatus}\n{gs.FieldStatus}\n{gs.GardenStatus}",new GUIStyle(GUI.skin.label){wordWrap=true,fontSize=17,normal={textColor=Color.white}});}
+                Draw(WeatherToggle(),"날씨: "+weatherWorld.WeatherLabel+(weatherWorld.Weather.State.automatic?" · 자동":" · 고정"),pointer);
+                Draw(SeasonToggle(),"계절: "+weatherWorld.Season.Label+" "+(Mathf.FloorToInt(weatherWorld.Season.State.progress*3)+1)+"/3일"+(weatherWorld.Season.State.automatic?" · 자동":" · 고정"),pointer);
+                if(seasonOpen){GUI.Box(SeasonPanel(),"계절 검토");string[] seasons={"봄","여름","가을","겨울","자동 순환"};for(int i=0;i<5;i++)Draw(SeasonButton(i),seasons[i],pointer);}
+                if(weatherOpen){GUI.Box(WeatherPanel(),"날씨 검토");string[] names={"맑음","흐림",weatherWorld.Season.Winter?"눈":"비","자동 순환"};for(int i=0;i<4;i++)Draw(WeatherButton(i),names[i],pointer);}
+            }
             if(lightingOpen)DrawLightingPanel(lighting,pointer);
             GUI.skin.label.normal.textColor=lighting&&lighting.selected!=1?new Color(.94f,.94f,.90f):new Color(.27f,.29f,.22f);
-            GUI.Label(new Rect(18,12,w-36,28),"Tiny Days · 봄날의 작은 농가");
+            var life=GetComponent<TinyDays.Life.AutonomousLifeWorld>();
+            if(!life||w>=800)GUI.Label(new Rect(18,12,w-36,28),life?"Tiny Days · "+life.Season.Label+"의 작은 농가":"Tiny Days · 봄날의 작은 농가");
             GUI.skin.label.fontSize=12;
-            GUI.Label(new Rect(18,42,w-36,22),$"임시 생활 장면 · 이동과 머무르기 · {director.elapsed:F0}초");
+            var summaryStyle=new GUIStyle(GUI.skin.label){wordWrap=true};
+            if(life){
+                summaryStyle.fontSize=14;var rect=new Rect(18,82,w-36,54);string message=life.Summary(selected);
+                var outline=new GUIStyle(summaryStyle);outline.normal.textColor=new Color(.08f,.07f,.05f,.9f);
+                float pixel=1/Scale;
+                GUI.Label(new Rect(rect.x-pixel,rect.y,rect.width,rect.height),message,outline);
+                GUI.Label(new Rect(rect.x+pixel,rect.y,rect.width,rect.height),message,outline);
+                GUI.Label(new Rect(rect.x,rect.y-pixel,rect.width,rect.height),message,outline);
+                GUI.Label(new Rect(rect.x,rect.y+pixel,rect.width,rect.height),message,outline);
+                summaryStyle.normal.textColor=new Color(1,.98f,.91f);GUI.Label(rect,message,summaryStyle);
+            }else GUI.Label(new Rect(18,42,w-36,22),$"임시 생활 장면 · 이동과 머무르기 · {director.elapsed:F0}초",summaryStyle);
             string[] labels={director.paused?"재생":"일시정지","처음부터","전체 보기",views[view],"주민 목록","메뉴 숨김"};
             for(int i=0;i<6;i++)Draw(ButtonRect(i),labels[i],pointer);
-            GUI.Label(new Rect(18,66,w-36,24),"좌클릭 선택 · 더블클릭 따라보기 · 좌드래그 회전 · 우드래그 패닝 · WASD/화살표 이동 · 가운데 높이 · 휠 줌 · Q/E 높이 · Home 전체");
-            for(int i=0;i<director.residents.Length;i++)if((residentListOpen||selected==i)&&NameRect(i,out Rect rect))
-                Draw(rect,(selected==i?"● ":"")+"주민 "+(i+1),pointer);
+            GUI.Label(new Rect(18,life?136:66,w-36,life?40:24),"좌클릭 선택 · 더블클릭 따라보기 · 좌드래그 회전 · 우드래그 패닝 · WASD/화살표 이동 · 가운데 높이 · 휠 줌 · Q/E 높이 · Home 전체",new GUIStyle(GUI.skin.label){wordWrap=true});
+            for(int i=0;i<director.residents.Length;i++)if((life||residentListOpen||selected==i)&&NameRect(i,out Rect rect))
+            {
+                if(life)DrawLifeNameplate(rect,i,life);
+                else Draw(rect,(selected==i?"● ":"")+"주민 "+(i+1),pointer);
+            }
             if(residentListOpen)
             {
                 GUI.Box(ListPanel(),"주민 목록");
                 for(int i=0;i<director.residents.Length;i++)Draw(ListRow(i),(selected==i?"● ":"")+"주민 "+(i+1),pointer);
             }
+            var saveNotice=GetComponent<TinyDays.Life.AutonomousLifeSave>();
+            if(saveNotice&&!string.IsNullOrEmpty(saveNotice.Notice)){
+                var note=new Rect(14,ButtonRect(0).y-60,w-28,52);var previous=GUI.color;GUI.color=new Color(.05f,.06f,.04f,.65f);GUI.DrawTexture(note,Texture2D.whiteTexture);GUI.color=previous;
+                var style=new GUIStyle(GUI.skin.label){fontSize=16,wordWrap=true,alignment=TextAnchor.MiddleCenter};style.normal.textColor=Color.white;GUI.Label(note,saveNotice.Notice,style);
+            }
             GUI.matrix=Matrix4x4.identity;
+        }
+        void DrawLifeNameplate(Rect rect,int index,TinyDays.Life.AutonomousLifeWorld life)
+        {
+            var nameRect=new Rect(rect.x,rect.y,rect.width,28);
+            if(selected==index)
+            {
+                var previous=GUI.color;GUI.color=new Color(.08f,.09f,.07f,.65f);
+                GUI.DrawTexture(nameRect,Texture2D.whiteTexture);GUI.color=previous;
+            }
+            DrawNameplateText(nameRect,"주민 "+(index+1),18,Color.white);
+            if(life.Simulation!=null&&index<life.Simulation.residents.Length){
+                var r=life.Simulation.residents[index];
+                if(TinyDays.Life.AutonomousSimulation.Talking(r)&&((int)((r.socialTime-TinyDays.Life.AutonomousSimulation.GreetingSeconds)/1.2f)%2==0)==(r.id<r.socialPartner-1)){
+                    var bubble=new Rect(Mathf.Clamp(rect.center.x-24,0,Screen.width/Scale-48),Mathf.Max(0,rect.y-34),48,30);
+                    var color=GUI.color;GUI.color=new Color(.13f,.12f,.09f,.85f);GUI.DrawTexture(bubble,Texture2D.whiteTexture);GUI.color=color;
+                    DrawNameplateText(bubble,"…",22,new Color(1,.98f,.89f));
+                }
+            }
+
+            if(life.Simulation!=null&&index<life.Simulation.residents.Length)
+                DrawNameplateText(new Rect(rect.x,rect.y+28,rect.width,28),TinyDays.Life.AutonomousSimulation.TraitLabel(life.Simulation.residents[index].temperament),16,new Color(1,.96f,.80f));
+        }
+        void DrawNameplateText(Rect rect,string text,int size,Color color)
+        {
+            var style=new GUIStyle(GUI.skin.label){fontSize=size,alignment=TextAnchor.MiddleCenter,wordWrap=false};
+            style.normal.textColor=new Color(.04f,.04f,.03f,.95f);
+            float pixel=1/Scale;
+            GUI.Label(new Rect(rect.x-pixel,rect.y,rect.width,rect.height),text,style);
+            GUI.Label(new Rect(rect.x+pixel,rect.y,rect.width,rect.height),text,style);
+            GUI.Label(new Rect(rect.x,rect.y-pixel,rect.width,rect.height),text,style);
+            GUI.Label(new Rect(rect.x,rect.y+pixel,rect.width,rect.height),text,style);
+            style.normal.textColor=color;GUI.Label(rect,text,style);
         }
         void DrawLightingPanel(FarmLightingStudy lighting,Vector2 pointer)
         {
@@ -491,7 +626,7 @@ namespace TinyDays.Review
             GUI.Label(new Rect(8,444,panel.width-16,24),"재생속도 · 주민과 낮밤 함께");
             for(int i=0;i<4;i++)Draw(RateButton(i),(director.Playback.Rate==FarmPlaybackSettings.Rates[i]?"● ":"")+FarmPlaybackSettings.Rates[i].ToString("0.#")+"×",localPointer);
             GUI.Label(new Rect(8,526,panel.width-16,24),invalidDayMinutes?"1~120 사이의 정수(분)를 입력해주세요.":$"적용: {director.Playback.DayMinutes}분 · {director.Playback.Rate:0.#}× · 실제 하루 {director.Playback.DayMinutes/director.Playback.Rate:0.##}분");
-            GUI.Label(new Rect(8,558,panel.width-16,24),"시간 고정 중에는 주민에게만 배속이 적용됩니다.");
+            GUI.Label(new Rect(8,558,panel.width-16,24),GetComponent<TinyDays.Life.AutonomousLifeWorld>()?"시간 고정 중에도 생활·날씨·계절은 진행됩니다.":"시간 고정 중에는 주민에게만 배속이 적용됩니다.");
             GUI.EndGroup();GUI.EndGroup();
             if(LightingContentHeight>panel.height)
             {

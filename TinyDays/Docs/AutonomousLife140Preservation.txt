@@ -1,0 +1,6 @@
+v0.140 preservation - 2026-10-05
+Original ArtSource/Art/Scenes/Prototype baseline files: 829
+Changed originals: 0
+Missing new asset meta: 0
+AutonomousLifeStudy generated area intentionally updated; ManualEdits checked across two regenerations.
+v0.139 verification records retained; no GitHub upload.

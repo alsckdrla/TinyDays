@@ -1,0 +1,17 @@
+v0.140 real Windows observation - 2026-10-05
+800x600, 1x, 10 minute day; 600 wall-clock seconds.
+No pause/rate/reset/time selection during this run. Native inputs: 3 residents selection/focus, Home, time-panel open/scroll/close.
+Per-minute invariant check plus periodic actual window observation; not a continuous recording or user quality approval.
+After this run only summary text styling changed. Simulation source unchanged; final UI build is checked separately.
+
+LIFE140_WALL_SAMPLE wall=60.0 simulated=62.6 day=1 food=11 produced=6 eaten=0 home=0 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=120.0 simulated=122.6 day=1 food=15 produced=9 eaten=0 home=0 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=180.0 simulated=182.7 day=1 food=17 produced=9 eaten=1 home=0 reserved=3 bundles=0
+LIFE140_WALL_SAMPLE wall=240.0 simulated=242.7 day=1 food=19 produced=12 eaten=2 home=3 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=300.0 simulated=302.7 day=2 food=19 produced=12 eaten=2 home=3 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=360.0 simulated=362.7 day=2 food=19 produced=12 eaten=2 home=3 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=420.0 simulated=422.7 day=2 food=19 produced=12 eaten=2 home=3 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=480.0 simulated=482.7 day=2 food=18 produced=12 eaten=3 home=3 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=540.0 simulated=542.8 day=2 food=18 produced=12 eaten=3 home=3 reserved=0 bundles=0
+LIFE140_WALL_SAMPLE wall=600.0 simulated=602.9 day=2 food=18 produced=12 eaten=3 home=3 reserved=0 bundles=0
+LIFE140_REALTIME_10MIN_OK

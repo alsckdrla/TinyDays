@@ -1,0 +1,6 @@
+v0.139 accelerated logic checks; not real-time observation or user approval.
+normal: planted=6 harvested=6 gathered=3 consumed=12 rests=2 home=9 food=21 recovered=0
+empty food: planted=9 harvested=7 gathered=6 consumed=12 rests=2 home=9 food=21 recovered=0
+full store: planted=0 harvested=0 gathered=0 consumed=12 rests=1 home=9 food=24 recovered=0
+Blocked homes wait safely and recover: PASS
+Single clock / 4x / pause / reset: PASS

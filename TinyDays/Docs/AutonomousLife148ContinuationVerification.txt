@@ -1,0 +1,5 @@
+After natural completion, accelerated 3 additional days: PASS
+Additional meals=12, home arrivals=9, food=50/60, wood spent exactly12
+Every simulated second invariants, every minute exact save restore: PASS
+New farm direction/wood/plot reset + day length/rate/pause preserved: PASS
+This is accelerated testing, not 30 real minutes or release stability.

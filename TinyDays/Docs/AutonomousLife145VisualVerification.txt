@@ -1,0 +1,3 @@
+Four season same-noon views: rendered
+Winter below-ground alpha/snow: PASS
+Season change while faded/material restoration: PASS

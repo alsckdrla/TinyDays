@@ -1,0 +1,6 @@
+Final150 canonical player, isolated Save150Resume copied from20min observation
+LIFE143_RESTART_EXACT_OK
+LIFE143_RESUMED_LIFE_60SEC_OK, actual60.4s
+Reuses143 probe; data/build are150
+Final {"counts": [16, 28, 18, 6, 4, 5, 18, 2, 12, 0], "day": 3, "hour": 16.115617752075195, "garden": {"stage": 3, "stability": 120.0, "progress": 60.0, "retry": 536.701416015625, "site": {"x": -9.850000381469727, "y": 0.0, "z": -6.300005912780762}}, "residents": 6}
+Normal quit; all review windows closed.

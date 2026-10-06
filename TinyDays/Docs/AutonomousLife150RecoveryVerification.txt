@@ -1,0 +1,3 @@
+Blocked garden approach waits, reservation roundtrip and unblock completion: PASS
+Six-resident zero food production and at least6 meals recover: PASS
+Night legacy migration: three additions asleep, original3 preserved, safe dawn resume: PASS

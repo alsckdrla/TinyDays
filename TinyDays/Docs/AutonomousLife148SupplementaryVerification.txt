@@ -1,0 +1,13 @@
+Pre-construction cancel releases plot/work, conserves wood: PASS
+Interrupted timber safe drop, exact save/restore, autonomous recovery: PASS
+Construction interruption + exact save: rain PASS
+Construction interruption + exact save: night PASS
+Construction interruption + exact save: food PASS
+Construction interruption + exact save: fatigue PASS
+Construction interruption + exact save: hunger PASS
+Mode change after commitment finishes, cost exactly once: PASS
+No suitable plot: existing life continues, no wood or construction reservations: PASS
+Blocked timber store releases/retries; unblock resumes and conserves resources: PASS
+Food shortage food-first recovery, no construction work: PASS
+30/60/120fps x 0.5/1/4 work timing; paused state unchanged: PASS
+Whole/close/stakes/frame/complete/winter renders; snow + interior25% + restore: PASS

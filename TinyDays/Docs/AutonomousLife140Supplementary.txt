@@ -1,0 +1,5 @@
+v0.140 focused regression checks
+Dusk with reserved work -> delivery -> all home within 90s: PASS
+Cancel recovery -> release owner/capacity, preserve quantity: PASS
+Carrier yields less than older non-carrier in head-on encounter: PASS
+All scene stations clear after final generated obstacles: PASS

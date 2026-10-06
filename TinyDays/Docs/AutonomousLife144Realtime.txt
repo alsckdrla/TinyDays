@@ -1,0 +1,12 @@
+LIFE144_OBSERVATION_START
+LIFE144_SAMPLE wall=60.8 day=1 weather=맑음 food=11 produced=6 consumed=0 home=0 shelterSamples=0
+LIFE144_SAMPLE wall=120.4 day=1 weather=흐림 food=15 produced=9 consumed=0 home=0 shelterSamples=0
+LIFE144_SAMPLE wall=180.8 day=1 weather=비 food=17 produced=9 consumed=1 home=0 shelterSamples=22
+LIFE144_SAMPLE wall=240.3 day=1 weather=흐림 food=16 produced=9 consumed=2 home=3 shelterSamples=37
+LIFE144_SAMPLE wall=300.1 day=2 weather=맑음 food=16 produced=9 consumed=2 home=3 shelterSamples=37
+LIFE144_SAMPLE wall=360.8 day=2 weather=맑음 food=16 produced=9 consumed=2 home=3 shelterSamples=37
+LIFE144_SAMPLE wall=420.7 day=2 weather=비 food=16 produced=9 consumed=2 home=3 shelterSamples=37
+LIFE144_SAMPLE wall=480.0 day=2 weather=비 food=15 produced=9 consumed=3 home=3 shelterSamples=67
+LIFE144_SAMPLE wall=540.7 day=2 weather=맑음 food=18 produced=14 consumed=3 home=3 shelterSamples=93
+LIFE144_SAMPLE wall=600.1 day=2 weather=맑음 food=20 produced=14 consumed=3 home=3 shelterSamples=93
+LIFE144_REALTIME_10MIN_OK rainSamples=174 shelterSamples=93

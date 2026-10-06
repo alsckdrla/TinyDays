@@ -1,0 +1,8 @@
+Natural stockpile/gather/transport/build/60 capacity + action exact save: PASS at 1170.466
+Completed mode change preserves capacity and life: PASS
+Legacy 142 exact existing life, view, archive: PASS
+Legacy 144 exact existing life, view, archive: PASS
+Legacy 145 exact existing life, view, archive: PASS
+Legacy 146 exact existing life, view, archive: PASS
+Legacy 147 exact existing life, view, archive: PASS
+Invalid wood conservation save rejected: PASS

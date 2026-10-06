@@ -1,0 +1,16 @@
+Appended coop bounds, old stations, care routes: PASS
+Natural feed preparation/delivery/half-day eggs/collection + each action exact save: PASS at 368.1836
+Full nest pending production/no loss/recovery: PASS
+Normalized half-day timing, day-length change, rain/night/return and indoor production: PASS
+Food zero ready-eggs priority and feed guard/recovery: PASS
+Concurrent nest requests limited to remaining warehouse capacity: PASS
+Cancelled feed basket ownership and recovery: PASS
+Feed transport interrupted by hunger/fatigue/rain/night returns food without retry loop: PASS
+Blocked nest waits/releases, clear resumes within 90 seconds: PASS
+Legacy 142 state/weather/season/camera/source archive: PASS
+Legacy 144 state/weather/season/camera/source archive: PASS
+Legacy 145 state/weather/season/camera/source archive: PASS
+Legacy 146 state/weather/season/camera/source archive: PASS
+Malformed poultry save rejected atomically: PASS
+30/60/120fps x 0.5/1/4 rates, pause and lighting independence: PASS
+12 accelerated days: PASS feed=13 eggs=36 meals=46 home=36
